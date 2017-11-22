@@ -12,7 +12,7 @@
 #       commit d5d1f596b5bac06f2a78d09ca85806acdcedd308
 #
 #
-#                    Copyright (c) 2006-2017 William Emerison Six
+#                    Copyright (c) 2017 William Emerison Six
 #
 #  This software is provided 'as-is', without any express or implied
 #  warranty. In no event will the authors be held liable for any damages
