@@ -7,6 +7,7 @@
 #  Copyright (c) 2006-2010 Camilla Berglund
 #
 #  Python bindings - Copyright (c) 2013 Nicolas P. Rougier
+#                    Copyright (c) 2017 William Emerison Six
 #
 #  This software is provided 'as-is', without any express or implied
 #  warranty. In no event will the authors be held liable for any damages
