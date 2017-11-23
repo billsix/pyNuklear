@@ -28,6 +28,7 @@ import pyMatrixStack as ms
 import ctypes
 import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
+import math
 
 
 glfloat_size = 4
@@ -149,6 +150,10 @@ while not glfw.glfwWindowShouldClose(window):
 
 
     # rotate the triangle along the positive z axis
+    ms.translate(ms.MatrixStack.model,
+                 math.sin(glfw.glfwGetTime()),
+                 0,
+                 0)
     ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
 
     gl.glUseProgram(shader)
