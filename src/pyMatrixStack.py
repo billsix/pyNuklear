@@ -87,6 +87,11 @@ def setToIdentityMatrix(ms):
                                    dtype=np.float32))
 
 def rotateX(matrixStack, rads):
+    # Using a normal linear algebra notation, which
+    # is row-major, 1-based indexes, the following
+    # matrix multiplication shows how to add a rotation
+    # to a matrix, along the position X axis.
+    #
     # M(1,1) M(1,2) M(1,3) M(1,4)     1   0    0    0
     # M(2,1) M(2,2) M(2,3) M(2,4) *   0   cos  -sin 0
     # M(3,1) M(3,2) M(3,3) M(3,4)     0   sin  cos  0
@@ -94,6 +99,9 @@ def rotateX(matrixStack, rads):
 
     #   =
 
+    # Rather than keeping both matricies, we can reduce
+    # them to one by matrix multiplication
+    #
     # M(1,1)  M(1,2)*cos+M(1,3)*sin  M(1,2)*-sin+M(1,3)*cos  M(1,4)
     # M(2,1)  M(2,2)*cos+M(2,3)*sin  M(2,2)*-sin+M(2,3)*cos  M(2,4)
     # M(3,1)  M(3,2)*cos+M(3,3)*sin  M(3,2)*-sin+M(3,3)*cos  M(3,4)
@@ -116,6 +124,11 @@ def rotateX(matrixStack, rads):
     ms[3,2] = currentMatrixCopy[3,1]*-s + currentMatrixCopy[3,2]*c
 
 def rotateY(matrixStack, rads):
+    # Using a normal linear algebra notation, which
+    # is row-major, 1-based indexes, the following
+    # matrix multiplication shows how to add a rotation
+    # to a matrix, along the position Y axis.
+
     # M(1,1) M(1,2) M(1,3) M(1,4)     cos  0    sin  0
     # M(2,1) M(2,2) M(2,3) M(2,4) *   0    1    0    0
     # M(3,1) M(3,2) M(3,3) M(3,4)     -sin 0    cos  0
@@ -123,6 +136,9 @@ def rotateY(matrixStack, rads):
 
     # =
 
+    # Rather than keeping both matricies, we can reduce
+    # them to one by matrix multiplication
+    #
     # M(1,1)*cos+M(1,3)*-sin    M(1,2)     M(1,1)*sin+M(1,3)*cos     M(1,4)
     # M(2,1)*cos+M(2,3)*-sin    M(2,2)     M(2,1)*sin+M(2,3)*cos     M(2,4)
     # M(3,1)*cos+M(3,3)*-sin    M(3,2)     M(3,1)*sin+M(3,3)*cos     M(3,4)
@@ -145,6 +161,11 @@ def rotateY(matrixStack, rads):
     ms[3,2] = currentMatrixCopy[3,0]*s + currentMatrixCopy[3,2]*c
 
 def rotateZ(matrixStack, rads):
+    # Using a normal linear algebra notation, which
+    # is row-major, 1-based indexes, the following
+    # matrix multiplication shows how to add a rotation
+    # to a matrix, along the position Z axis.
+    #
     # M(1,1) M(1,2) M(1,3) M(1,4)     cos -sin 0    0
     # M(2,1) M(2,2) M(2,3) M(2,4) *   sin cos  0    0
     # M(3,1) M(3,2) M(3,3) M(3,4)     0   0    1    0
@@ -152,6 +173,9 @@ def rotateZ(matrixStack, rads):
 
     #   =
 
+    # Rather than keeping both matricies, we can reduce
+    # them to one by matrix multiplication
+    #
     # M(1,1)*cos+M(1,2)*sin    M(1,1)*-sin+M(1,2)*cos M(1,3) M(1,4)
     # M(2,1)*cos+M(2,2)*sin    M(2,1)*-sin+M(2,2)*cos M(2,3) M(2,4)
     # M(3,1)*cos+M(3,2)*sin    M(3,1)*-sin+M(3,2)*cos M(3,3) M(3,4)
@@ -175,6 +199,11 @@ def rotateZ(matrixStack, rads):
 
 
 def translate(matrixStack, x, y, z):
+    # Using a normal linear algebra notation, which
+    # is row-major, 1-based indexes, the following
+    # matrix multiplication shows how to add a translation
+    # to a matrix.
+    #
     # M(1,1) M(1,2) M(1,3) M(1,4)     1 0 0 x
     # M(2,1) M(2,2) M(2,3) M(2,4) *   0 1 0 y
     # M(3,1) M(3,2) M(3,3) M(3,4)     0 0 1 z
@@ -182,6 +211,9 @@ def translate(matrixStack, x, y, z):
 
     #   =
 
+    # Rather than keeping both matricies, we can reduce
+    # them to one by matrix multiplication
+    #
     # M(1,1) M(1,2) M(1,3) (M(1,1)*x + M(1,2)*y + M(1,3)*z + M(1,4)*w)
     # M(2,1) M(2,2) M(2,3) (M(2,1)*x + M(2,2)*y + M(2,3)*z + M(2,4)*w)
     # M(3,1) M(3,2) M(3,3) (M(3,1)*x + M(3,2)*y + M(3,3)*z + M(3,4)*w)
@@ -196,6 +228,10 @@ def translate(matrixStack, x, y, z):
 
 
 #matrix operations
+# ortho projection, like a blueprint diagram for a house.
+# depth down the z axis does not affect x and y position
+# in screen space.
+#
 #http://www.songho.ca/opengl/gl_projectionmatrix.html
 def ortho(l,r,b,t,n,f):
     dx = r - l
