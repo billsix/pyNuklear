@@ -227,7 +227,6 @@ def translate(matrixStack, x, y, z):
     ms[3,3] = ms[3,0]*x + ms[3,1]*y + ms[3,2]*z + ms[3,3]
 
 
-#matrix operations
 # ortho projection, like a blueprint diagram for a house.
 # depth down the z axis does not affect x and y position
 # in screen space.
@@ -242,8 +241,31 @@ def ortho(l,r,b,t,n,f):
     ry = -(t +b) / (t - b)
     rz = -(f + n) / (f - n)
 
-    projectionStack[len(projectionStack) - 1] = np.matrix([[2.0/dx,  0.0,     0.0,       rx],
-                                                           [0.0,      2.0/dy, 0.0,       ry],
-                                                           [0.0,      0.0,    -2.0/dz,   rz],
-                                                           [0.0,      0.0,    0.0,       1.0]],
-                                                          dtype=np.float32)
+    projectionStack[len(projectionStack) - 1] = np.matrix(
+        [[2.0/dx,  0.0,     0.0,       rx],
+         [0.0,      2.0/dy, 0.0,       ry],
+         [0.0,      0.0,    -2.0/dz,   rz],
+         [0.0,      0.0,    0.0,       1.0]],
+        dtype=np.float32)
+
+
+# perspective projection, where things further away look smaller
+# by shrinking their x and y coordinates.
+#
+# Camera is at 0,0,0, facing down the negative z axis.
+#
+# nearZ and farZ are expressed in positive numbers, which is odd,
+# because the camera space coordinates will be from -nearZ to -farZ
+# on the z axis.
+
+#http://www.songho.ca/opengl/gl_projectionmatrix.html
+def perspective(fov, aspectRatio,nearZ, farZ):
+    top = nearZ * math.tan(fovy * 3.14159265358979323846 / 360.0)
+    right = top * aspectRatio
+
+    projectionStack[len(projectionStack) - 1] = np.matrix(
+        [[nearZ/right, 0.0,         0.0,                         0.0],
+         [0.0,         nearZ/top,   0.0,                         0.0],
+         [0.0,         0.0,         -(farZ+nearZ)/(farZ-nearZ),  -2*(farZ*nearZ)/(farZ-nearZ)],
+         [0.0,         0.0,         -1.0,                        0.0]],
+        dtype=np.float32)
