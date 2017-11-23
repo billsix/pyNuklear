@@ -79,12 +79,12 @@ def setCurrentMatrix(matrixStack,m):
         pass
 
 
-def setToIdentityMatrix(ms):
-    setCurrentMatrix(ms, np.matrix([[1.0,0.0,0.0,0.0],
-                                    [0.0,1.0,0.0,0.0],
-                                    [0.0,0.0,1.0,0.0],
-                                    [0.0,0.0,0.0,1.0]],
-                                   dtype=np.float32))
+def setToIdentityMatrix(m):
+    setCurrentMatrix(m, np.matrix([[1.0,0.0,0.0,0.0],
+                                   [0.0,1.0,0.0,0.0],
+                                   [0.0,0.0,1.0,0.0],
+                                   [0.0,0.0,0.0,1.0]],
+                                  dtype=np.float32))
 
 def rotateX(matrixStack, rads):
     # Using a normal linear algebra notation, which
@@ -107,21 +107,21 @@ def rotateX(matrixStack, rads):
     # M(3,1)  M(3,2)*cos+M(3,3)*sin  M(3,2)*-sin+M(3,3)*cos  M(3,4)
     # M(4,1)  M(4,2)*cos+M(4,3)*sin  M(4,2)*-sin+M(4,3)*cos  M(4,4)
 
-    ms = getCurrentMatrix(matrixStack)
-    currentMatrixCopy = np.copy(ms)
+    m = getCurrentMatrix(matrixStack)
+    copyOfM = np.copy(m)
 
     c = math.cos(rads)
     s = math.sin(rads)
 
-    ms[0,1] = currentMatrixCopy[0,1]*c + currentMatrixCopy[0,2]*s
-    ms[1,1] = currentMatrixCopy[1,1]*c + currentMatrixCopy[1,2]*s
-    ms[2,1] = currentMatrixCopy[2,1]*c + currentMatrixCopy[2,2]*s
-    ms[3,1] = currentMatrixCopy[3,1]*c + currentMatrixCopy[3,2]*s
+    m[0,1] = copyOfM[0,1]*c + copyOfM[0,2]*s
+    m[1,1] = copyOfM[1,1]*c + copyOfM[1,2]*s
+    m[2,1] = copyOfM[2,1]*c + copyOfM[2,2]*s
+    m[3,1] = copyOfM[3,1]*c + copyOfM[3,2]*s
 
-    ms[0,2] = currentMatrixCopy[0,1]*-s + currentMatrixCopy[0,2]*c
-    ms[1,2] = currentMatrixCopy[1,1]*-s + currentMatrixCopy[1,2]*c
-    ms[2,2] = currentMatrixCopy[2,1]*-s + currentMatrixCopy[2,2]*c
-    ms[3,2] = currentMatrixCopy[3,1]*-s + currentMatrixCopy[3,2]*c
+    m[0,2] = copyOfM[0,1]*-s + copyOfM[0,2]*c
+    m[1,2] = copyOfM[1,1]*-s + copyOfM[1,2]*c
+    m[2,2] = copyOfM[2,1]*-s + copyOfM[2,2]*c
+    m[3,2] = copyOfM[3,1]*-s + copyOfM[3,2]*c
 
 def rotateY(matrixStack, rads):
     # Using a normal linear algebra notation, which
@@ -144,21 +144,21 @@ def rotateY(matrixStack, rads):
     # M(3,1)*cos+M(3,3)*-sin    M(3,2)     M(3,1)*sin+M(3,3)*cos     M(3,4)
     # M(4,1)*cos+M(4,3)*-sin    M(4,2)     M(4,1)*sin+M(4,3)*cos     M(4,4)
 
-    ms = getCurrentMatrix(matrixStack)
-    currentMatrixCopy = np.copy(ms)
+    m = getCurrentMatrix(matrixStack)
+    copyOfM = np.copy(m)
 
     c = math.cos(rads)
     s = math.sin(rads)
 
-    ms[0,0] = currentMatrixCopy[0,0]*c + currentMatrixCopy[0,2]*-s
-    ms[1,0] = currentMatrixCopy[1,0]*c + currentMatrixCopy[1,2]*-s
-    ms[2,0] = currentMatrixCopy[2,0]*c + currentMatrixCopy[2,2]*-s
-    ms[3,0] = currentMatrixCopy[3,0]*c + currentMatrixCopy[3,2]*-s
+    m[0,0] = copyOfM[0,0]*c + copyOfM[0,2]*-s
+    m[1,0] = copyOfM[1,0]*c + copyOfM[1,2]*-s
+    m[2,0] = copyOfM[2,0]*c + copyOfM[2,2]*-s
+    m[3,0] = copyOfM[3,0]*c + copyOfM[3,2]*-s
 
-    ms[0,2] = currentMatrixCopy[0,0]*s + currentMatrixCopy[0,2]*c
-    ms[1,2] = currentMatrixCopy[1,0]*s + currentMatrixCopy[1,2]*c
-    ms[2,2] = currentMatrixCopy[2,0]*s + currentMatrixCopy[2,2]*c
-    ms[3,2] = currentMatrixCopy[3,0]*s + currentMatrixCopy[3,2]*c
+    m[0,2] = copyOfM[0,0]*s + copyOfM[0,2]*c
+    m[1,2] = copyOfM[1,0]*s + copyOfM[1,2]*c
+    m[2,2] = copyOfM[2,0]*s + copyOfM[2,2]*c
+    m[3,2] = copyOfM[3,0]*s + copyOfM[3,2]*c
 
 def rotateZ(matrixStack, rads):
     # Using a normal linear algebra notation, which
@@ -181,21 +181,21 @@ def rotateZ(matrixStack, rads):
     # M(3,1)*cos+M(3,2)*sin    M(3,1)*-sin+M(3,2)*cos M(3,3) M(3,4)
     # M(4,1)*cos+M(4,2)*sin    M(4,1)*-sin+M(4,2)*cos M(4,3) M(4,4)
 
-    ms = getCurrentMatrix(matrixStack)
-    currentMatrixCopy = np.copy(ms)
+    m = getCurrentMatrix(matrixStack)
+    copyOfM = np.copy(m)
 
     c = math.cos(rads)
     s = math.sin(rads)
 
-    ms[0,0] = currentMatrixCopy[0,0]*c + currentMatrixCopy[0,1]*s
-    ms[1,0] = currentMatrixCopy[1,0]*c + currentMatrixCopy[1,1]*s
-    ms[2,0] = currentMatrixCopy[2,0]*c + currentMatrixCopy[2,1]*s
-    ms[3,0] = currentMatrixCopy[3,0]*c + currentMatrixCopy[3,1]*s
+    m[0,0] = copyOfM[0,0]*c + copyOfM[0,1]*s
+    m[1,0] = copyOfM[1,0]*c + copyOfM[1,1]*s
+    m[2,0] = copyOfM[2,0]*c + copyOfM[2,1]*s
+    m[3,0] = copyOfM[3,0]*c + copyOfM[3,1]*s
 
-    ms[0,1] = currentMatrixCopy[0,0]*-s + currentMatrixCopy[0,1]*c
-    ms[1,1] = currentMatrixCopy[1,0]*-s + currentMatrixCopy[1,1]*c
-    ms[2,1] = currentMatrixCopy[2,0]*-s + currentMatrixCopy[2,1]*c
-    ms[3,1] = currentMatrixCopy[3,0]*-s + currentMatrixCopy[3,1]*c
+    m[0,1] = copyOfM[0,0]*-s + copyOfM[0,1]*c
+    m[1,1] = copyOfM[1,0]*-s + copyOfM[1,1]*c
+    m[2,1] = copyOfM[2,0]*-s + copyOfM[2,1]*c
+    m[3,1] = copyOfM[3,0]*-s + copyOfM[3,1]*c
 
 
 def translate(matrixStack, x, y, z):
@@ -219,12 +219,12 @@ def translate(matrixStack, x, y, z):
     # M(3,1) M(3,2) M(3,3) (M(3,1)*x + M(3,2)*y + M(3,3)*z + M(3,4)*w)
     # M(4,1) M(4,2) M(4,3) (M(4,1)*x + M(4,2)*y + M(4,3)*z + M(4,4)*w)
 
-    ms = getCurrentMatrix(matrixStack)
+    m = getCurrentMatrix(matrixStack)
 
-    ms[0,3] = ms[0,0]*x + ms[0,1]*y + ms[0,2]*z + ms[0,3]
-    ms[1,3] = ms[1,0]*x + ms[1,1]*y + ms[1,2]*z + ms[1,3]
-    ms[2,3] = ms[2,0]*x + ms[2,1]*y + ms[2,2]*z + ms[2,3]
-    ms[3,3] = ms[3,0]*x + ms[3,1]*y + ms[3,2]*z + ms[3,3]
+    m[0,3] = m[0,0]*x + m[0,1]*y + m[0,2]*z + m[0,3]
+    m[1,3] = m[1,0]*x + m[1,1]*y + m[1,2]*z + m[1,3]
+    m[2,3] = m[2,0]*x + m[2,1]*y + m[2,2]*z + m[2,3]
+    m[3,3] = m[3,0]*x + m[3,1]*y + m[3,2]*z + m[3,3]
 
 
 # ortho projection, like a blueprint diagram for a house.
