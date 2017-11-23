@@ -33,46 +33,99 @@ import math
 
 glfloat_size = 4
 
-vertices = np.array([-0.6, -0.4, 0,
-                     0.6, -0.4, 0,
-                     0, 0.6, 0],
-                    dtype=np.float32)
+
+class Triangle:
+    def __init__(self):
+        self.vertices = np.array([-0.6, -0.4, 0,
+                                  0.6, -0.4, 0,
+                                  0, 0.6, 0],
+                                 dtype=np.float32)
+
+    def initGraphics(self):
+        self.initShaders()
+        self.vao = gl.glGenVertexArrays(1)
+        gl.glBindVertexArray(self.vao)
+
+        vbo = gl.glGenBuffers(1)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
+
+        position = gl.glGetAttribLocation(self.shader, 'position')
+        gl.glEnableVertexAttribArray(position)
 
 
-def create_object(shader):
-    vao = gl.glGenVertexArrays(1)
-    gl.glBindVertexArray(vao)
+        gl.glVertexAttribPointer(position,
+                                 3,
+                                 gl.GL_FLOAT,
+                                 False,
+                                 0,
+                                 ctypes.c_void_p(0))
 
-    vbo = gl.glGenBuffers(1)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER,
+                        glfloat_size * 9,
+                        self.vertices,
+                        gl.GL_STATIC_DRAW)
 
-    position = gl.glGetAttribLocation(shader, 'position')
-    gl.glEnableVertexAttribArray(position)
+        gl.glBindVertexArray(0)
+
+        gl.glDisableVertexAttribArray(position)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
+
+    def initShaders(self):
+        vertex_shader = """
+#version 330 core
+
+layout (location = 0) in vec3 position;
+
+uniform mat4 mvpMatrix;
+
+void main()
+{
+   gl_Position = mvpMatrix * vec4(position,1.0);
+}
+"""
+        vs = shaders.compileShader(vertex_shader, gl.GL_VERTEX_SHADER)
+
+        fragment_shader = """
+#version 330 core
+
+void main()
+{
+   gl_FragColor = vec4(1.0f,1.0f,1.0f,1.0f);
+}
+"""
+
+        fs = shaders.compileShader(fragment_shader, gl.GL_FRAGMENT_SHADER)
+
+        self.shader = shaders.compileProgram(vs,fs)
+
+        self.mvpMatrixLoc = gl.glGetUniformLocation(self.shader,"mvpMatrix")
+
+        shaders.glDeleteShader(vs)
+        shaders.glDeleteShader(fs)
 
 
-    gl.glVertexAttribPointer(position,
-                             3,
-                             gl.GL_FLOAT,
-                             False,
-                             0,
-                             ctypes.c_void_p(0))
 
-    gl.glBufferData(gl.GL_ARRAY_BUFFER,
-                    glfloat_size * 9,
-                    vertices,
-                    gl.GL_STATIC_DRAW)
+    def render(self):
+        # rotate the triangle along the positive z axis
+        ms.translate(ms.MatrixStack.model,
+                     math.sin(glfw.glfwGetTime()),
+                     0,
+                     0)
+        ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
 
-    gl.glBindVertexArray(0)
-
-    gl.glDisableVertexAttribArray(position)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
-
-    return vao
+        gl.glUseProgram(self.shader)
+        gl.glBindVertexArray(self.vao)
 
 
-def on_key(window, key, scancode, action, mods):
-    if key == glfw.GLFW_KEY_ESCAPE and action == glfw.GLFW_PRESS:
-        glfw.glfwSetWindowShouldClose(window,1)
+        gl.glUniformMatrix4fv(self.mvpMatrixLoc,
+                              1,
+                              gl.GL_TRUE,
+                              np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                                                   dtype=np.float32))
+        gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
+        gl.glBindVertexArray(0)
+
+
 
 # Initialize the library
 if not glfw.glfwInit():
@@ -93,48 +146,21 @@ glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,glfw.GLFW_OPENGL_CORE_PROFILE)
 glfw.glfwMakeContextCurrent(window)
 
 # Install a key handler
+def on_key(window, key, scancode, action, mods):
+    if key == glfw.GLFW_KEY_ESCAPE and action == glfw.GLFW_PRESS:
+        glfw.glfwSetWindowShouldClose(window,1)
 glfw.glfwSetKeyCallback(window, on_key)
-gl.glClearColor(0.0,0.0,0.0,1.0)
 
+gl.glClearColor(0.0,0.0,0.0,1.0)
 gl.glEnable(gl.GL_DEPTH_TEST)
 gl.glClearDepth(1.0)
 gl.glDepthFunc(gl.GL_LEQUAL)
 
 
 
-vertex_shader = """
-#version 330 core
 
-layout (location = 0) in vec3 position;
-
-uniform mat4 mvpMatrix;
-
-void main()
-{
-   gl_Position = mvpMatrix * vec4(position,1.0);
-}
-"""
-
-fragment_shader = """
-#version 330 core
-
-void main()
-{
-   gl_FragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-}
-"""
-
-vs = shaders.compileShader(vertex_shader, gl.GL_VERTEX_SHADER)
-
-fs = shaders.compileShader(fragment_shader, gl.GL_FRAGMENT_SHADER)
-shader = shaders.compileProgram(vs,fs)
-
-mvpMatrixLoc = gl.glGetUniformLocation(shader,"mvpMatrix")
-
-shaders.glDeleteShader(vs)
-shaders.glDeleteShader(fs)
-
-triangleVAO = create_object(shader)
+triangle = Triangle()
+triangle.initGraphics()
 
 
 # Loop until the user closes the window
@@ -148,28 +174,12 @@ while not glfw.glfwWindowShouldClose(window):
     ms.setToIdentityMatrix(ms.MatrixStack.view)
     ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
-
-    # rotate the triangle along the positive z axis
-    ms.translate(ms.MatrixStack.model,
-                 math.sin(glfw.glfwGetTime()),
-                 0,
-                 0)
-    ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
-
-    gl.glUseProgram(shader)
-    gl.glBindVertexArray(triangleVAO)
-
     # set the projection matrix to be ortho
     ms.ortho(-1,1,-1,1,-1,1)
 
-    gl.glUniformMatrix4fv(mvpMatrixLoc,
-                          1,
-                          gl.GL_TRUE,
-                          np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
-                                               dtype=np.float32))
-    gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
-    gl.glBindVertexArray(0)
 
+    # render all of the objects in the scene
+    triangle.render()
 
 
     # Swap front and back buffers
