@@ -50,13 +50,13 @@ projectionStack =  [np.matrix([[1.0,0.0,0.0,0.0],
 
 # TODO - define push and pop matrix
 
-def getMatrix(matrixStack):
+def getCurrentMatrix(matrixStack):
     if matrixStack == MatrixStack.model :
-        return modelStack
+        return modelStack[len(modelStack)-1]
     if matrixStack == MatrixStack.view :
-        return  viewStack
+        return  viewStack[len(viewStack)-1]
     if matrixStack == MatrixStack.projection :
-        return projectionStack
+        return projectionStack[len(projectionStack)-1]
     if matrixStack == MatrixStack.modelview :
         return np.matmul(viewStack[len(viewStack) - 1],
                          modelStack[len(modelStack) -1])
@@ -65,14 +65,26 @@ def getMatrix(matrixStack):
                          np.matmul(viewStack[len(viewStack) - 1],
                                    modelStack[len(modelStack) -1]))
 
+def setCurrentMatrix(matrixStack,m):
+    if matrixStack == MatrixStack.model :
+        modelStack[len(modelStack)-1] = m
+    if matrixStack == MatrixStack.view :
+        viewStack[len(viewStack)-1] = m
+    if matrixStack == MatrixStack.projection :
+        projectionStack[len(projectionStack)-1] = m
+    # TODO, figure out how to throw exception, or whatever
+    if matrixStack == MatrixStack.modelview :
+        pass
+    if matrixStack == MatrixStack.modelviewprojection :
+        pass
 
-def identity(ms):
-    ms = getMatrix(ms)
-    ms[len(ms)-1] = np.matrix([[1.0,0.0,0.0,0.0],
-                               [0.0,1.0,0.0,0.0],
-                               [0.0,0.0,1.0,0.0],
-                               [0.0,0.0,0.0,1.0]],
-                              dtype=np.float32)
+
+def setToIdentityMatrix(ms):
+    setCurrentMatrix(ms, np.matrix([[1.0,0.0,0.0,0.0],
+                                    [0.0,1.0,0.0,0.0],
+                                    [0.0,0.0,1.0,0.0],
+                                    [0.0,0.0,0.0,1.0]],
+                                   dtype=np.float32))
 
 def rotateX(matrixStack, rads):
     # M(1,1) M(1,2) M(1,3) M(1,4)     1   0    0    0
@@ -87,22 +99,21 @@ def rotateX(matrixStack, rads):
     # M(3,1)  M(3,2)*cos+M(3,3)*sin  M(3,2)*-sin+M(3,3)*cos  M(3,4)
     # M(4,1)  M(4,2)*cos+M(4,3)*sin  M(4,2)*-sin+M(4,3)*cos  M(4,4)
 
-    ms = getMatrix(matrixStack)
-    topOfStack = ms[len(ms)-1]
-    topOfStackCopy = np.copy(topOfStack)
+    ms = getCurrentMatrix(matrixStack)
+    currentMatrixCopy = np.copy(ms)
 
     c = math.cos(rads)
     s = math.sin(rads)
 
-    topOfStack[0,1] = topOfStackCopy[0,1]*c + topOfStackCopy[0,2]*s
-    topOfStack[1,1] = topOfStackCopy[1,1]*c + topOfStackCopy[1,2]*s
-    topOfStack[2,1] = topOfStackCopy[2,1]*c + topOfStackCopy[2,2]*s
-    topOfStack[3,1] = topOfStackCopy[3,1]*c + topOfStackCopy[3,2]*s
+    ms[0,1] = currentMatrixCopy[0,1]*c + currentMatrixCopy[0,2]*s
+    ms[1,1] = currentMatrixCopy[1,1]*c + currentMatrixCopy[1,2]*s
+    ms[2,1] = currentMatrixCopy[2,1]*c + currentMatrixCopy[2,2]*s
+    ms[3,1] = currentMatrixCopy[3,1]*c + currentMatrixCopy[3,2]*s
 
-    topOfStack[0,2] = topOfStackCopy[0,1]*-s + topOfStackCopy[0,2]*c
-    topOfStack[1,2] = topOfStackCopy[1,1]*-s + topOfStackCopy[1,2]*c
-    topOfStack[2,2] = topOfStackCopy[2,1]*-s + topOfStackCopy[2,2]*c
-    topOfStack[3,2] = topOfStackCopy[3,1]*-s + topOfStackCopy[3,2]*c
+    ms[0,2] = currentMatrixCopy[0,1]*-s + currentMatrixCopy[0,2]*c
+    ms[1,2] = currentMatrixCopy[1,1]*-s + currentMatrixCopy[1,2]*c
+    ms[2,2] = currentMatrixCopy[2,1]*-s + currentMatrixCopy[2,2]*c
+    ms[3,2] = currentMatrixCopy[3,1]*-s + currentMatrixCopy[3,2]*c
 
 def rotateY(matrixStack, rads):
     # M(1,1) M(1,2) M(1,3) M(1,4)     cos  0    sin  0
@@ -117,22 +128,21 @@ def rotateY(matrixStack, rads):
     # M(3,1)*cos+M(3,3)*-sin    M(3,2)     M(3,1)*sin+M(3,3)*cos     M(3,4)
     # M(4,1)*cos+M(4,3)*-sin    M(4,2)     M(4,1)*sin+M(4,3)*cos     M(4,4)
 
-    ms = getMatrix(matrixStack)
-    topOfStack = ms[len(ms)-1]
-    topOfStackCopy = np.copy(topOfStack)
+    ms = getCurrentMatrix(matrixStack)
+    currentMatrixCopy = np.copy(ms)
 
     c = math.cos(rads)
     s = math.sin(rads)
 
-    topOfStack[0,0] = topOfStackCopy[0,0]*c + topOfStackCopy[0,2]*-s
-    topOfStack[1,0] = topOfStackCopy[1,0]*c + topOfStackCopy[1,2]*-s
-    topOfStack[2,0] = topOfStackCopy[2,0]*c + topOfStackCopy[2,2]*-s
-    topOfStack[3,0] = topOfStackCopy[3,0]*c + topOfStackCopy[3,2]*-s
+    ms[0,0] = currentMatrixCopy[0,0]*c + currentMatrixCopy[0,2]*-s
+    ms[1,0] = currentMatrixCopy[1,0]*c + currentMatrixCopy[1,2]*-s
+    ms[2,0] = currentMatrixCopy[2,0]*c + currentMatrixCopy[2,2]*-s
+    ms[3,0] = currentMatrixCopy[3,0]*c + currentMatrixCopy[3,2]*-s
 
-    topOfStack[0,2] = topOfStackCopy[0,0]*s + topOfStackCopy[0,2]*c
-    topOfStack[1,2] = topOfStackCopy[1,0]*s + topOfStackCopy[1,2]*c
-    topOfStack[2,2] = topOfStackCopy[2,0]*s + topOfStackCopy[2,2]*c
-    topOfStack[3,2] = topOfStackCopy[3,0]*s + topOfStackCopy[3,2]*c
+    ms[0,2] = currentMatrixCopy[0,0]*s + currentMatrixCopy[0,2]*c
+    ms[1,2] = currentMatrixCopy[1,0]*s + currentMatrixCopy[1,2]*c
+    ms[2,2] = currentMatrixCopy[2,0]*s + currentMatrixCopy[2,2]*c
+    ms[3,2] = currentMatrixCopy[3,0]*s + currentMatrixCopy[3,2]*c
 
 def rotateZ(matrixStack, rads):
     # M(1,1) M(1,2) M(1,3) M(1,4)     cos -sin 0    0
@@ -147,22 +157,21 @@ def rotateZ(matrixStack, rads):
     # M(3,1)*cos+M(3,2)*sin    M(3,1)*-sin+M(3,2)*cos M(3,3) M(3,4)
     # M(4,1)*cos+M(4,2)*sin    M(4,1)*-sin+M(4,2)*cos M(4,3) M(4,4)
 
-    ms = getMatrix(matrixStack)
-    topOfStack = ms[len(ms)-1]
-    topOfStackCopy = np.copy(topOfStack)
+    ms = getCurrentMatrix(matrixStack)
+    currentMatrixCopy = np.copy(ms)
 
     c = math.cos(rads)
     s = math.sin(rads)
 
-    topOfStack[0,0] = topOfStackCopy[0,0]*c + topOfStackCopy[0,1]*s
-    topOfStack[1,0] = topOfStackCopy[1,0]*c + topOfStackCopy[1,1]*s
-    topOfStack[2,0] = topOfStackCopy[2,0]*c + topOfStackCopy[2,1]*s
-    topOfStack[3,0] = topOfStackCopy[3,0]*c + topOfStackCopy[3,1]*s
+    ms[0,0] = currentMatrixCopy[0,0]*c + currentMatrixCopy[0,1]*s
+    ms[1,0] = currentMatrixCopy[1,0]*c + currentMatrixCopy[1,1]*s
+    ms[2,0] = currentMatrixCopy[2,0]*c + currentMatrixCopy[2,1]*s
+    ms[3,0] = currentMatrixCopy[3,0]*c + currentMatrixCopy[3,1]*s
 
-    topOfStack[0,1] = topOfStackCopy[0,0]*-s + topOfStackCopy[0,1]*c
-    topOfStack[1,1] = topOfStackCopy[1,0]*-s + topOfStackCopy[1,1]*c
-    topOfStack[2,1] = topOfStackCopy[2,0]*-s + topOfStackCopy[2,1]*c
-    topOfStack[3,1] = topOfStackCopy[3,0]*-s + topOfStackCopy[3,1]*c
+    ms[0,1] = currentMatrixCopy[0,0]*-s + currentMatrixCopy[0,1]*c
+    ms[1,1] = currentMatrixCopy[1,0]*-s + currentMatrixCopy[1,1]*c
+    ms[2,1] = currentMatrixCopy[2,0]*-s + currentMatrixCopy[2,1]*c
+    ms[3,1] = currentMatrixCopy[3,0]*-s + currentMatrixCopy[3,1]*c
 
 
 def translate(matrixStack, x, y, z):
@@ -178,13 +187,12 @@ def translate(matrixStack, x, y, z):
     # M(3,1) M(3,2) M(3,3) (M(3,1)*x + M(3,2)*y + M(3,3)*z + M(3,4)*w)
     # M(4,1) M(4,2) M(4,3) (M(4,1)*x + M(4,2)*y + M(4,3)*z + M(4,4)*w)
 
-    ms = getMatrix(matrixStack)
-    topOfStack = ms[len(ms)-1]
+    ms = getCurrentMatrix(matrixStack)
 
-    topOfStack[0,3] = topOfStack[0,0]*x + topOfStack[0,1]*y + topOfStack[0,2]*z + topOfStack[0,3]
-    topOfStack[1,3] = topOfStack[1,0]*x + topOfStack[1,1]*y + topOfStack[1,2]*z + topOfStack[1,3]
-    topOfStack[2,3] = topOfStack[2,0]*x + topOfStack[2,1]*y + topOfStack[2,2]*z + topOfStack[2,3]
-    topOfStack[3,3] = topOfStack[3,0]*x + topOfStack[3,1]*y + topOfStack[3,2]*z + topOfStack[3,3]
+    ms[0,3] = ms[0,0]*x + ms[0,1]*y + ms[0,2]*z + ms[0,3]
+    ms[1,3] = ms[1,0]*x + ms[1,1]*y + ms[1,2]*z + ms[1,3]
+    ms[2,3] = ms[2,0]*x + ms[2,1]*y + ms[2,2]*z + ms[2,3]
+    ms[3,3] = ms[3,0]*x + ms[3,1]*y + ms[3,2]*z + ms[3,3]
 
 
 #matrix operations

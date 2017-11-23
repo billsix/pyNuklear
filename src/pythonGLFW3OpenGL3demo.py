@@ -144,9 +144,9 @@ while not glfw.glfwWindowShouldClose(window):
     gl.glViewport(0, 0, width, height)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
-    ms.identity(ms.MatrixStack.model)
-    ms.identity(ms.MatrixStack.view)
-    ms.identity(ms.MatrixStack.projection)
+    ms.setToIdentityMatrix(ms.MatrixStack.model)
+    ms.setToIdentityMatrix(ms.MatrixStack.view)
+    ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
 
     # rotate the triangle along the positive z axis
@@ -165,7 +165,7 @@ while not glfw.glfwWindowShouldClose(window):
     gl.glUniformMatrix4fv(mvpMatrixLoc,
                           1,
                           gl.GL_TRUE,
-                          np.ascontiguousarray(ms.getMatrix(ms.MatrixStack.modelviewprojection),
+                          np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
                                                dtype=np.float32))
     gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
     gl.glBindVertexArray(0)
