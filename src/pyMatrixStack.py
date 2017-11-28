@@ -79,7 +79,7 @@ def setCurrentMatrix(matrixStack,m):
         pass
 
 
-def pushMatrix(matrixStack):
+def __pushMatrix__(matrixStack):
     if matrixStack == MatrixStack.model :
         __modelStack__.append(getCurrentMatrix(matrixStack))
     if matrixStack == MatrixStack.view :
@@ -91,7 +91,7 @@ def pushMatrix(matrixStack):
     if matrixStack == MatrixStack.modelviewprojection :
         pass
 
-def popMatrix(matrixStack):
+def __popMatrix__(matrixStack):
     if matrixStack == MatrixStack.model :
         __modelStack__.pop()
     if matrixStack == MatrixStack.view :
@@ -102,6 +102,17 @@ def popMatrix(matrixStack):
         pass
     if matrixStack == MatrixStack.modelviewprojection :
         pass
+
+
+class GLStackProtector():
+    def __init__(self, matrixStack):
+        self.matrixStack = matrixStack
+
+    def __enter__(self):
+        __pushMatrix__(MatrixStack.model)
+
+    def __exit__(self, type, value, traceback):
+        __popMatrix__(MatrixStack.model)
 
 
 def setToIdentityMatrix(m):

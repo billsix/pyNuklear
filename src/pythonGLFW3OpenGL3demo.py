@@ -87,26 +87,25 @@ class Triangle:
 
 
     def render(self):
-        ms.pushMatrix(ms.MatrixStack.model)
-        # rotate the triangle along the positive z axis
-        ms.translate(ms.MatrixStack.model,
-                     math.sin(glfw.glfwGetTime()),
-                     0,
-                     0)
-        ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
+        with ms.GLStackProtector(ms.MatrixStack.model):
+            # rotate the triangle along the positive z axis
+            ms.translate(ms.MatrixStack.model,
+                         math.sin(glfw.glfwGetTime()),
+                         0,
+                         0)
+            ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
 
-        gl.glUseProgram(self.shader)
-        gl.glBindVertexArray(self.vao)
+            gl.glUseProgram(self.shader)
+            gl.glBindVertexArray(self.vao)
 
 
-        gl.glUniformMatrix4fv(self.mvpMatrixLoc,
-                              1,
-                              gl.GL_TRUE,
-                              np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
-                                                   dtype=np.float32))
-        gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
-        gl.glBindVertexArray(0)
-        ms.popMatrix(ms.MatrixStack.model)
+            gl.glUniformMatrix4fv(self.mvpMatrixLoc,
+                                  1,
+                                  gl.GL_TRUE,
+                                  np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                                                       dtype=np.float32))
+            gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
+            gl.glBindVertexArray(0)
 
 
 
