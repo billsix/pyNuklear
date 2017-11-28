@@ -306,14 +306,14 @@ def scale(matrixStack, x, y, z):
 # in screen space.
 #
 #http://www.songho.ca/opengl/gl_projectionmatrix.html
-def ortho(l,r,b,t,n,f):
-    dx = r - l
-    dy = t - b
-    dz = f - n
+def ortho(left,right,back,top,near,far):
+    dx = right - left
+    dy = top - back
+    dz = far - near
 
-    rx = -(r + l) / (r - l)
-    ry = -(t +b) / (t - b)
-    rz = -(f + n) / (f - n)
+    rx = -(right + left) / (right - left)
+    ry = -(top + back) / (top - back)
+    rz = -(far + near) / (far - near)
 
     __projectionStack__[len(__projectionStack__) - 1] = np.matrix(
         [[2.0/dx,  0.0,     0.0,       rx],

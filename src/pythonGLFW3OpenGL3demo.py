@@ -33,44 +33,21 @@ import math
 
 glfloat_size = 4
 
+floatsPerVertex = 3
 
 class Triangle:
     def __init__(self):
-        self.vertices = np.array([-0.6, -0.4, 0,
-                                  0.6, -0.4, 0,
-                                  0, 0.6, 0],
-                                 dtype=np.float32)
+        pass
 
-    def initGraphics(self):
-        self.initShaders()
-        self.vao = gl.glGenVertexArrays(1)
-        gl.glBindVertexArray(self.vao)
+    def prepareToRender(self):
+        vertices = np.array([-0.6,  -0.4,  -10.0,
+                             0.6,   -0.4,  -10.0,
+                             0,     0.6,   -10.0],
+                            dtype=np.float32)
 
-        vbo = gl.glGenBuffers(1)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
+        self.numberOfVertices = np.size(vertices) // floatsPerVertex
 
-        position = gl.glGetAttribLocation(self.shader, 'position')
-        gl.glEnableVertexAttribArray(position)
-
-
-        gl.glVertexAttribPointer(position,
-                                 3,
-                                 gl.GL_FLOAT,
-                                 False,
-                                 0,
-                                 ctypes.c_void_p(0))
-
-        gl.glBufferData(gl.GL_ARRAY_BUFFER,
-                        glfloat_size * 9,
-                        self.vertices,
-                        gl.GL_STATIC_DRAW)
-
-        gl.glBindVertexArray(0)
-
-        gl.glDisableVertexAttribArray(position)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
-
-    def initShaders(self):
+        #initialize shaders
         with open('../shaders/triangle.vert', 'r') as f:
             vs = shaders.compileShader(f.read() , gl.GL_VERTEX_SHADER)
 
@@ -83,6 +60,34 @@ class Triangle:
 
         shaders.glDeleteShader(vs)
         shaders.glDeleteShader(fs)
+
+        #send the modelspace data to the GPU
+
+        self.vao = gl.glGenVertexArrays(1)
+        gl.glBindVertexArray(self.vao)
+
+        vbo = gl.glGenBuffers(1)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
+
+        position = gl.glGetAttribLocation(self.shader, 'position')
+        gl.glEnableVertexAttribArray(position)
+
+        gl.glVertexAttribPointer(position,
+                                 floatsPerVertex,
+                                 gl.GL_FLOAT,
+                                 False,
+                                 0,
+                                 ctypes.c_void_p(0))
+
+        gl.glBufferData(gl.GL_ARRAY_BUFFER,
+                        glfloat_size * np.size(vertices),
+                        vertices,
+                        gl.GL_STATIC_DRAW)
+
+        gl.glBindVertexArray(0)
+
+        gl.glDisableVertexAttribArray(position)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
 
 
 
@@ -102,9 +107,12 @@ class Triangle:
             gl.glUniformMatrix4fv(self.mvpMatrixLoc,
                                   1,
                                   gl.GL_TRUE,
-                                  np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
-                                                       dtype=np.float32))
-            gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
+                                  np.ascontiguousarray(
+                                      ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                                      dtype=np.float32))
+            gl.glDrawArrays(gl.GL_TRIANGLES,
+                            0,
+                            self.numberOfVertices)
             gl.glBindVertexArray(0)
 
 
@@ -142,7 +150,7 @@ gl.glDepthFunc(gl.GL_LEQUAL)
 
 
 triangle = Triangle()
-triangle.initGraphics()
+triangle.prepareToRender()
 
 
 # Loop until the user closes the window
@@ -157,7 +165,9 @@ while not glfw.glfwWindowShouldClose(window):
     ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
     # set the projection matrix to be ortho
-    ms.ortho(-1,1,-1,1,-1,1)
+    ms.ortho(left=-1.0,  right= 1.0,
+             back=-1.0,  top= 1.0,
+             near=-20.0, far= 20.0)
 
 
     # render all of the objects in the scene
