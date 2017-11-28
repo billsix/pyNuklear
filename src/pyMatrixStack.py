@@ -263,6 +263,44 @@ def translate(matrixStack, x, y, z):
     m[3,3] = m[3,0]*x + m[3,1]*y + m[3,2]*z + m[3,3]
 
 
+def scale(matrixStack, x, y, z):
+    # Using a normal linear algebra notation, which
+    # is row-major, 1-based indexes, the following
+    # matrix multiplication shows how to add a translation
+    # to a matrix.
+    #
+    # M(1,1) M(1,2) M(1,3) M(1,4)     x 0 0 0
+    # M(2,1) M(2,2) M(2,3) M(2,4) *   0 y 0 0
+    # M(3,1) M(3,2) M(3,3) M(3,4)     0 0 z 0
+    # M(4,1) M(4,2) M(4,3) M(4,4)     0 0 0 1
+
+    #   =
+
+    # Rather than keeping both matricies, we can reduce
+    # them to one by matrix multiplication
+    #
+    # M(1,1)*x  M(1,2)*y  M(1,3)*z  M(1,4)
+    # M(2,1)*x  M(2,2)*y  M(2,3)*z  M(2,4)
+    # M(3,1)*x  M(3,2)*y  M(3,3)*z  M(3,4)
+    # M(4,1)*x  M(4,2)*y  M(4,3)*z  M(4,4)
+
+    m = getCurrentMatrix(matrixStack)
+
+    m[0,0] = m[0,0]*x
+    m[1,0] = m[1,0]*x
+    m[2,0] = m[2,0]*x
+    m[3,0] = m[3,0]*x
+
+    m[0,1] = m[0,1]*y
+    m[1,1] = m[1,1]*y
+    m[2,1] = m[2,1]*y
+    m[3,1] = m[3,1]*y
+
+    m[0,2] = m[0,2]*z
+    m[1,2] = m[1,2]*z
+    m[2,2] = m[2,2]*z
+    m[3,2] = m[3,2]*z
+
 # ortho projection, like a blueprint diagram for a house.
 # depth down the z axis does not affect x and y position
 # in screen space.
