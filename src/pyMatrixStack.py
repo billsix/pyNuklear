@@ -30,49 +30,74 @@ class MatrixStack(Enum):
     modelview = 4
     modelviewprojection = 5
 
-modelStack = [np.matrix([[1.0,0.0,0.0,0.0],
-                         [0.0,1.0,0.0,0.0],
-                         [0.0,0.0,1.0,0.0],
-                         [0.0,0.0,0.0,1.0]],
-                        dtype=np.float32)]
+__modelStack__ = [np.matrix([[1.0,0.0,0.0,0.0],
+                             [0.0,1.0,0.0,0.0],
+                             [0.0,0.0,1.0,0.0],
+                             [0.0,0.0,0.0,1.0]],
+                            dtype=np.float32)]
 
-viewStack =  [np.matrix([[1.0,0.0,0.0,0.0],
-                         [0.0,1.0,0.0,0.0],
-                         [0.0,0.0,1.0,0.0],
-                         [0.0,0.0,0.0,1.0]],
-                        dtype=np.float32)]
+__viewStack__ =  [np.matrix([[1.0,0.0,0.0,0.0],
+                             [0.0,1.0,0.0,0.0],
+                             [0.0,0.0,1.0,0.0],
+                             [0.0,0.0,0.0,1.0]],
+                            dtype=np.float32)]
 
-projectionStack =  [np.matrix([[1.0,0.0,0.0,0.0],
-                               [0.0,1.0,0.0,0.0],
-                               [0.0,0.0,1.0,0.0],
-                               [0.0,0.0,0.0,1.0]],
-                              dtype=np.float32)]
+__projectionStack__ =  [np.matrix([[1.0,0.0,0.0,0.0],
+                                   [0.0,1.0,0.0,0.0],
+                                   [0.0,0.0,1.0,0.0],
+                                   [0.0,0.0,0.0,1.0]],
+                                  dtype=np.float32)]
 
 # TODO - define push and pop matrix
 
 def getCurrentMatrix(matrixStack):
     if matrixStack == MatrixStack.model :
-        return modelStack[len(modelStack)-1]
+        return __modelStack__[len(__modelStack__)-1]
     if matrixStack == MatrixStack.view :
-        return  viewStack[len(viewStack)-1]
+        return __viewStack__[len(__viewStack__)-1]
     if matrixStack == MatrixStack.projection :
-        return projectionStack[len(projectionStack)-1]
+        return __projectionStack__[len(__projectionStack__)-1]
     if matrixStack == MatrixStack.modelview :
-        return np.matmul(viewStack[len(viewStack) - 1],
-                         modelStack[len(modelStack) -1])
+        return np.matmul(__viewStack__[len(__viewStack__) - 1],
+                         __modelStack__[len(__modelStack__) -1])
     if matrixStack == MatrixStack.modelviewprojection :
-        return np.matmul(projectionStack[len(projectionStack) - 1],
-                         np.matmul(viewStack[len(viewStack) - 1],
-                                   modelStack[len(modelStack) -1]))
+        return np.matmul(__projectionStack__[len(__projectionStack__) - 1],
+                         np.matmul(__viewStack__[len(__viewStack__) - 1],
+                                   __modelStack__[len(__modelStack__) -1]))
 
 def setCurrentMatrix(matrixStack,m):
     if matrixStack == MatrixStack.model :
-        modelStack[len(modelStack)-1] = m
+        __modelStack__[len(__modelStack__)-1] = m
     if matrixStack == MatrixStack.view :
-        viewStack[len(viewStack)-1] = m
+        __viewStack__[len(__viewStack__)-1] = m
     if matrixStack == MatrixStack.projection :
-        projectionStack[len(projectionStack)-1] = m
+        __projectionStack__[len(__projectionStack__)-1] = m
     # TODO, figure out how to throw exception, or whatever
+    if matrixStack == MatrixStack.modelview :
+        pass
+    if matrixStack == MatrixStack.modelviewprojection :
+        pass
+
+
+def pushMatrix(matrixStack):
+    if matrixStack == MatrixStack.model :
+        __modelStack__.append(getCurrentMatrix(matrixStack))
+    if matrixStack == MatrixStack.view :
+        __viewStack__.append(getCurrentMatrix(matrixStack))
+    if matrixStack == MatrixStack.projection :
+        __projectionStack__.append(getCurrentMatrix(matrixStack))
+    if matrixStack == MatrixStack.modelview :
+        pass
+    if matrixStack == MatrixStack.modelviewprojection :
+        pass
+
+def popMatrix(matrixStack):
+    if matrixStack == MatrixStack.model :
+        __modelStack__.pop()
+    if matrixStack == MatrixStack.view :
+        __viewStack__.pop()
+    if matrixStack == MatrixStack.projection :
+        __projectionStack__.pop()
     if matrixStack == MatrixStack.modelview :
         pass
     if matrixStack == MatrixStack.modelviewprojection :
@@ -241,7 +266,7 @@ def ortho(l,r,b,t,n,f):
     ry = -(t +b) / (t - b)
     rz = -(f + n) / (f - n)
 
-    projectionStack[len(projectionStack) - 1] = np.matrix(
+    __projectionStack__[len(__projectionStack__) - 1] = np.matrix(
         [[2.0/dx,  0.0,     0.0,       rx],
          [0.0,      2.0/dy, 0.0,       ry],
          [0.0,      0.0,    -2.0/dz,   rz],
@@ -263,7 +288,7 @@ def perspective(fov, aspectRatio,nearZ, farZ):
     top = nearZ * math.tan(fovy * 3.14159265358979323846 / 360.0)
     right = top * aspectRatio
 
-    projectionStack[len(projectionStack) - 1] = np.matrix(
+    __projectionStack__[len(__projectionStack__) - 1] = np.matrix(
         [[nearZ/right, 0.0,         0.0,                         0.0],
          [0.0,         nearZ/top,   0.0,                         0.0],
          [0.0,         0.0,         -(farZ+nearZ)/(farZ-nearZ),  -2*(farZ*nearZ)/(farZ-nearZ)],

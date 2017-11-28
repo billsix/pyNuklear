@@ -71,30 +71,11 @@ class Triangle:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
 
     def initShaders(self):
-        vertex_shader = """
-#version 330 core
+        with open('../shaders/triangle.vert', 'r') as f:
+            vs = shaders.compileShader(f.read() , gl.GL_VERTEX_SHADER)
 
-layout (location = 0) in vec3 position;
-
-uniform mat4 mvpMatrix;
-
-void main()
-{
-   gl_Position = mvpMatrix * vec4(position,1.0);
-}
-"""
-        vs = shaders.compileShader(vertex_shader, gl.GL_VERTEX_SHADER)
-
-        fragment_shader = """
-#version 330 core
-
-void main()
-{
-   gl_FragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-}
-"""
-
-        fs = shaders.compileShader(fragment_shader, gl.GL_FRAGMENT_SHADER)
+        with open('../shaders/triangle.frag', 'r') as f:
+            fs = shaders.compileShader(f.read(), gl.GL_FRAGMENT_SHADER)
 
         self.shader = shaders.compileProgram(vs,fs)
 
@@ -106,6 +87,7 @@ void main()
 
 
     def render(self):
+        ms.pushMatrix(ms.MatrixStack.model)
         # rotate the triangle along the positive z axis
         ms.translate(ms.MatrixStack.model,
                      math.sin(glfw.glfwGetTime()),
@@ -124,6 +106,7 @@ void main()
                                                    dtype=np.float32))
         gl.glDrawArrays(gl.GL_TRIANGLES,0,3)
         gl.glBindVertexArray(0)
+        ms.popMatrix(ms.MatrixStack.model)
 
 
 
