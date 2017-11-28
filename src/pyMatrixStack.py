@@ -334,7 +334,7 @@ def ortho(left,right,back,top,near,far):
 
 #http://www.songho.ca/opengl/gl_projectionmatrix.html
 def perspective(fov, aspectRatio,nearZ, farZ):
-    top = nearZ * math.tan(fovy * 3.14159265358979323846 / 360.0)
+    top = nearZ * math.tan(fov * 3.14159265358979323846 / 360.0)
     right = top * aspectRatio
 
     __projectionStack__[len(__projectionStack__) - 1] = np.matrix(

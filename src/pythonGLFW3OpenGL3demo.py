@@ -148,6 +148,16 @@ gl.glDepthFunc(gl.GL_LEQUAL)
 
 
 
+class Camera:
+    def __init__(self):
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+
+        self.rotationX = 0.0
+        self.rotationY = 0.0
+
+camera = Camera()
 
 triangle = Triangle()
 triangle.prepareToRender()
@@ -164,16 +174,45 @@ while not glfw.glfwWindowShouldClose(window):
     ms.setToIdentityMatrix(ms.MatrixStack.view)
     ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
-    # set the projection matrix to be ortho
-    ms.ortho(left=-1.0,  right= 1.0,
-             back=-1.0,  top= 1.0,
-             near=-20.0, far= 20.0)
+    # set the projection matrix to be perspective
+    ms.perspective(fov= 45.0,
+                   aspectRatio= width / height,
+                   nearZ= 0.1,
+                   farZ= 10000.0)
 
+    # get input from keyboard for camera movement
+    # set up Camera
+    if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
+        camera.rotationY -= 0.03
 
-    # render all of the objects in the scene
+    if glfw.glfwGetKey(window, glfw.GLFW_KEY_LEFT) == glfw.GLFW_PRESS:
+        camera.rotationY += 0.03
+
+    if glfw.glfwGetKey(window, glfw.GLFW_KEY_UP) == glfw.GLFW_PRESS:
+        camera.x -= math.sin(camera.rotationY)
+        camera.z -= math.cos(camera.rotationY)
+
+    if glfw.glfwGetKey(window, glfw.GLFW_KEY_DOWN) == glfw.GLFW_PRESS:
+        camera.x += math.sin(camera.rotationY)
+        camera.z += math.cos(camera.rotationY)
+
+    # move the camera to the correct position, which means
+    # updating the view stack
+    ms.rotateX(ms.MatrixStack.view,
+               camera.rotationX)
+    ms.rotateY(ms.MatrixStack.view,
+               -camera.rotationY)
+    ms.translate(ms.MatrixStack.view,
+                 -camera.x,
+                 -camera.y,
+                 -camera.z)
+
+    # render the models
+
     triangle.render()
 
 
+    # done with frame, flush and swap buffers
     # Swap front and back buffers
     glfw.glfwSwapBuffers(window)
 
