@@ -18,10 +18,9 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
-if __name__ != '__main__':
-    sys.exit(1)
 
 import sys
+import os
 import glfw
 import numpy as np
 import pyMatrixStack as ms
@@ -30,6 +29,10 @@ import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
 import math
 
+if __name__ != '__main__':
+    sys.exit(1)
+
+pwd = os.path.dirname(os.path.abspath(__file__))
 
 glfloat_size = 4
 
@@ -47,25 +50,23 @@ class Triangle:
 
         self.numberOfVertices = np.size(vertices) // floatsPerVertex
 
+
+        self.vao = gl.glGenVertexArrays(1)
+        gl.glBindVertexArray(self.vao)
+
         #initialize shaders
-        with open('../shaders/triangle.vert', 'r') as f:
+
+        with open(os.path.join(pwd, '..', 'shaders', 'triangle.vert'), 'r') as f:
             vs = shaders.compileShader(f.read() , gl.GL_VERTEX_SHADER)
 
-        with open('../shaders/triangle.frag', 'r') as f:
+        with open(os.path.join(pwd, '..', 'shaders', 'triangle.frag'), 'r') as f:
             fs = shaders.compileShader(f.read(), gl.GL_FRAGMENT_SHADER)
 
         self.shader = shaders.compileProgram(vs,fs)
 
         self.mvpMatrixLoc = gl.glGetUniformLocation(self.shader,"mvpMatrix")
 
-        shaders.glDeleteShader(vs)
-        shaders.glDeleteShader(fs)
-
         #send the modelspace data to the GPU
-
-        self.vao = gl.glGenVertexArrays(1)
-        gl.glBindVertexArray(self.vao)
-
         vbo = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
 
@@ -84,11 +85,9 @@ class Triangle:
                         vertices,
                         gl.GL_STATIC_DRAW)
 
+        # reset VAO/VBO to default
         gl.glBindVertexArray(0)
-
-        gl.glDisableVertexAttribArray(position)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
-
 
 
     def render(self):
@@ -121,16 +120,18 @@ class Triangle:
 if not glfw.glfwInit():
     sys.exit()
 
+glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,3)
+glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,3)
+glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,glfw.GLFW_OPENGL_CORE_PROFILE)
+#for osx
+glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);
+
+
 # Create a windowed mode window and its OpenGL context
 window = glfw.glfwCreateWindow(640, 480, str.encode("Hello World"), None, None)
 if not window:
     glfw.glfwTerminate()
     sys.exit()
-
-
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,3)
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,3)
-glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,glfw.GLFW_OPENGL_CORE_PROFILE)
 
 # Make the window's context current
 glfw.glfwMakeContextCurrent(window)
