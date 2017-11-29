@@ -48,8 +48,6 @@ __projectionStack__ =  [np.matrix([[1.0,0.0,0.0,0.0],
                                    [0.0,0.0,0.0,1.0]],
                                   dtype=np.float32)]
 
-# TODO - define push and pop matrix
-
 def getCurrentMatrix(matrixStack):
     if matrixStack == MatrixStack.model :
         return __modelStack__[len(__modelStack__)-1]
@@ -81,11 +79,11 @@ def setCurrentMatrix(matrixStack,m):
 
 def __pushMatrix__(matrixStack):
     if matrixStack == MatrixStack.model :
-        __modelStack__.append(getCurrentMatrix(matrixStack))
+        __modelStack__.append(np.copy(getCurrentMatrix(matrixStack)))
     if matrixStack == MatrixStack.view :
-        __viewStack__.append(getCurrentMatrix(matrixStack))
+        __viewStack__.append(np.copy(getCurrentMatrix(matrixStack)))
     if matrixStack == MatrixStack.projection :
-        __projectionStack__.append(getCurrentMatrix(matrixStack))
+        __projectionStack__.append(np.copy(getCurrentMatrix(matrixStack)))
     if matrixStack == MatrixStack.modelview :
         pass
     if matrixStack == MatrixStack.modelviewprojection :
