@@ -30,22 +30,22 @@ class MatrixStack(Enum):
     modelview = 4
     modelviewprojection = 5
 
-__modelStack__ = [np.matrix([[1.0,0.0,0.0,0.0],
-                             [0.0,1.0,0.0,0.0],
-                             [0.0,0.0,1.0,0.0],
-                             [0.0,0.0,0.0,1.0]],
+__modelStack__ = [np.matrix([[1.0, 0.0, 0.0, 0.0],
+                             [0.0, 1.0, 0.0, 0.0],
+                             [0.0, 0.0, 1.0, 0.0],
+                             [0.0, 0.0, 0.0, 1.0]],
                             dtype=np.float32)]
 
-__viewStack__ =  [np.matrix([[1.0,0.0,0.0,0.0],
-                             [0.0,1.0,0.0,0.0],
-                             [0.0,0.0,1.0,0.0],
-                             [0.0,0.0,0.0,1.0]],
+__viewStack__ =  [np.matrix([[1.0, 0.0, 0.0, 0.0],
+                             [0.0, 1.0, 0.0, 0.0],
+                             [0.0, 0.0, 1.0, 0.0],
+                             [0.0, 0.0, 0.0, 1.0]],
                             dtype=np.float32)]
 
-__projectionStack__ =  [np.matrix([[1.0,0.0,0.0,0.0],
-                                   [0.0,1.0,0.0,0.0],
-                                   [0.0,0.0,1.0,0.0],
-                                   [0.0,0.0,0.0,1.0]],
+__projectionStack__ =  [np.matrix([[1.0, 0.0, 0.0, 0.0],
+                                   [0.0, 1.0, 0.0, 0.0],
+                                   [0.0, 0.0, 1.0, 0.0],
+                                   [0.0, 0.0, 0.0, 1.0]],
                                   dtype=np.float32)]
 
 def getCurrentMatrix(matrixStack):
@@ -114,10 +114,10 @@ class GLStackProtector():
 
 
 def setToIdentityMatrix(m):
-    setCurrentMatrix(m, np.matrix([[1.0,0.0,0.0,0.0],
-                                   [0.0,1.0,0.0,0.0],
-                                   [0.0,0.0,1.0,0.0],
-                                   [0.0,0.0,0.0,1.0]],
+    setCurrentMatrix(m, np.matrix([[1.0, 0.0, 0.0, 0.0],
+                                   [0.0, 1.0, 0.0, 0.0],
+                                   [0.0, 0.0, 1.0, 0.0],
+                                   [0.0, 0.0, 0.0, 1.0]],
                                   dtype=np.float32))
 
 def rotateX(matrixStack, rads):
