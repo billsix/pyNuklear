@@ -43,9 +43,9 @@ class Triangle:
         pass
 
     def prepareToRender(self):
-        vertices = np.array([-0.6,  -0.4,  -10.0,
-                             0.6,   -0.4,  -10.0,
-                             0,     0.6,   -10.0],
+        vertices = np.array([-0.6,  -0.4,  0.0,
+                             0.6,   -0.4,  0.0,
+                             0,     0.6,   0.0],
                             dtype=np.float32)
 
         self.numberOfVertices = np.size(vertices) // floatsPerVertex
@@ -153,7 +153,7 @@ class Camera:
     def __init__(self):
         self.x = 0.0
         self.y = 0.0
-        self.z = 0.0
+        self.z = 10.0
 
         self.rotationX = 0.0
         self.rotationY = 0.0
