@@ -363,6 +363,14 @@ nk_glfw3_clipbard_copy(nk_handle usr, const char *text, int len)
 NK_API struct nk_context*
 nk_glfw3_init(GLFWwindow *win, enum nk_glfw_init_state init_state)
 {
+    // unlike normal nuklear, where the "main.c" can initialize
+    // the opengl loader library, the python bindings require
+    // that nuklear itself load OpenGL procedures.
+
+    if(gl3w_init())
+    {
+        printf("Could not init glew\n");
+    }
     glfw.win = win;
     if (init_state == NK_GLFW3_INSTALL_CALLBACKS) {
         glfwSetScrollCallback(win, nk_gflw3_scroll_callback);

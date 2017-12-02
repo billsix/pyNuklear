@@ -21,13 +21,14 @@
 
 import sys
 import os
-import glfw
-import numpy as np
-import pyMatrixStack as ms
-import ctypes
 import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
+import numpy as np
+import glfw
+import pyMatrixStack as ms
+import ctypes
 import math
+import nuklear
 
 if __name__ != '__main__':
     sys.exit(1)
@@ -136,6 +137,12 @@ if not window:
 # Make the window's context current
 glfw.glfwMakeContextCurrent(window)
 
+ctx = nuklear.nk_glfw3_init(window, nuklear.NK_GLFW3_DEFAULT)
+
+fontAtlas = nuklear.NKFontAtlas()
+nuklear.nk_glfw3_font_stash_begin(ctypes.byref(fontAtlas))
+nuklear.nk_glfw3_font_stash_end()
+
 # Install a key handler
 def on_key(window, key, scancode, action, mods):
     if key == glfw.GLFW_KEY_ESCAPE and action == glfw.GLFW_PRESS:
@@ -167,6 +174,11 @@ triangle.prepareToRender()
 # Loop until the user closes the window
 while not glfw.glfwWindowShouldClose(window):
     # Render here
+
+    # Poll for and process events
+    glfw.glfwPollEvents()
+    nuklear.nk_glfw3_new_frame()
+
     width, height = glfw.glfwGetFramebufferSize(window)
     gl.glViewport(0, 0, width, height)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
@@ -212,12 +224,25 @@ while not glfw.glfwWindowShouldClose(window):
 
     triangle.render()
 
+    MAX_VERTEX_BUFFER = 512 * 1024
+    MAX_ELEMENT_BUFFER = 128 * 1024
+
+
+    nuklear.nk_begin(ctx,
+                     b'Demonstartion 1',
+                     nuklear.NKRect(50.0,50.0,230.0,250.0),
+                     nuklear.NK_WINDOW_BORDER|nuklear.NK_WINDOW_MOVABLE|nuklear.NK_WINDOW_SCALABLE|nuklear.NK_WINDOW_MINIMIZABLE|nuklear.NK_WINDOW_TITLE)
+
+
+
+
+    nuklear.nk_end(ctx)
+
+    nuklear.nk_glfw3_render(nuklear.NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
     glfw.glfwSwapBuffers(window)
 
-    # Poll for and process events
-    glfw.glfwPollEvents()
 
 glfw.glfwTerminate()
