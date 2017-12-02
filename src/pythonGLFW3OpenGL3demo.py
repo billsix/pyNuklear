@@ -231,7 +231,11 @@ while not glfw.glfwWindowShouldClose(window):
     nuklear.nk_begin(ctx,
                      b'Demonstartion 1',
                      nuklear.NKRect(50.0,50.0,230.0,250.0),
-                     nuklear.NK_WINDOW_BORDER|nuklear.NK_WINDOW_MOVABLE|nuklear.NK_WINDOW_SCALABLE|nuklear.NK_WINDOW_MINIMIZABLE|nuklear.NK_WINDOW_TITLE)
+                     nuklear.NK_WINDOW_BORDER
+                       |nuklear.NK_WINDOW_MOVABLE
+                       |nuklear.NK_WINDOW_SCALABLE
+                       |nuklear.NK_WINDOW_MINIMIZABLE
+                       |nuklear.NK_WINDOW_TITLE)
 
 
 
