@@ -170,6 +170,9 @@ camera = Camera()
 triangle = Triangle()
 triangle.prepareToRender()
 
+# does python have static local variables?  this declaration is way too far away from use
+#property = ctypes.c_int(20)
+
 
 # Loop until the user closes the window
 while not glfw.glfwWindowShouldClose(window):
@@ -229,7 +232,7 @@ while not glfw.glfwWindowShouldClose(window):
 
 
     nuklear.nk_begin(ctx,
-                     b'Demonstartion 1',
+                     b'Demonstration',
                      nuklear.NKRect(50.0,50.0,230.0,250.0),
                      nuklear.NK_WINDOW_BORDER
                        |nuklear.NK_WINDOW_MOVABLE
@@ -237,7 +240,35 @@ while not glfw.glfwWindowShouldClose(window):
                        |nuklear.NK_WINDOW_MINIMIZABLE
                        |nuklear.NK_WINDOW_TITLE)
 
+    nuklear.nk_layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
+    if nuklear.nk_button_label(ctx, b'button'):
+        print('button pressed')
 
+    nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(30.0), 2)
+
+    # simulate a local static variable
+    try:
+        op
+    except Exception:
+        op = 0
+
+    if nuklear.nk_option_label(ctx, b'easy', op == 0): op = 0
+    if nuklear.nk_option_label(ctx, b'hard', op == 1): op = 1
+
+    nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25), 1)
+
+    # simulate a local static variable
+    try:
+        prop
+    except Exception:
+        prop = ctypes.c_int(20)
+
+
+    nuklear.nk_property_int(ctx, b'Compression:', 0, ctypes.byref(prop), 100, 10, 1);
+
+    nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(20.0), 1)
+    nuklear.nk_label(ctx, b'background:', nuklear.NK_TEXT_LEFT)
+    #nuklear.nk_layout_row_dynamic(ctx, 25, 1)
 
 
     nuklear.nk_end(ctx)

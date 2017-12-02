@@ -21,7 +21,7 @@
 import os
 import ctypes.util
 from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int,
-                    c_uint, c_double, c_float, c_ushort)
+                    c_uint, c_double, c_float, c_ushort, c_byte)
 import glfw
 
 pwd = os.path.dirname(os.path.abspath(__file__))
@@ -51,6 +51,28 @@ nk_glfw3_font_stash_begin.arglist = [POINTER(POINTER(NKFontAtlas))]
 nk_glfw3_font_stash_end = _nuklear.nk_glfw3_font_stash_end
 
 nk_glfw3_new_frame = _nuklear.nk_glfw3_new_frame
+
+
+class NKColor(Structure):
+    _fields_ = [ ('r',  c_byte),
+                 ('g',  c_byte),
+                 ('b',  c_byte),
+                 ('a',  c_byte)]
+
+    def __init__(self,r,g,b,a):
+        self.r = r
+        self.g = g
+        self.b = b
+        self.a = a
+
+class NKVec2(Structure):
+    _fields_ = [ ('x',  c_float),
+                 ('y',  c_float)]
+
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+
 
 class NKRect(Structure):
     _fields_ = [ ('x',  c_float),
@@ -96,3 +118,51 @@ nk_glfw3_render.arglist = [c_int, c_int, c_int]
 
 nk_clear = _nuklear.nk_clear
 nk_clear.arglist = [POINTER(NKContext)]
+
+nk_layout_row_static = _nuklear.nk_layout_row_static
+nk_layout_row_static.arglist = [POINTER(NKContext), c_float, c_int, c_int]
+
+nk_layout_row_dynamic = _nuklear.nk_layout_row_dynamic
+nk_layout_row_dynamic.arglist = [POINTER(NKContext), c_float, c_int]
+
+nk_button_label = _nuklear.nk_button_label
+nk_button_label.arglist = [POINTER(NKContext), c_char_p]
+nk_button_label.restype     = c_int
+
+nk_option_label = _nuklear.nk_option_label
+nk_option_label.arglist = [POINTER(NKContext), c_char_p, c_int]
+
+nk_property_int = _nuklear.nk_property_int
+nk_property_int.arglist = [POINTER(NKContext), c_char_p, c_int, POINTER(c_int), c_int, c_int, c_int]
+
+
+NK_TEXT_ALIGN_LEFT        = 1
+NK_TEXT_ALIGN_CENTERED    = 2
+NK_TEXT_ALIGN_RIGHT       = 4
+NK_TEXT_ALIGN_TOP         = 8
+NK_TEXT_ALIGN_MIDDLE      = 10
+NK_TEXT_ALIGN_BOTTOM      = 20
+
+NK_TEXT_LEFT        = NK_TEXT_ALIGN_MIDDLE|NK_TEXT_ALIGN_LEFT
+NK_TEXT_CENTERED    = NK_TEXT_ALIGN_MIDDLE|NK_TEXT_ALIGN_CENTERED
+NK_TEXT_RIGHT       = NK_TEXT_ALIGN_MIDDLE|NK_TEXT_ALIGN_RIGHT
+
+nk_label = _nuklear.nk_label
+nk_label.arglist = [POINTER(NKContext), c_char_p, c_int]
+
+nk_combo_begin_color = _nuklear.nk_combo_begin_color
+nk_combo_begin_color.arglist = [POINTER(NKContext), NKColor, NKVec2, c_int]
+
+nk_combo_end = _nuklear.nk_combo_end
+nk_combo_end.arglist = [POINTER(NKContext)]
+
+
+NK_RGB = 0
+NK_RGBA = 1
+
+nk_color_picker = _nuklear.nk_color_picker
+nk_color_picker.arglist = [POINTER(NKContext), NKColor, c_int]
+
+nk_propertyi = _nuklear.nk_propertyi
+nk_propertyi.arglist = [POINTER(NKContext), c_char_p, c_int, c_int, c_int, c_int, c_float]
+nk_propertyi.restype = c_int
