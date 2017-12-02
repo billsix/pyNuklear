@@ -1,0 +1,8 @@
+
+
+nuklear.so: nuklear.c
+	gcc -Wl,-undefined -Wl,dynamic_lookup -dynamiclib \
+		$(shell pkg-config --cflags glfw3) $(shell pkg-config --libs glfw3)  \
+		$(shell pkg-config --cflags glew) $(shell pkg-config --libs glew) \
+		nuklear.c -o nuklear.so
+
