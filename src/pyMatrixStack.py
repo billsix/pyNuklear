@@ -107,10 +107,10 @@ class GLStackProtector():
         self.matrixStack = matrixStack
 
     def __enter__(self):
-        __pushMatrix__(MatrixStack.model)
+        __pushMatrix__(self.matrixStack)
 
     def __exit__(self, type, value, traceback):
-        __popMatrix__(MatrixStack.model)
+        __popMatrix__(self.matrixStack)
 
 
 def setToIdentityMatrix(m):
