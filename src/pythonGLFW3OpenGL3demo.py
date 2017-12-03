@@ -303,6 +303,95 @@ while not glfw.glfwWindowShouldClose(window):
 
     nuklear.nk_end(ctx)
 
+
+
+    # show overview
+
+    # simulate a local static variable
+    try:
+        show_menu
+    except Exception:
+        show_menu = True
+    try:
+        titlebar
+    except Exception:
+        titlebar  = True
+    try:
+        border
+    except Exception:
+        border = True
+    try:
+        resize
+    except Exception:
+        resize = True
+    try:
+        movable
+    except Exception:
+        movable = True
+    try:
+        no_scrollbar
+    except Exception:
+        no_scrollbar = False
+    try:
+        scale_left
+    except Exception:
+        scale_left = False
+    try:
+        window_flags
+    except Exception:
+        window_flags = 0
+    try:
+        minimizable
+    except Exception:
+        minimizable = True
+
+
+
+    #TODO -- map the ctx struct
+
+    #ctx->style.window.header.align = header_align;
+
+    if(border) : window_flags |= nuklear.NK_WINDOW_BORDER
+    if(resize) : window_flags |= nuklear.NK_WINDOW_SCALABLE
+    if(movable) : window_flags |= nuklear.NK_WINDOW_MOVABLE
+    if(no_scrollbar) : window_flags |= nuklear.NK_WINDOW_NO_SCROLLBAR
+    if(scale_left) : window_flags |= nuklear.NK_WINDOW_SCALE_LEFT
+    if(minimizable) : window_flags |= nuklear.NK_WINDOW_MINIMIZABLE
+
+
+    if nuklear.nk_begin(ctx, b'Overview', nuklear.NKRect(400,200,400,600),window_flags):
+        pass
+        if show_menu:
+            try:
+                mprog
+            except Exception:
+                mprog = 60
+            try:
+                mslider
+            except Exception:
+                mslider = 10
+            try:
+                mcheck
+            except Exception:
+                mcheck = True
+
+            nuklear.nk_menubar_begin(ctx)
+            nuklear.nk_layout_row_begin(ctx, nuklear.NK_STATIC, ctypes.c_float(25.0),4)
+            nuklear.nk_layout_row_push(ctx, ctypes.c_float(45))
+
+
+            if nuklear.nk_menu_begin_label(ctx, b'MENU', nuklear.NK_TEXT_LEFT, nuklear.NKVec2(120,120)):
+                nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+                if nuklear.nk_menu_item_label(ctx, b'Hide', nuklear.NK_TEXT_LEFT):
+                    show_menu = False
+                if nuklear.nk_menu_item_label(ctx, b'About', nuklear.NK_TEXT_LEFT):
+                    show_app_about = True
+
+                nuklear.nk_menu_end(ctx)
+            nuklear.nk_menubar_end(ctx)
+
+    nuklear.nk_end(ctx)
+
     nuklear.nk_glfw3_render(nuklear.NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
     # done with frame, flush and swap buffers

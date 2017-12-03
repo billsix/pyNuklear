@@ -172,3 +172,29 @@ nk_propertyi.restype = c_int
 nk_widget_width = _nuklear.nk_widget_width
 nk_widget_width.arglist = [POINTER(NKContext)]
 nk_widget_width.restype = c_float
+
+nk_menubar_begin = _nuklear.nk_menubar_begin
+nk_menubar_begin.arglist = [POINTER(NKContext)]
+
+nk_menubar_end = _nuklear.nk_menubar_end
+nk_menubar_end.arglist = [POINTER(NKContext)]
+
+
+NK_DYNAMIC = 0
+NK_STATIC = 1
+
+nk_layout_row_begin = _nuklear.nk_layout_row_begin
+nk_layout_row_begin.arglist = [POINTER(NKContext), c_int, c_float, c_int]
+
+nk_layout_row_push = _nuklear.nk_layout_row_push
+nk_layout_row_push.arglist = [POINTER(NKContext), c_float]
+
+nk_menu_begin_label = _nuklear.nk_menu_begin_label
+nk_menu_begin_label.arglist = [POINTER(NKContext), c_char_p, c_int, NKVec2]
+
+nk_menu_end = _nuklear.nk_menu_end
+nk_menu_end.arglist = [POINTER(NKContext)]
+
+nk_menu_item_label = _nuklear.nk_menu_item_label
+nk_menu_item_label.arglist = [POINTER(NKContext), c_char_p, c_int]
+nk_menu_item_label.restype = c_int
