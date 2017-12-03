@@ -21,7 +21,7 @@
 import os
 import ctypes.util
 from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int,
-                    c_uint, c_double, c_float, c_ushort, c_byte)
+                    c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
 import glfw
 
 pwd = os.path.dirname(os.path.abspath(__file__))
@@ -54,10 +54,10 @@ nk_glfw3_new_frame = _nuklear.nk_glfw3_new_frame
 
 
 class NKColor(Structure):
-    _fields_ = [ ('r',  c_byte),
-                 ('g',  c_byte),
-                 ('b',  c_byte),
-                 ('a',  c_byte)]
+    _fields_ = [ ('r',  c_ubyte),
+                 ('g',  c_ubyte),
+                 ('b',  c_ubyte),
+                 ('a',  c_ubyte)]
 
     def __init__(self,r,g,b,a):
         self.r = r
@@ -133,7 +133,7 @@ nk_option_label = _nuklear.nk_option_label
 nk_option_label.arglist = [POINTER(NKContext), c_char_p, c_int]
 
 nk_property_int = _nuklear.nk_property_int
-nk_property_int.arglist = [POINTER(NKContext), c_char_p, c_int, POINTER(c_int), c_int, c_int, c_int]
+nk_property_int.arglist = [POINTER(NKContext), c_char_p, c_int, c_int, c_int, c_int, c_float]
 
 
 NK_TEXT_ALIGN_LEFT        = 1
@@ -151,7 +151,8 @@ nk_label = _nuklear.nk_label
 nk_label.arglist = [POINTER(NKContext), c_char_p, c_int]
 
 nk_combo_begin_color = _nuklear.nk_combo_begin_color
-nk_combo_begin_color.arglist = [POINTER(NKContext), NKColor, NKVec2, c_int]
+nk_combo_begin_color.arglist = [POINTER(NKContext), NKColor, NKVec2]
+nk_combo_begin_color.restype = c_int
 
 nk_combo_end = _nuklear.nk_combo_end
 nk_combo_end.arglist = [POINTER(NKContext)]
@@ -162,7 +163,12 @@ NK_RGBA = 1
 
 nk_color_picker = _nuklear.nk_color_picker
 nk_color_picker.arglist = [POINTER(NKContext), NKColor, c_int]
+nk_color_picker.restype = NKColor
 
 nk_propertyi = _nuklear.nk_propertyi
 nk_propertyi.arglist = [POINTER(NKContext), c_char_p, c_int, c_int, c_int, c_int, c_float]
 nk_propertyi.restype = c_int
+
+nk_widget_width = _nuklear.nk_widget_width
+nk_widget_width.arglist = [POINTER(NKContext)]
+nk_widget_width.restype = c_float

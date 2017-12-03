@@ -231,45 +231,75 @@ while not glfw.glfwWindowShouldClose(window):
     MAX_ELEMENT_BUFFER = 128 * 1024
 
 
-    nuklear.nk_begin(ctx,
-                     b'Demonstration',
-                     nuklear.NKRect(50.0,50.0,230.0,250.0),
-                     nuklear.NK_WINDOW_BORDER
-                       |nuklear.NK_WINDOW_MOVABLE
-                       |nuklear.NK_WINDOW_SCALABLE
-                       |nuklear.NK_WINDOW_MINIMIZABLE
-                       |nuklear.NK_WINDOW_TITLE)
+    if(nuklear.nk_begin(ctx,
+                        b'Demonstration',
+                        nuklear.NKRect(50.0,50.0,230.0,250.0),
+                        nuklear.NK_WINDOW_BORDER
+                           |nuklear.NK_WINDOW_MOVABLE
+                           |nuklear.NK_WINDOW_SCALABLE
+                           |nuklear.NK_WINDOW_MINIMIZABLE
+                           |nuklear.NK_WINDOW_TITLE)):
 
-    nuklear.nk_layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
-    if nuklear.nk_button_label(ctx, b'button'):
-        print('button pressed')
+        nuklear.nk_layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
+        if nuklear.nk_button_label(ctx, b'button'):
+            print('button pressed')
 
-    nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(30.0), 2)
+        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(30.0), 2)
 
-    # simulate a local static variable
-    try:
-        op
-    except Exception:
-        op = 0
+        # simulate a local static variable
+        try:
+            op
+        except Exception:
+            op = 0
 
-    if nuklear.nk_option_label(ctx, b'easy', op == 0): op = 0
-    if nuklear.nk_option_label(ctx, b'hard', op == 1): op = 1
+        if nuklear.nk_option_label(ctx, b'easy', op == 0): op = 0
+        if nuklear.nk_option_label(ctx, b'hard', op == 1): op = 1
 
-    nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25), 1)
+        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
 
-    # simulate a local static variable
-    try:
-        prop
-    except Exception:
-        prop = ctypes.c_int(20)
+        # simulate a local static variable
+        try:
+            prop
+        except Exception:
+            prop = ctypes.c_int(20)
 
 
-    nuklear.nk_property_int(ctx, b'Compression:', 0, ctypes.byref(prop), 100, 10, 1);
+        nuklear.nk_property_int(ctx, b'Compression:', 0, ctypes.byref(prop), 100, 10, 1);
 
-    nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(20.0), 1)
-    nuklear.nk_label(ctx, b'background:', nuklear.NK_TEXT_LEFT)
-    #nuklear.nk_layout_row_dynamic(ctx, 25, 1)
+        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(20.0), 1)
+        nuklear.nk_label(ctx, b'background:', nuklear.NK_TEXT_LEFT)
 
+
+
+        # simulate a local static variable
+        try:
+            background
+        except Exception:
+            background = nuklear.NKColor(0, 0, 0, 255)
+
+
+
+        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+
+        if nuklear.nk_combo_begin_color(ctx,
+                                        background,
+                                        nuklear.NKVec2(nuklear.nk_widget_width(ctx),
+                                                       400)):
+            nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(120.0), 1);
+            background = nuklear.nk_color_picker(ctx,
+                                                 background,
+                                                 nuklear.NK_RGBA)
+
+            nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1);
+            background.r = nuklear.nk_propertyi(ctx, b'#R:', 0, background.r, 255, 1, ctypes.c_float(1))
+            background.g = nuklear.nk_propertyi(ctx, b'#G:', 0, background.g, 255, 1, ctypes.c_float(1))
+            background.b = nuklear.nk_propertyi(ctx, b'#B:', 0, background.b, 255, 1, ctypes.c_float(1))
+            background.a = nuklear.nk_propertyi(ctx, b'#A:', 0, background.a, 255, 1, ctypes.c_float(1))
+
+
+            gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
+
+            nuklear.nk_combo_end(ctx);
 
     nuklear.nk_end(ctx)
 
