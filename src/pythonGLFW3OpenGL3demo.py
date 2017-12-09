@@ -137,7 +137,7 @@ if not window:
 # Make the window's context current
 glfw.glfwMakeContextCurrent(window)
 
-ctx = nuklear.nk_glfw3_init(window, nuklear.NK_GLFW3_DEFAULT)
+ctx = nuklear.nk_glfw3_init(window, nuklear.NK_GLFW3_INSTALL_CALLBACKS)
 
 fontAtlas = nuklear.NKFontAtlas()
 nuklear.nk_glfw3_font_stash_begin(ctypes.byref(fontAtlas))
