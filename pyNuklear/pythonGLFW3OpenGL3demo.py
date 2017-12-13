@@ -28,7 +28,7 @@ import glfw
 import pyMatrixStack as ms
 import ctypes
 import math
-import nuklear
+import nuklear as nk
 
 if __name__ != '__main__':
     sys.exit(1)
@@ -137,11 +137,11 @@ if not window:
 # Make the window's context current
 glfw.glfwMakeContextCurrent(window)
 
-ctx = nuklear.nk_glfw3_init(window, nuklear.NK_GLFW3_INSTALL_CALLBACKS)
+ctx = nk.glfw3_init(window, nk.GLFW3_INSTALL_CALLBACKS)
 
-fontAtlas = nuklear.NKFontAtlas()
-nuklear.nk_glfw3_font_stash_begin(ctypes.byref(fontAtlas))
-nuklear.nk_glfw3_font_stash_end()
+fontAtlas = nk.NKFontAtlas()
+nk.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
+nk.glfw3_font_stash_end()
 
 # Install a key handler
 def on_key(window, key, scancode, action, mods):
@@ -180,7 +180,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     # Poll for and process events
     glfw.glfwPollEvents()
-    nuklear.nk_glfw3_new_frame()
+    nk.glfw3_new_frame()
 
     width, height = glfw.glfwGetFramebufferSize(window)
     gl.glViewport(0, 0, width, height)
@@ -197,20 +197,21 @@ while not glfw.glfwWindowShouldClose(window):
                    farZ= 10000.0)
 
     # get input from keyboard for camera movement
-    # set up Camera
-    if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
-        camera.rotationY -= 0.03
+    if not nk.item_is_any_active(ctx):
+        # set up Camera
+        if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
+            camera.rotationY -= 0.03
 
-    if glfw.glfwGetKey(window, glfw.GLFW_KEY_LEFT) == glfw.GLFW_PRESS:
-        camera.rotationY += 0.03
+        if glfw.glfwGetKey(window, glfw.GLFW_KEY_LEFT) == glfw.GLFW_PRESS:
+            camera.rotationY += 0.03
 
-    if glfw.glfwGetKey(window, glfw.GLFW_KEY_UP) == glfw.GLFW_PRESS:
-        camera.x -= math.sin(camera.rotationY)
-        camera.z -= math.cos(camera.rotationY)
+        if glfw.glfwGetKey(window, glfw.GLFW_KEY_UP) == glfw.GLFW_PRESS:
+            camera.x -= math.sin(camera.rotationY)
+            camera.z -= math.cos(camera.rotationY)
 
-    if glfw.glfwGetKey(window, glfw.GLFW_KEY_DOWN) == glfw.GLFW_PRESS:
-        camera.x += math.sin(camera.rotationY)
-        camera.z += math.cos(camera.rotationY)
+        if glfw.glfwGetKey(window, glfw.GLFW_KEY_DOWN) == glfw.GLFW_PRESS:
+            camera.x += math.sin(camera.rotationY)
+            camera.z += math.cos(camera.rotationY)
 
     # move the camera to the correct position, which means
     # updating the view stack
@@ -231,20 +232,20 @@ while not glfw.glfwWindowShouldClose(window):
     MAX_ELEMENT_BUFFER = 128 * 1024
 
 
-    if(nuklear.nk_begin(ctx,
+    if(nk.begin(ctx,
                         b'Demonstration',
-                        nuklear.NKRect(50.0,50.0,230.0,250.0),
-                        nuklear.NK_WINDOW_BORDER
-                           |nuklear.NK_WINDOW_MOVABLE
-                           |nuklear.NK_WINDOW_SCALABLE
-                           |nuklear.NK_WINDOW_MINIMIZABLE
-                           |nuklear.NK_WINDOW_TITLE)):
+                        nk.NKRect(50.0,50.0,230.0,250.0),
+                        nk.WINDOW_BORDER
+                           |nk.WINDOW_MOVABLE
+                           |nk.WINDOW_SCALABLE
+                           |nk.WINDOW_MINIMIZABLE
+                           |nk.WINDOW_TITLE)):
 
-        nuklear.nk_layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
-        if nuklear.nk_button_label(ctx, b'button'):
+        nk.layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
+        if nk.button_label(ctx, b'button'):
             print('button pressed')
 
-        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(30.0), 2)
+        nk.layout_row_dynamic(ctx, ctypes.c_float(30.0), 2)
 
         # simulate a local static variable
         try:
@@ -252,10 +253,10 @@ while not glfw.glfwWindowShouldClose(window):
         except Exception:
             op = 0
 
-        if nuklear.nk_option_label(ctx, b'easy', op == 0): op = 0
-        if nuklear.nk_option_label(ctx, b'hard', op == 1): op = 1
+        if nk.option_label(ctx, b'easy', op == 0): op = 0
+        if nk.option_label(ctx, b'hard', op == 1): op = 1
 
-        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+        nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
 
         # simulate a local static variable
         try:
@@ -264,10 +265,10 @@ while not glfw.glfwWindowShouldClose(window):
             prop = ctypes.c_int(20)
 
 
-        nuklear.nk_property_int(ctx, b'Compression:', 0, ctypes.byref(prop), 100, 10, 1);
+        nk.property_int(ctx, b'Compression:', 0, ctypes.byref(prop), 100, 10, 1);
 
-        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(20.0), 1)
-        nuklear.nk_label(ctx, b'background:', nuklear.NK_TEXT_LEFT)
+        nk.layout_row_dynamic(ctx, ctypes.c_float(20.0), 1)
+        nk.label(ctx, b'background:', nk.TEXT_LEFT)
 
 
 
@@ -275,33 +276,33 @@ while not glfw.glfwWindowShouldClose(window):
         try:
             background
         except Exception:
-            background = nuklear.NKColor(0, 0, 0, 255)
+            background = nk.NKColor(0, 0, 0, 255)
 
 
 
-        nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+        nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
 
-        if nuklear.nk_combo_begin_color(ctx,
+        if nk.combo_begin_color(ctx,
                                         background,
-                                        nuklear.NKVec2(nuklear.nk_widget_width(ctx),
+                                        nk.NKVec2(nk.widget_width(ctx),
                                                        400)):
-            nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(120.0), 1);
-            background = nuklear.nk_color_picker(ctx,
+            nk.layout_row_dynamic(ctx, ctypes.c_float(120.0), 1);
+            background = nk.color_picker(ctx,
                                                  background,
-                                                 nuklear.NK_RGBA)
+                                                 nk.RGBA)
 
-            nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1);
-            background.r = nuklear.nk_propertyi(ctx, b'#R:', 0, background.r, 255, 1, ctypes.c_float(1))
-            background.g = nuklear.nk_propertyi(ctx, b'#G:', 0, background.g, 255, 1, ctypes.c_float(1))
-            background.b = nuklear.nk_propertyi(ctx, b'#B:', 0, background.b, 255, 1, ctypes.c_float(1))
-            background.a = nuklear.nk_propertyi(ctx, b'#A:', 0, background.a, 255, 1, ctypes.c_float(1))
+            nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1);
+            background.r = nk.propertyi(ctx, b'#R:', 0, background.r, 255, 1, ctypes.c_float(1))
+            background.g = nk.propertyi(ctx, b'#G:', 0, background.g, 255, 1, ctypes.c_float(1))
+            background.b = nk.propertyi(ctx, b'#B:', 0, background.b, 255, 1, ctypes.c_float(1))
+            background.a = nk.propertyi(ctx, b'#A:', 0, background.a, 255, 1, ctypes.c_float(1))
 
 
             gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
 
-            nuklear.nk_combo_end(ctx);
+            nk.combo_end(ctx);
 
-    nuklear.nk_end(ctx)
+    nk.end(ctx)
 
 
 
@@ -351,15 +352,15 @@ while not glfw.glfwWindowShouldClose(window):
 
     #ctx->style.window.header.align = header_align;
 
-    if(border) : window_flags |= nuklear.NK_WINDOW_BORDER
-    if(resize) : window_flags |= nuklear.NK_WINDOW_SCALABLE
-    if(movable) : window_flags |= nuklear.NK_WINDOW_MOVABLE
-    if(no_scrollbar) : window_flags |= nuklear.NK_WINDOW_NO_SCROLLBAR
-    if(scale_left) : window_flags |= nuklear.NK_WINDOW_SCALE_LEFT
-    if(minimizable) : window_flags |= nuklear.NK_WINDOW_MINIMIZABLE
+    if(border) : window_flags |= nk.WINDOW_BORDER
+    if(resize) : window_flags |= nk.WINDOW_SCALABLE
+    if(movable) : window_flags |= nk.WINDOW_MOVABLE
+    if(no_scrollbar) : window_flags |= nk.WINDOW_NO_SCROLLBAR
+    if(scale_left) : window_flags |= nk.WINDOW_SCALE_LEFT
+    if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
 
 
-    if nuklear.nk_begin(ctx, b'Overview', nuklear.NKRect(400,200,400,600),window_flags):
+    if nk.begin(ctx, b'Overview', nk.NKRect(400,200,400,600),window_flags):
         pass
         if show_menu:
             try:
@@ -375,24 +376,24 @@ while not glfw.glfwWindowShouldClose(window):
             except Exception:
                 mcheck = True
 
-            nuklear.nk_menubar_begin(ctx)
-            nuklear.nk_layout_row_begin(ctx, nuklear.NK_STATIC, ctypes.c_float(25.0),4)
-            nuklear.nk_layout_row_push(ctx, ctypes.c_float(45))
+            nk.menubar_begin(ctx)
+            nk.layout_row_begin(ctx, nk.STATIC, ctypes.c_float(25.0),4)
+            nk.layout_row_push(ctx, ctypes.c_float(45))
 
 
-            if nuklear.nk_menu_begin_label(ctx, b'MENU', nuklear.NK_TEXT_LEFT, nuklear.NKVec2(120,120)):
-                nuklear.nk_layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
-                if nuklear.nk_menu_item_label(ctx, b'Hide', nuklear.NK_TEXT_LEFT):
+            if nk.menu_begin_label(ctx, b'MENU', nk.TEXT_LEFT, nk.NKVec2(120,120)):
+                nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+                if nk.menu_item_label(ctx, b'Hide', nk.TEXT_LEFT):
                     show_menu = False
-                if nuklear.nk_menu_item_label(ctx, b'About', nuklear.NK_TEXT_LEFT):
+                if nk.menu_item_label(ctx, b'About', nk.TEXT_LEFT):
                     show_app_about = True
 
-                nuklear.nk_menu_end(ctx)
-            nuklear.nk_menubar_end(ctx)
+                nk.menu_end(ctx)
+            nk.menubar_end(ctx)
 
-    nuklear.nk_end(ctx)
+    nk.end(ctx)
 
-    nuklear.nk_glfw3_render(nuklear.NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
+    nk.glfw3_render(nk.ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
