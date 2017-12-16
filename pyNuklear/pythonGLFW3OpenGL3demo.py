@@ -139,7 +139,7 @@ glfw.glfwMakeContextCurrent(window)
 
 ctx = nk.glfw3_init(window, nk.GLFW3_INSTALL_CALLBACKS)
 
-fontAtlas = nk.NKFontAtlas()
+fontAtlas = nk.FontAtlas()
 nk.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
 nk.glfw3_font_stash_end()
 
@@ -234,7 +234,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     if(nk.begin(ctx,
                         b'Demonstration',
-                        nk.NKRect(50.0,50.0,230.0,250.0),
+                        nk.Rect(50.0,50.0,230.0,250.0),
                         nk.WINDOW_BORDER
                            |nk.WINDOW_MOVABLE
                            |nk.WINDOW_SCALABLE
@@ -276,7 +276,7 @@ while not glfw.glfwWindowShouldClose(window):
         try:
             background
         except Exception:
-            background = nk.NKColor(0, 0, 0, 255)
+            background = nk.Color(0, 0, 0, 255)
 
 
 
@@ -284,7 +284,7 @@ while not glfw.glfwWindowShouldClose(window):
 
         if nk.combo_begin_color(ctx,
                                         background,
-                                        nk.NKVec2(nk.widget_width(ctx),
+                                        nk.Vec2(nk.widget_width(ctx),
                                                        400)):
             nk.layout_row_dynamic(ctx, ctypes.c_float(120.0), 1);
             background = nk.color_picker(ctx,
@@ -360,7 +360,7 @@ while not glfw.glfwWindowShouldClose(window):
     if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
 
 
-    if nk.begin(ctx, b'Overview', nk.NKRect(400,200,400,600),window_flags):
+    if nk.begin(ctx, b'Overview', nk.Rect(400,200,400,600),window_flags):
         pass
         if show_menu:
             try:
@@ -381,7 +381,7 @@ while not glfw.glfwWindowShouldClose(window):
             nk.layout_row_push(ctx, ctypes.c_float(45))
 
 
-            if nk.menu_begin_label(ctx, b'MENU', nk.TEXT_LEFT, nk.NKVec2(120,120)):
+            if nk.menu_begin_label(ctx, b'MENU', nk.TEXT_LEFT, nk.Vec2(120,120)):
                 nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
                 if nk.menu_item_label(ctx, b'Hide', nk.TEXT_LEFT):
                     show_menu = False
