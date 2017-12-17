@@ -23,9 +23,18 @@ import ctypes.util
 from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_short,
                     c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
 import glfw
-
+import inspect
 pwd = os.path.dirname(os.path.abspath(__file__))
 
+# nuklear needs to uniquely identify widgets, and one
+# way to do so is to inspect the function caller's frame info
+# such as filename and line number.
+#
+# since callerFrameInfo is a function, we need the frame info
+# from the caller which is two back.
+def callerFrameInfo():
+    previous_frame = inspect.currentframe().f_back.f_back
+    return inspect.getframeinfo(previous_frame)
 
 # Load it
 _nuklear = ctypes.CDLL(os.path.join(pwd, '..', 'contrib', 'nuklear', 'nuklear.so'))
@@ -545,9 +554,21 @@ layout_space_rect_to_local.restype = Rect
 # void nk_list_view_end(struct nk_list_view*);
 
 # Tree
-# int nk_tree_push_hashed(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
+tree_push_hashed = _nuklear.nk_tree_push_hashed
+tree_push_hashed.arglist = [POINTER(Context), c_int, c_char_p, c_int, c_char_p,c_int,c_int]
+tree_push_hashed.restype = c_int
+
+def tree_push(ctx, theType, title, state):
+    (filename, line_number,
+     function_name, lines, index) = callerFrameInfo()
+    return tree_push_hashed(ctx, theType, title, state, filename, len(filename),line_number)
+
+
 # int nk_tree_image_push_hashed(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
-# void nk_tree_pop(struct nk_context*);
+
+tree_pop = _nuklear.nk_tree_pop
+tree_pop.arglist = [POINTER(Context)]
+
 # int nk_tree_state_push(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states *state);
 # int nk_tree_state_image_push(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states *state);
 # void nk_tree_state_pop(struct nk_context*);
@@ -655,7 +676,11 @@ button_label.restype     = c_int
 # int nk_check_text(struct nk_context*, const char*, int,int active);
 # unsigned nk_check_flags_label(struct nk_context*, const char*, unsigned int flags, unsigned int value);
 # unsigned nk_check_flags_text(struct nk_context*, const char*, int, unsigned int flags, unsigned int value);
-# int nk_checkbox_label(struct nk_context*, const char*, int *active);
+
+checkbox_label = _nuklear.nk_checkbox_label
+checkbox_label.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
+checkbox_label.restype = c_int
+
 # int nk_checkbox_text(struct nk_context*, const char*, int, int *active);
 # int nk_checkbox_flags_label(struct nk_context*, const char*, unsigned int *flags, unsigned int value);
 # int nk_checkbox_flags_text(struct nk_context*, const char*, int, unsigned int *flags, unsigned int value);
@@ -686,8 +711,14 @@ option_label.arglist = [POINTER(Context), c_char_p, c_int]
 # float nk_slide_float(struct nk_context*, float min, float val, float max, float step);
 # int nk_slide_int(struct nk_context*, int min, int val, int max, int step);
 # int nk_slider_float(struct nk_context*, float min, float *val, float max, float step);
-# int nk_slider_int(struct nk_context*, int min, int *val, int max, int step);
-# int nk_progress(struct nk_context*, nk_size *cur, nk_size max, int modifyable);
+
+slider_int = _nuklear.nk_slider_int
+slider_int.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
+slider_int.restype = c_int
+
+progress = _nuklear.nk_progress
+progress.arglist = [POINTER(Context), POINTER(c_int), c_int, c_int]
+progress.restype = c_int
 
 # ProgressBar
 # int nk_progress(struct nk_context*, nk_size *cur, nk_size max, int modifyable);
@@ -762,8 +793,17 @@ EDIT_COMMITED    = 1 << 4
 
 
 # Popup
-# int nk_popup_begin(struct nk_context*, enum nk_popup_type, const char*, nk_flags, struct nk_rect bounds);
+
+popup_begin = _nuklear.nk_popup_begin
+popup_begin.arglist= [POINTER(Context), c_int, c_char_p, c_int,Rect]
+popup_begin.restype = c_int
+
 # void nk_popup_close(struct nk_context*);
+
+popup_end = _nuklear.nk_popup_end
+popup_end.arglist= [POINTER(Context)]
+
+
 # void nk_popup_end(struct nk_context*);
 
 

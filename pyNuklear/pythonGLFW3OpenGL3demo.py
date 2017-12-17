@@ -129,7 +129,7 @@ glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);
 
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.glfwCreateWindow(640, 480, str.encode("Hello World"), None, None)
+window = glfw.glfwCreateWindow(1000, 1000, str.encode("Hello World"), None, None)
 if not window:
     glfw.glfwTerminate()
     sys.exit()
@@ -233,13 +233,13 @@ while not glfw.glfwWindowShouldClose(window):
 
 
     if(nk.begin(ctx,
-                        b'Demonstration',
-                        nk.Rect(50.0,50.0,230.0,250.0),
-                        nk.WINDOW_BORDER
-                           |nk.WINDOW_MOVABLE
-                           |nk.WINDOW_SCALABLE
-                           |nk.WINDOW_MINIMIZABLE
-                           |nk.WINDOW_TITLE)):
+                b'Demonstration',
+                nk.Rect(10.0,10.0,230.0,250.0),
+                nk.WINDOW_BORDER
+                   |nk.WINDOW_MOVABLE
+                   |nk.WINDOW_SCALABLE
+                   |nk.WINDOW_MINIMIZABLE
+                   |nk.WINDOW_TITLE)):
 
         nk.layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
         if nk.button_label(ctx, b'button'):
@@ -312,31 +312,31 @@ while not glfw.glfwWindowShouldClose(window):
     try:
         show_menu
     except Exception:
-        show_menu = True
+        show_menu = ctypes.c_int(1)
     try:
         titlebar
     except Exception:
-        titlebar  = True
+        titlebar  = ctypes.c_int(1)
     try:
         border
     except Exception:
-        border = True
+        border = ctypes.c_int(1)
     try:
         resize
     except Exception:
-        resize = True
+        resize = ctypes.c_int(1)
     try:
         movable
     except Exception:
-        movable = True
+        movable = ctypes.c_int(1)
     try:
         no_scrollbar
     except Exception:
-        no_scrollbar = False
+        no_scrollbar = ctypes.c_int(0)
     try:
         scale_left
     except Exception:
-        scale_left = False
+        scale_left = ctypes.c_int(0)
     try:
         window_flags
     except Exception:
@@ -344,7 +344,7 @@ while not glfw.glfwWindowShouldClose(window):
     try:
         minimizable
     except Exception:
-        minimizable = True
+        minimizable = ctypes.c_int(1)
 
 
 
@@ -360,36 +360,103 @@ while not glfw.glfwWindowShouldClose(window):
     if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
 
 
-    if nk.begin(ctx, b'Overview', nk.Rect(400,200,400,600),window_flags):
+    if nk.begin(ctx,
+                b'Overview',
+                nk.Rect(10,300,400,600),
+                window_flags):
         pass
         if show_menu:
             try:
                 mprog
             except Exception:
-                mprog = 60
+                mprog = ctypes.c_int(60)
             try:
                 mslider
             except Exception:
-                mslider = 10
+                mslider = ctypes.c_int(10)
             try:
                 mcheck
             except Exception:
-                mcheck = True
+                mcheck = ctypes.c_int(0)
+
+            try:
+                show_app_about
+            except Exception:
+                show_app_about = False
 
             nk.menubar_begin(ctx)
-            nk.layout_row_begin(ctx, nk.STATIC, ctypes.c_float(25.0),4)
-            nk.layout_row_push(ctx, ctypes.c_float(45))
-
-
+            nk.layout_row_begin(ctx, nk.STATIC, ctypes.c_float(25.0),5)
+            nk.layout_row_push(ctx, ctypes.c_float(45.0))
             if nk.menu_begin_label(ctx, b'MENU', nk.TEXT_LEFT, nk.Vec2(120,120)):
                 nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
                 if nk.menu_item_label(ctx, b'Hide', nk.TEXT_LEFT):
                     show_menu = False
                 if nk.menu_item_label(ctx, b'About', nk.TEXT_LEFT):
                     show_app_about = True
+                nk.progress(ctx, ctypes.byref(mprog), 100, nk.MODIFIABLE)
+                nk.slider_int(ctx, 0, ctypes.byref(mslider), 16, 1)
+                # TODO, for some reason, this checkbox is not showing.
+                # if i move it up 2 lines, it does, and another widget
+                # is not showing
+                nk.checkbox_label(ctx, b'check', ctypes.byref(mcheck))
+
+
 
                 nk.menu_end(ctx)
+            nk.layout_row_push(ctx, ctypes.c_float(60.0))
+            if nk.menu_begin_label(ctx, b'Advanced', nk.TEXT_LEFT, nk.Vec2(200,600)):
+                # TODO -- do the advanced menu
+
+                nk.menu_end(ctx)
+
+            nk.layout_row_push(ctx, ctypes.c_float(70.0));
+            nk.progress(ctx, ctypes.byref(mprog), 100, nk.MODIFIABLE)
+            nk.slider_int(ctx, 0, ctypes.byref(mslider), 16, 1)
+            nk.checkbox_label(ctx, b'check', ctypes.byref(mcheck))
+
             nk.menubar_end(ctx)
+
+            if show_app_about:
+                if nk.popup_begin(ctx,
+                                  nk.POPUP_STATIC,
+                                  b'About',
+                                  nk.WINDOW_CLOSABLE,
+                                  nk.Rect(20,100,300,190)):
+                    nk.layout_row_dynamic(ctx, ctypes.c_float(20.0), 1);
+                    nk.label(ctx, b'Nuklear', nk.TEXT_LEFT);
+                    nk.label(ctx, b'By Micha Mettke', nk.TEXT_LEFT);
+                    nk.label(ctx, b'nuklear is licensed under the public domain License.',  nk.TEXT_LEFT);
+
+                    nk.popup_end(ctx)
+                else:
+                    show_app_about = False
+            if nk.tree_push(ctx, nk.TREE_TAB, b'Window', nk.MINIMIZED) :
+                nk.layout_row_dynamic(ctx, ctypes.c_float(30.0), 2);
+                nk.checkbox_label(ctx, b'Titlebar', ctypes.byref(titlebar));
+                nk.checkbox_label(ctx, b'Menu', ctypes.byref(show_menu));
+                nk.checkbox_label(ctx, b'Border', ctypes.byref(border));
+                nk.checkbox_label(ctx, b'Resizable', ctypes.byref(resize));
+                nk.checkbox_label(ctx, b'Movable', ctypes.byref(movable));
+                nk.checkbox_label(ctx, b'No Scrollbar', ctypes.byref(no_scrollbar));
+                nk.checkbox_label(ctx, b'Minimizable', ctypes.byref(minimizable));
+                nk.checkbox_label(ctx, b'Scale Left', ctypes.byref(scale_left));
+                nk.tree_pop(ctx);
+            if nk.tree_push(ctx, nk.TREE_TAB, b'Widgets', nk.MINIMIZED) :
+                #TODO
+                nk.tree_pop(ctx);
+            if nk.tree_push(ctx, nk.TREE_TAB, b'Chart', nk.MINIMIZED,) :
+                #TODO
+                nk.tree_pop(ctx);
+            if nk.tree_push(ctx, nk.TREE_TAB, b'Chart', nk.MINIMIZED) :
+                #TODO
+                nk.tree_pop(ctx);
+            if nk.tree_push(ctx, nk.TREE_TAB, b'Popup', nk.MINIMIZED) :
+                #TODO
+                nk.tree_pop(ctx);
+            if nk.tree_push(ctx, nk.TREE_TAB, b'Layout', nk.MINIMIZED) :
+                #TODO
+                nk.tree_pop(ctx);
+
 
     nk.end(ctx)
 
