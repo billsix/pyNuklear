@@ -312,31 +312,31 @@ while not glfw.glfwWindowShouldClose(window):
     try:
         show_menu
     except Exception:
-        show_menu = ctypes.c_int(1)
+        show_menu = True
     try:
         titlebar
     except Exception:
-        titlebar  = ctypes.c_int(1)
+        titlebar  = True
     try:
         border
     except Exception:
-        border = ctypes.c_int(1)
+        border = True
     try:
         resize
     except Exception:
-        resize = ctypes.c_int(1)
+        resize = True
     try:
         movable
     except Exception:
-        movable = ctypes.c_int(1)
+        movable = True
     try:
         no_scrollbar
     except Exception:
-        no_scrollbar = ctypes.c_int(0)
+        no_scrollbar = False
     try:
         scale_left
     except Exception:
-        scale_left = ctypes.c_int(0)
+        scale_left = False
     try:
         window_flags
     except Exception:
@@ -344,7 +344,7 @@ while not glfw.glfwWindowShouldClose(window):
     try:
         minimizable
     except Exception:
-        minimizable = ctypes.c_int(1)
+        minimizable = True
 
 
 
@@ -369,15 +369,15 @@ while not glfw.glfwWindowShouldClose(window):
             try:
                 mprog
             except Exception:
-                mprog = ctypes.c_int(60)
+                mprog = 60
             try:
                 mslider
             except Exception:
-                mslider = ctypes.c_int(10)
+                mslider = 10
             try:
                 mcheck
             except Exception:
-                mcheck = ctypes.c_int(0)
+                mcheck = False
 
             try:
                 show_app_about
@@ -393,12 +393,12 @@ while not glfw.glfwWindowShouldClose(window):
                     show_menu = False
                 if nk.menu_item_label(ctx, b'About', nk.TEXT_LEFT):
                     show_app_about = True
-                nk.progress(ctx, ctypes.byref(mprog), 100, nk.MODIFIABLE)
-                nk.slider_int(ctx, 0, ctypes.byref(mslider), 16, 1)
+                (mprog,_) = nk.progress(ctx, mprog, 100, nk.MODIFIABLE)
+                (mslider,_) = nk.slider_int(ctx, 0, mslider, 16, 1)
                 # TODO, for some reason, this checkbox is not showing.
                 # if i move it up 2 lines, it does, and another widget
                 # is not showing
-                nk.checkbox_label(ctx, b'check', ctypes.byref(mcheck))
+                (mcheck,_) = nk.checkbox_label(ctx, b'check', mcheck)
 
 
 
@@ -410,9 +410,9 @@ while not glfw.glfwWindowShouldClose(window):
                 nk.menu_end(ctx)
 
             nk.layout_row_push(ctx, ctypes.c_float(70.0));
-            nk.progress(ctx, ctypes.byref(mprog), 100, nk.MODIFIABLE)
-            nk.slider_int(ctx, 0, ctypes.byref(mslider), 16, 1)
-            nk.checkbox_label(ctx, b'check', ctypes.byref(mcheck))
+            (mprog, _) = nk.progress(ctx, mprog, 100, nk.MODIFIABLE)
+            (mslider,_) = nk.slider_int(ctx, 0, mslider, 16, 1)
+            (mcheck,_) = nk.checkbox_label(ctx, b'check', mcheck)
 
             nk.menubar_end(ctx)
 
@@ -432,14 +432,14 @@ while not glfw.glfwWindowShouldClose(window):
                     show_app_about = False
             if nk.tree_push(ctx, nk.TREE_TAB, b'Window', nk.MINIMIZED) :
                 nk.layout_row_dynamic(ctx, ctypes.c_float(30.0), 2);
-                nk.checkbox_label(ctx, b'Titlebar', ctypes.byref(titlebar));
-                nk.checkbox_label(ctx, b'Menu', ctypes.byref(show_menu));
-                nk.checkbox_label(ctx, b'Border', ctypes.byref(border));
-                nk.checkbox_label(ctx, b'Resizable', ctypes.byref(resize));
-                nk.checkbox_label(ctx, b'Movable', ctypes.byref(movable));
-                nk.checkbox_label(ctx, b'No Scrollbar', ctypes.byref(no_scrollbar));
-                nk.checkbox_label(ctx, b'Minimizable', ctypes.byref(minimizable));
-                nk.checkbox_label(ctx, b'Scale Left', ctypes.byref(scale_left));
+                (titlebar,_) = nk.checkbox_label(ctx, b'Titlebar', titlebar);
+                (show_menu,_) = nk.checkbox_label(ctx, b'Menu', show_menu);
+                (border,_) = nk.checkbox_label(ctx, b'Border', border);
+                (resize,_) = nk.checkbox_label(ctx, b'Resizable', resize);
+                (movable,_) = nk.checkbox_label(ctx, b'Movable', movable);
+                (no_scrollbar,_) = nk.checkbox_label(ctx, b'No Scrollbar', no_scrollbar);
+                (minimizable,_) = nk.checkbox_label(ctx, b'Minimizable', minimizable);
+                (scale_left,_) = nk.checkbox_label(ctx, b'Scale Left', scale_left);
                 nk.tree_pop(ctx);
             if nk.tree_push(ctx, nk.TREE_TAB, b'Widgets', nk.MINIMIZED) :
                 #TODO

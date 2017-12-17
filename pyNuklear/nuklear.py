@@ -677,9 +677,15 @@ button_label.restype     = c_int
 # unsigned nk_check_flags_label(struct nk_context*, const char*, unsigned int flags, unsigned int value);
 # unsigned nk_check_flags_text(struct nk_context*, const char*, int, unsigned int flags, unsigned int value);
 
-checkbox_label = _nuklear.nk_checkbox_label
-checkbox_label.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
-checkbox_label.restype = c_int
+wrapped_checkbox_label = _nuklear.nk_checkbox_label
+wrapped_checkbox_label.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
+wrapped_checkbox_label.restype = c_int
+
+def checkbox_label(ctx, text, value):
+    v = ctypes.c_int(value)
+    wasModified = wrapped_checkbox_label(ctx,text,ctypes.byref(v))
+    return (v.value, wasModified)
+
 
 # int nk_checkbox_text(struct nk_context*, const char*, int, int *active);
 # int nk_checkbox_flags_label(struct nk_context*, const char*, unsigned int *flags, unsigned int value);
@@ -712,13 +718,24 @@ option_label.arglist = [POINTER(Context), c_char_p, c_int]
 # int nk_slide_int(struct nk_context*, int min, int val, int max, int step);
 # int nk_slider_float(struct nk_context*, float min, float *val, float max, float step);
 
-slider_int = _nuklear.nk_slider_int
-slider_int.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
-slider_int.restype = c_int
+wrapped_slider_int = _nuklear.nk_slider_int
+wrapped_slider_int.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
+wrapped_slider_int.restype = c_int
 
-progress = _nuklear.nk_progress
-progress.arglist = [POINTER(Context), POINTER(c_int), c_int, c_int]
-progress.restype = c_int
+def slider_int(ctx, minV, value, maxV, step):
+    v = ctypes.c_int(value)
+    wasModified = wrapped_slider_int(ctx, minV, ctypes.byref(v), maxV, step)
+    return (v.value, wasModified)
+
+
+wrapped_progress = _nuklear.nk_progress
+wrapped_progress.arglist = [POINTER(Context), POINTER(c_int), c_int, c_int]
+wrapped_progress.restype = c_int
+
+def progress(ctx, cur, max, is_modifyable):
+    v = ctypes.c_int(cur)
+    wasModified = wrapped_progress(ctx, ctypes.byref(v), max, is_modifyable)
+    return (v.value, wasModified)
 
 # ProgressBar
 # int nk_progress(struct nk_context*, nk_size *cur, nk_size max, int modifyable);
