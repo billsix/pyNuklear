@@ -305,10 +305,34 @@ while not glfw.glfwWindowShouldClose(window):
                                                  nk.RGBA)
 
             nk.layout_row_dynamic(ctx, 25.0, 1);
-            background.r = nk.propertyi(ctx, b'#R:', 0, background.r, 255, 1, ctypes.c_float(1))
-            background.g = nk.propertyi(ctx, b'#G:', 0, background.g, 255, 1, ctypes.c_float(1))
-            background.b = nk.propertyi(ctx, b'#B:', 0, background.b, 255, 1, ctypes.c_float(1))
-            background.a = nk.propertyi(ctx, b'#A:', 0, background.a, 255, 1, ctypes.c_float(1))
+            background.r = nk.propertyi(ctx=ctx,
+                                        name="#R:",
+                                        minVal=0,
+                                        val=background.r,
+                                        maxVal=255,
+                                        step=1,
+                                        inc_per_pixel=1.0)
+            background.g = nk.propertyi(ctx=ctx,
+                                        name="#G:",
+                                        minVal=0,
+                                        val=background.g,
+                                        maxVal=255,
+                                        step=1,
+                                        inc_per_pixel=1.0)
+            background.b = nk.propertyi(ctx=ctx,
+                                        name="#B:",
+                                        minVal=0,
+                                        val=background.b,
+                                        maxVal=255,
+                                        step=1,
+                                        inc_per_pixel=1.0)
+            background.a = nk.propertyi(ctx=ctx,
+                                        name="#A:",
+                                        minVal=0,
+                                        val=background.a,
+                                        maxVal=255,
+                                        step=1,
+                                        inc_per_pixel=1.0)
 
 
             gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
@@ -374,7 +398,6 @@ while not glfw.glfwWindowShouldClose(window):
                 title="Overview",
                 bounds=nk.Rect(10,300,400,600),
                 flags=window_flags):
-        pass
         if show_menu:
             try:
                 mprog
@@ -402,16 +425,22 @@ while not glfw.glfwWindowShouldClose(window):
                                    align=nk.TEXT_LEFT,
                                    size=nk.Vec2(120,120)):
                 nk.layout_row_dynamic(ctx, 25.0, 1)
-                if nk.menu_item_label(ctx, b'Hide', nk.TEXT_LEFT):
+                if nk.menu_item_label(ctx=ctx,
+                                      label="Hide",
+                                      align=nk.TEXT_LEFT):
                     show_menu = False
-                if nk.menu_item_label(ctx, b'About', nk.TEXT_LEFT):
+                if nk.menu_item_label(ctx=ctx,
+                                      label="About",
+                                      align=nk.TEXT_LEFT):
                     show_app_about = True
                 (mprog,_) = nk.progress(ctx, mprog, 100, nk.MODIFIABLE)
                 (mslider,_) = nk.slider_int(ctx, 0, mslider, 16, 1)
                 # TODO, for some reason, this checkbox is not showing.
                 # if i move it up 2 lines, it does, and another widget
                 # is not showing
-                (mcheck,_) = nk.checkbox_label(ctx, b'check', mcheck)
+                (mcheck,_) = nk.checkbox_label(ctx=ctx,
+                                               text="check",
+                                               active=mcheck)
 
 
 
@@ -428,16 +457,18 @@ while not glfw.glfwWindowShouldClose(window):
             nk.layout_row_push(ctx, ctypes.c_float(70.0));
             (mprog, _) = nk.progress(ctx, mprog, 100, nk.MODIFIABLE)
             (mslider,_) = nk.slider_int(ctx, 0, mslider, 16, 1)
-            (mcheck,_) = nk.checkbox_label(ctx, b'check', mcheck)
+            (mcheck,_) = nk.checkbox_label(ctx=ctx,
+                                           text="check",
+                                           active=mcheck)
 
             nk.menubar_end(ctx)
 
             if show_app_about:
-                if nk.popup_begin(ctx,
-                                  nk.POPUP_STATIC,
-                                  b'About',
-                                  nk.WINDOW_CLOSABLE,
-                                  nk.Rect(20,100,300,190)):
+                if nk.popup_begin(ctx=ctx,
+                                  theType=nk.POPUP_STATIC,
+                                  title="About",
+                                  flags=nk.WINDOW_CLOSABLE,
+                                  rect=nk.Rect(20,100,300,190)):
                     nk.layout_row_dynamic(ctx, 20.0, 1)
                     nk.label(ctx=ctx,
                              text="Nuklear",
@@ -452,19 +483,44 @@ while not glfw.glfwWindowShouldClose(window):
                     nk.popup_end(ctx)
                 else:
                     show_app_about = False
-            if nk.tree_push(ctx, nk.TREE_TAB, b'Window', nk.MINIMIZED) :
+            if nk.tree_push(ctx=ctx,
+                            theType=nk.TREE_TAB,
+                            title="Window",
+                            state=nk.MINIMIZED) :
                 nk.layout_row_dynamic(ctx, 30.0, 2);
-                (titlebar,_) = nk.checkbox_label(ctx, b'Titlebar', titlebar);
-                (show_menu,_) = nk.checkbox_label(ctx, b'Menu', show_menu);
-                (border,_) = nk.checkbox_label(ctx, b'Border', border);
-                (resize,_) = nk.checkbox_label(ctx, b'Resizable', resize);
-                (movable,_) = nk.checkbox_label(ctx, b'Movable', movable);
-                (no_scrollbar,_) = nk.checkbox_label(ctx, b'No Scrollbar', no_scrollbar);
-                (minimizable,_) = nk.checkbox_label(ctx, b'Minimizable', minimizable);
-                (scale_left,_) = nk.checkbox_label(ctx, b'Scale Left', scale_left);
+                (titlebar,_) = nk.checkbox_label(ctx=ctx,
+                                                 text="Titlebar",
+                                                 active=titlebar);
+                (show_menu,_) = nk.checkbox_label(ctx=ctx,
+                                                  text="Menu",
+                                                  active=show_menu);
+                (border,_) = nk.checkbox_label(ctx=ctx,
+                                               text="Border",
+                                               active=border);
+                (resize,_) = nk.checkbox_label(ctx=ctx,
+                                               text="Resizable",
+                                               active=resize);
+                (movable,_) = nk.checkbox_label(ctx=ctx,
+                                                text="Movable",
+                                                active=movable);
+                (no_scrollbar,_) = nk.checkbox_label(ctx=ctx,
+                                                     text="No Scrollbar",
+                                                     active=no_scrollbar);
+                (minimizable,_) = nk.checkbox_label(ctx=ctx,
+                                                    text="Minimizable",
+                                                    active=minimizable);
+                (scale_left,_) = nk.checkbox_label(ctx=ctx,
+                                                   text="Scale Left",
+                                                   active=scale_left);
                 nk.tree_pop(ctx);
-            if nk.tree_push(ctx, nk.TREE_TAB, b'Widgets', nk.MINIMIZED) :
-                if nk.tree_push(ctx, nk.TREE_NODE, b'Text', nk.MINIMIZED) :
+            if nk.tree_push(ctx=ctx,
+                            theType=nk.TREE_TAB,
+                            title="Widgets",
+                            state=nk.MINIMIZED) :
+                if nk.tree_push(ctx=ctx,
+                                theType=nk.TREE_NODE,
+                                title="Text",
+                                state=nk.MINIMIZED) :
                     nk.layout_row_dynamic(ctx, 20.0 ,1)
                     nk.label(ctx=ctx,
                              text="Label aligned left",
@@ -476,37 +532,75 @@ while not glfw.glfwWindowShouldClose(window):
                     nk.label(ctx=ctx,
                              text="Label aligned right",
                              alignment=nk.TEXT_ALIGN_RIGHT)
-                    nk.label_colored(ctx, b'Blue text', nk.TEXT_LEFT, nk.Color(0,0,255,255))
-                    nk.label_colored(ctx, b'Yellow text', nk.TEXT_LEFT, nk.Color(255,255,0,255))
-                    nk.text(ctx, b'Text without /0', 15, nk.TEXT_ALIGN_RIGHT)
+                    nk.label_colored(ctx=ctx,
+                                     text="Blue text",
+                                     align=nk.TEXT_LEFT,
+                                     color=nk.Color(0,0,255,255))
+                    nk.label_colored(ctx=ctx,
+                                     text="Yellow text",
+                                     align=nk.TEXT_LEFT,
+                                     color=nk.Color(255,255,0,255))
+                    nk.text(ctx=ctx,
+                            text="Text without /0",
+                            length=15,
+                            alignment=nk.TEXT_ALIGN_RIGHT)
                     nk.layout_row_static(ctx, 100.0, 200, 1)
-                    nk.label_wrap(ctx, b'This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping')
+                    nk.label_wrap(ctx=ctx,
+                                  text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
                     nk.layout_row_dynamic(ctx, 100.0, 1);
-                    nk.label_wrap(ctx, b'This is another long text to show dynamic window changes on multiline text')
+                    nk.label_wrap(ctx=ctx,
+                                  text="This is another long text to show dynamic window changes on multiline text")
 
                     nk.tree_pop(ctx)
-                if nk.tree_push(ctx, nk.TREE_NODE, b'Button', nk.MINIMIZED) :
+                if nk.tree_push(ctx=ctx,
+                                theType=nk.TREE_NODE,
+                                title="Button",
+                                state=nk.MINIMIZED) :
                     nk.tree_pop(ctx)
-                if nk.tree_push(ctx, nk.TREE_NODE, b'Basic', nk.MINIMIZED) :
+                if nk.tree_push(ctx=ctx,
+                                theType=nk.TREE_NODE,
+                                title="Basic",
+                                state=nk.MINIMIZED) :
                     nk.tree_pop(ctx)
-                if nk.tree_push(ctx, nk.TREE_NODE, b'Selectable', nk.MINIMIZED) :
+                if nk.tree_push(ctx=ctx,
+                                theType=nk.TREE_NODE,
+                                title="Selectable",
+                                state=nk.MINIMIZED) :
                     nk.tree_pop(ctx)
-                if nk.tree_push(ctx, nk.TREE_NODE, b'Combo', nk.MINIMIZED) :
+                if nk.tree_push(ctx=ctx,
+                                theType=nk.TREE_NODE,
+                                title="Combo",
+                                state=nk.MINIMIZED) :
                     nk.tree_pop(ctx)
-                if nk.tree_push(ctx, nk.TREE_NODE, b'Input', nk.MINIMIZED) :
+                if nk.tree_push(ctx=ctx,
+                                theType=nk.TREE_NODE,
+                                title="Input",
+                                state=nk.MINIMIZED) :
                     nk.tree_pop(ctx)
 
                 nk.tree_pop(ctx);
-            if nk.tree_push(ctx, nk.TREE_TAB, b'Chart', nk.MINIMIZED,) :
+            if nk.tree_push(ctx=ctx,
+                            theType=nk.TREE_TAB,
+                            title="Chart",
+                            state=nk.MINIMIZED,) :
                 #TODO
                 nk.tree_pop(ctx);
-            if nk.tree_push(ctx, nk.TREE_TAB, b'Chart', nk.MINIMIZED) :
+            if nk.tree_push(ctx=ctx,
+                            theType=nk.TREE_TAB,
+                            title="Chart",
+                            state=nk.MINIMIZED) :
                 #TODO
                 nk.tree_pop(ctx);
-            if nk.tree_push(ctx, nk.TREE_TAB, b'Popup', nk.MINIMIZED) :
+            if nk.tree_push(ctx=ctx,
+                            theType=nk.TREE_TAB,
+                            title="Popup",
+                            state=nk.MINIMIZED) :
                 #TODO
                 nk.tree_pop(ctx);
-            if nk.tree_push(ctx, nk.TREE_TAB, b'Layout', nk.MINIMIZED) :
+            if nk.tree_push(ctx=ctx,
+                            theType=nk.TREE_TAB,
+                            title="Layout",
+                            state=nk.MINIMIZED) :
                 #TODO
                 nk.tree_pop(ctx);
 

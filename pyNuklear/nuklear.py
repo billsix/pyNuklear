@@ -573,7 +573,7 @@ tree_push_hashed.restype = c_int
 def tree_push(ctx, theType, title, state):
     (filename, line_number,
      function_name, lines, index) = callerFrameInfo()
-    return tree_push_hashed(ctx, theType, title, state, filename, len(filename),line_number)
+    return tree_push_hashed(ctx, theType, str.encode(title), state, filename, len(filename),line_number)
 
 
 # int nk_tree_image_push_hashed(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
@@ -634,8 +634,11 @@ TEXT_CENTERED    = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_CENTERED
 TEXT_RIGHT       = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_RIGHT
 
 
-text = _nuklear.nk_text
-text.arglist = [POINTER(Context), c_char_p, c_int, c_int]
+wrapped_text = _nuklear.nk_text
+wrapped_text.arglist = [POINTER(Context), c_char_p, c_int, c_int]
+
+def text(ctx, text, length, alignment):
+    wrapped_text(ctx,str.encode(text),length, alignment)
 
 # void nk_text_colored(struct nk_context*, const char*, int, nk_flags, struct nk_color);
 # void nk_text_wrap(struct nk_context*, const char*, int);
@@ -647,11 +650,17 @@ wrapped_label.arglist = [POINTER(Context), c_char_p, c_uint]
 def label(ctx, text, alignment):
     wrapped_label(ctx, str.encode(text), alignment)
 
-label_colored = _nuklear.nk_label_colored
-label_colored.arglist = [POINTER(Context), c_char_p, c_int, Color]
+wrapped_label_colored = _nuklear.nk_label_colored
+wrapped_label_colored.arglist = [POINTER(Context), c_char_p, c_int, Color]
 
-label_wrap = _nuklear.nk_label_wrap
-label_wrap.arglist = [POINTER(Context), c_char_p]
+def label_colored(ctx, text, align, color):
+    wrapped_label_colored(ctx,str.encode(text),align,color)
+
+wrapped_label_wrap = _nuklear.nk_label_wrap
+wrapped_label_wrap.arglist = [POINTER(Context), c_char_p]
+
+def label_wrap(ctx, text):
+    wrapped_label_wrap(ctx,str.encode(text))
 
 # void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
 # void nk_image(struct nk_context*, struct nk_image);
@@ -708,10 +717,10 @@ wrapped_checkbox_label = _nuklear.nk_checkbox_label
 wrapped_checkbox_label.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
 wrapped_checkbox_label.restype = c_int
 
-def checkbox_label(ctx, text, value):
-    v = ctypes.c_int(value)
-    wasModified = wrapped_checkbox_label(ctx,text,ctypes.byref(v))
-    return (v.value, wasModified)
+def checkbox_label(ctx, text, active):
+    a = ctypes.c_int(active)
+    wasModified = wrapped_checkbox_label(ctx,str.encode(text),ctypes.byref(a))
+    return (a.value, wasModified)
 
 
 # int nk_checkbox_text(struct nk_context*, const char*, int, int *active);
@@ -793,9 +802,21 @@ def property_int(ctx, name, minV, val, maxV, step, inc_per_pixel):
 
 # void nk_property_float(struct nk_context*, const char *name, float min, float *val, float max, float step, float inc_per_pixel);
 # void nk_property_double(struct nk_context*, const char *name, double min, double *val, double max, double step, float inc_per_pixel);
-propertyi = _nuklear.nk_propertyi
-propertyi.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
-propertyi.restype = c_int
+
+wrapped_propertyi = _nuklear.nk_propertyi
+wrapped_propertyi.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+wrapped_propertyi.restype = c_int
+
+def propertyi(ctx, name, minVal, val, maxVal, step, inc_per_pixel):
+    return wrapped_propertyi(ctx,
+                             str.encode(name),
+                             minVal,
+                             val,
+                             maxVal,
+                             step,
+                             ctypes.c_float(inc_per_pixel))
+
+
 # float nk_propertyf(struct nk_context*, const char *name, float min, float val, float max, float step, float inc_per_pixel);
 # double nk_propertyd(struct nk_context*, const char *name, double min, double val, double max, double step, float inc_per_pixel);
 
@@ -850,9 +871,12 @@ EDIT_COMMITED    = 1 << 4
 
 # Popup
 
-popup_begin = _nuklear.nk_popup_begin
-popup_begin.arglist= [POINTER(Context), c_int, c_char_p, c_int,Rect]
-popup_begin.restype = c_int
+wrapped_popup_begin = _nuklear.nk_popup_begin
+wrapped_popup_begin.arglist= [POINTER(Context), c_int, c_char_p, c_int,Rect]
+wrapped_popup_begin.restype = c_int
+
+def popup_begin(ctx, theType, title, flags, rect):
+    return wrapped_popup_begin(ctx, theType, str.encode(title), flags, rect)
 
 # void nk_popup_close(struct nk_context*);
 
@@ -940,9 +964,12 @@ def menu_begin_label(ctx,text,align,size):
 # int nk_menu_begin_symbol_label(struct nk_context*, const char*, nk_flags align,enum nk_symbol_type, struct nk_vec2 size);
 # int nk_menu_item_text(struct nk_context*, const char*, int,nk_flags align);
 
-menu_item_label = _nuklear.nk_menu_item_label
-menu_item_label.arglist = [POINTER(Context), c_char_p, c_int]
-menu_item_label.restype = c_int
+wrapped_menu_item_label = _nuklear.nk_menu_item_label
+wrapped_menu_item_label.arglist = [POINTER(Context), c_char_p, c_int]
+wrapped_menu_item_label.restype = c_int
+
+def menu_item_label(ctx, label, align):
+    return wrapped_menu_item_label(ctx,str.encode(label), align)
 
 # int nk_menu_item_image_label(struct nk_context*, struct nk_image, const char*, nk_flags alignment);
 # int nk_menu_item_image_text(struct nk_context*, struct nk_image, const char*, int len, nk_flags alignment);
