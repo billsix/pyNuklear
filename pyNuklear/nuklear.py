@@ -348,8 +348,13 @@ WINDOW_BACKGROUND        = 1 << 8
 WINDOW_SCALE_LEFT        = 1 << 9
 WINDOW_NO_INPUT          = 1 << 10
 
-begin = _nuklear.nk_begin
-begin.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
+wrapped_begin = _nuklear.nk_begin
+wrapped_begin.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
+wrapped_begin.restype = c_int
+
+def begin(ctx, title, bounds, flags):
+    return wrapped_begin(ctx, str.encode(title), bounds, flags)
+
 # c_int nk_begin_titled(POINTER(Context), c_char_p name, c_char_p title, Rect bounds, c_int flags);
 end            = _nuklear.nk_end
 end.arglist    = [POINTER(Context)]
@@ -466,11 +471,18 @@ layout_ratio_from_pixel = _nuklear.nk_layout_ratio_from_pixel
 layout_ratio_from_pixel.arglist = [POINTER(Context), c_float]
 layout_ratio_from_pixel.restype = c_float
 
-layout_row_dynamic = _nuklear.nk_layout_row_dynamic
-layout_row_dynamic.arglist = [POINTER(Context), c_float, c_int]
+wrapped_layout_row_dynamic = _nuklear.nk_layout_row_dynamic
+wrapped_layout_row_dynamic.arglist = [POINTER(Context), c_float, c_int]
 
-layout_row_static = _nuklear.nk_layout_row_static
-layout_row_static.arglist = [POINTER(Context), c_float, c_int, c_int]
+def layout_row_dynamic(ctx,height,cols):
+    wrapped_layout_row_dynamic(ctx,ctypes.c_float(height), cols)
+
+wrapped_layout_row_static = _nuklear.nk_layout_row_static
+wrapped_layout_row_static.arglist = [POINTER(Context), c_float, c_int, c_int]
+
+def layout_row_static(ctx,height,item_width,cols):
+    wrapped_layout_row_static(ctx,ctypes.c_float(height), item_width,cols)
+
 
 layout_row_begin = _nuklear.nk_layout_row_begin
 layout_row_begin.arglist = [POINTER(Context), c_int, c_float, c_int]
@@ -622,14 +634,25 @@ TEXT_CENTERED    = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_CENTERED
 TEXT_RIGHT       = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_RIGHT
 
 
-# void nk_text(struct nk_context*, const char*, int, nk_flags);
+text = _nuklear.nk_text
+text.arglist = [POINTER(Context), c_char_p, c_int, c_int]
+
 # void nk_text_colored(struct nk_context*, const char*, int, nk_flags, struct nk_color);
 # void nk_text_wrap(struct nk_context*, const char*, int);
 # void nk_text_wrap_colored(struct nk_context*, const char*, int, struct nk_color);
-label = _nuklear.nk_label
-label.arglist = [POINTER(Context), c_char_p, c_int]
-# void nk_label_colored(struct nk_context*, const char*, nk_flags align, struct nk_color);
-# void nk_label_wrap(struct nk_context*, const char*);
+
+wrapped_label = _nuklear.nk_label
+wrapped_label.arglist = [POINTER(Context), c_char_p, c_uint]
+
+def label(ctx, text, alignment):
+    wrapped_label(ctx, str.encode(text), alignment)
+
+label_colored = _nuklear.nk_label_colored
+label_colored.arglist = [POINTER(Context), c_char_p, c_int, Color]
+
+label_wrap = _nuklear.nk_label_wrap
+label_wrap.arglist = [POINTER(Context), c_char_p]
+
 # void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
 # void nk_image(struct nk_context*, struct nk_image);
 # void nk_labelf(struct nk_context*, nk_flags, const char*, ...);
@@ -648,9 +671,13 @@ label.arglist = [POINTER(Context), c_char_p, c_int]
 # Button
 
 # int nk_button_text(struct nk_context*, const char *title, int len);
-button_label = _nuklear.nk_button_label
-button_label.arglist = [POINTER(Context), c_char_p]
-button_label.restype     = c_int
+wrapped_button_label = _nuklear.nk_button_label
+wrapped_button_label.arglist = [POINTER(Context), c_char_p]
+wrapped_button_label.restype     = c_int
+
+def button_label(ctx, title):
+    return wrapped_button_label(ctx, str.encode(title))
+
 # int nk_button_color(struct nk_context*, struct nk_color);
 # int nk_button_symbol(struct nk_context*, enum nk_symbol_type);
 # int nk_button_image(struct nk_context*, struct nk_image img);
@@ -696,8 +723,14 @@ def checkbox_label(ctx, text, value):
 
 # int nk_radio_label(struct nk_context*, const char*, int *active);
 # int nk_radio_text(struct nk_context*, const char*, int, int *active);
-option_label = _nuklear.nk_option_label
-option_label.arglist = [POINTER(Context), c_char_p, c_int]
+
+wrapped_option_label = _nuklear.nk_option_label
+wrapped_option_label.arglist = [POINTER(Context), c_char_p, c_int]
+wrapped_option_label.restype = c_int
+
+def option_label(ctx, label, active):
+    return wrapped_option_label(ctx, str.encode(label), active)
+
 # int nk_option_text(struct nk_context*, const char*, int, int active);
 # int nk_selectable_label(struct nk_context*, const char*, nk_flags align, int *value);
 
@@ -750,8 +783,14 @@ color_picker.restype = Color
 
 # Properties
 
-property_int = _nuklear.nk_property_int
-property_int.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+wrapped_property_int = _nuklear.nk_property_int
+wrapped_property_int.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+
+def property_int(ctx, name, minV, val, maxV, step, inc_per_pixel):
+    v = ctypes.c_int(val)
+    wrapped_property_int(ctx,str.encode(name),minV, ctypes.byref(v),maxV, step, inc_per_pixel)
+    return v.value
+
 # void nk_property_float(struct nk_context*, const char *name, float min, float *val, float max, float step, float inc_per_pixel);
 # void nk_property_double(struct nk_context*, const char *name, double min, double *val, double max, double step, float inc_per_pixel);
 propertyi = _nuklear.nk_propertyi
@@ -885,8 +924,13 @@ menubar_end.arglist = [POINTER(Context)]
 
 # int nk_menu_begin_text(struct nk_context*, const char* title, int title_len, nk_flags align, struct nk_vec2 size);
 
-menu_begin_label = _nuklear.nk_menu_begin_label
-menu_begin_label.arglist = [POINTER(Context), c_char_p, c_int, Vec2]
+wrapped_menu_begin_label = _nuklear.nk_menu_begin_label
+wrapped_menu_begin_label.arglist = [POINTER(Context), c_char_p, c_int, Vec2]
+wrapped_menu_begin_label.restype = c_int
+
+def menu_begin_label(ctx,text,align,size):
+    return wrapped_menu_begin_label(ctx,str.encode(text),align,size)
+
 
 # int nk_menu_begin_image(struct nk_context*, const char*, struct nk_image, struct nk_vec2 size);
 # int nk_menu_begin_image_text(struct nk_context*, const char*, int,nk_flags align,struct nk_image, struct nk_vec2 size);

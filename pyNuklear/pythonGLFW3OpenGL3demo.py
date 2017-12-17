@@ -232,20 +232,21 @@ while not glfw.glfwWindowShouldClose(window):
     MAX_ELEMENT_BUFFER = 128 * 1024
 
 
-    if(nk.begin(ctx,
-                b'Demonstration',
-                nk.Rect(10.0,10.0,230.0,250.0),
-                nk.WINDOW_BORDER
-                   |nk.WINDOW_MOVABLE
-                   |nk.WINDOW_SCALABLE
-                   |nk.WINDOW_MINIMIZABLE
-                   |nk.WINDOW_TITLE)):
+    if(nk.begin(ctx=ctx,
+                title="Demonstration",
+                bounds=nk.Rect(10.0,10.0,230.0,250.0),
+                flags=nk.WINDOW_BORDER
+                        |nk.WINDOW_MOVABLE
+                        |nk.WINDOW_SCALABLE
+                        |nk.WINDOW_MINIMIZABLE
+                        |nk.WINDOW_TITLE)):
 
-        nk.layout_row_static(ctx, ctypes.c_float(30.0), 80, 5)
-        if nk.button_label(ctx, b'button'):
+        nk.layout_row_static(ctx, 30.0, 80, 5)
+        if nk.button_label(ctx=ctx,
+                           title="button"):
             print('button pressed')
 
-        nk.layout_row_dynamic(ctx, ctypes.c_float(30.0), 2)
+        nk.layout_row_dynamic(ctx, 30.0, 2)
 
         # simulate a local static variable
         try:
@@ -253,22 +254,34 @@ while not glfw.glfwWindowShouldClose(window):
         except Exception:
             op = 0
 
-        if nk.option_label(ctx, b'easy', op == 0): op = 0
-        if nk.option_label(ctx, b'hard', op == 1): op = 1
+        if nk.option_label(ctx=ctx,
+                           label="easy",
+                           active= op == 0): op = 0
+        if nk.option_label(ctx=ctx,
+                           label="hard",
+                           active= op == 1): op = 1
 
-        nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+        nk.layout_row_dynamic(ctx, 25.0, 1)
 
         # simulate a local static variable
         try:
             prop
         except Exception:
-            prop = ctypes.c_int(20)
+            prop = 20
 
 
-        nk.property_int(ctx, b'Compression:', 0, ctypes.byref(prop), 100, 10, 1);
+        prop = nk.property_int(ctx=ctx,
+                               name="Compression:",
+                               minV=0,
+                               val=prop,
+                               maxV=100,
+                               step=10,
+                               inc_per_pixel=1);
 
-        nk.layout_row_dynamic(ctx, ctypes.c_float(20.0), 1)
-        nk.label(ctx, b'background:', nk.TEXT_LEFT)
+        nk.layout_row_dynamic(ctx, 20.0, 1)
+        nk.label(ctx=ctx,
+                 text="background:",
+                 alignment=nk.TEXT_LEFT)
 
 
 
@@ -280,18 +293,18 @@ while not glfw.glfwWindowShouldClose(window):
 
 
 
-        nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+        nk.layout_row_dynamic(ctx, 25.0, 1)
 
         if nk.combo_begin_color(ctx,
                                         background,
                                         nk.Vec2(nk.widget_width(ctx),
                                                        400)):
-            nk.layout_row_dynamic(ctx, ctypes.c_float(120.0), 1);
+            nk.layout_row_dynamic(ctx, 120.0, 1);
             background = nk.color_picker(ctx,
                                                  background,
                                                  nk.RGBA)
 
-            nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1);
+            nk.layout_row_dynamic(ctx, 25.0, 1);
             background.r = nk.propertyi(ctx, b'#R:', 0, background.r, 255, 1, ctypes.c_float(1))
             background.g = nk.propertyi(ctx, b'#G:', 0, background.g, 255, 1, ctypes.c_float(1))
             background.b = nk.propertyi(ctx, b'#B:', 0, background.b, 255, 1, ctypes.c_float(1))
@@ -338,16 +351,13 @@ while not glfw.glfwWindowShouldClose(window):
     except Exception:
         scale_left = False
     try:
-        window_flags
-    except Exception:
-        window_flags = 0
-    try:
         minimizable
     except Exception:
         minimizable = True
 
 
 
+    window_flags = 0
     #TODO -- map the ctx struct
 
     #ctx->style.window.header.align = header_align;
@@ -360,10 +370,10 @@ while not glfw.glfwWindowShouldClose(window):
     if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
 
 
-    if nk.begin(ctx,
-                b'Overview',
-                nk.Rect(10,300,400,600),
-                window_flags):
+    if nk.begin(ctx=ctx,
+                title="Overview",
+                bounds=nk.Rect(10,300,400,600),
+                flags=window_flags):
         pass
         if show_menu:
             try:
@@ -387,8 +397,11 @@ while not glfw.glfwWindowShouldClose(window):
             nk.menubar_begin(ctx)
             nk.layout_row_begin(ctx, nk.STATIC, ctypes.c_float(25.0),5)
             nk.layout_row_push(ctx, ctypes.c_float(45.0))
-            if nk.menu_begin_label(ctx, b'MENU', nk.TEXT_LEFT, nk.Vec2(120,120)):
-                nk.layout_row_dynamic(ctx, ctypes.c_float(25.0), 1)
+            if nk.menu_begin_label(ctx=ctx,
+                                   text="MENU",
+                                   align=nk.TEXT_LEFT,
+                                   size=nk.Vec2(120,120)):
+                nk.layout_row_dynamic(ctx, 25.0, 1)
                 if nk.menu_item_label(ctx, b'Hide', nk.TEXT_LEFT):
                     show_menu = False
                 if nk.menu_item_label(ctx, b'About', nk.TEXT_LEFT):
@@ -404,7 +417,10 @@ while not glfw.glfwWindowShouldClose(window):
 
                 nk.menu_end(ctx)
             nk.layout_row_push(ctx, ctypes.c_float(60.0))
-            if nk.menu_begin_label(ctx, b'Advanced', nk.TEXT_LEFT, nk.Vec2(200,600)):
+            if nk.menu_begin_label(ctx=ctx,
+                                   text="Advanced",
+                                   align=nk.TEXT_LEFT,
+                                   size=nk.Vec2(200,600)):
                 # TODO -- do the advanced menu
 
                 nk.menu_end(ctx)
@@ -422,16 +438,22 @@ while not glfw.glfwWindowShouldClose(window):
                                   b'About',
                                   nk.WINDOW_CLOSABLE,
                                   nk.Rect(20,100,300,190)):
-                    nk.layout_row_dynamic(ctx, ctypes.c_float(20.0), 1);
-                    nk.label(ctx, b'Nuklear', nk.TEXT_LEFT);
-                    nk.label(ctx, b'By Micha Mettke', nk.TEXT_LEFT);
-                    nk.label(ctx, b'nuklear is licensed under the public domain License.',  nk.TEXT_LEFT);
+                    nk.layout_row_dynamic(ctx, 20.0, 1)
+                    nk.label(ctx=ctx,
+                             text="Nuklear",
+                             alignment=nk.TEXT_LEFT)
+                    nk.label(ctx=ctx,
+                             text="By Micha Mettke",
+                             alignment=nk.TEXT_LEFT)
+                    nk.label(ctx=ctx,
+                             text="nuklear is licensed under the public domain License.",
+                             alignment=nk.TEXT_LEFT)
 
                     nk.popup_end(ctx)
                 else:
                     show_app_about = False
             if nk.tree_push(ctx, nk.TREE_TAB, b'Window', nk.MINIMIZED) :
-                nk.layout_row_dynamic(ctx, ctypes.c_float(30.0), 2);
+                nk.layout_row_dynamic(ctx, 30.0, 2);
                 (titlebar,_) = nk.checkbox_label(ctx, b'Titlebar', titlebar);
                 (show_menu,_) = nk.checkbox_label(ctx, b'Menu', show_menu);
                 (border,_) = nk.checkbox_label(ctx, b'Border', border);
@@ -442,7 +464,38 @@ while not glfw.glfwWindowShouldClose(window):
                 (scale_left,_) = nk.checkbox_label(ctx, b'Scale Left', scale_left);
                 nk.tree_pop(ctx);
             if nk.tree_push(ctx, nk.TREE_TAB, b'Widgets', nk.MINIMIZED) :
-                #TODO
+                if nk.tree_push(ctx, nk.TREE_NODE, b'Text', nk.MINIMIZED) :
+                    nk.layout_row_dynamic(ctx, 20.0 ,1)
+                    nk.label(ctx=ctx,
+                             text="Label aligned left",
+                             alignment=nk.TEXT_LEFT)
+                    nk.label(ctx=ctx,
+                             text="Label aligned centered",
+                             alignment=nk.TEXT_CENTERED)
+                    # TODO - why doesn't text_right work, but text_align_right does?
+                    nk.label(ctx=ctx,
+                             text="Label aligned right",
+                             alignment=nk.TEXT_ALIGN_RIGHT)
+                    nk.label_colored(ctx, b'Blue text', nk.TEXT_LEFT, nk.Color(0,0,255,255))
+                    nk.label_colored(ctx, b'Yellow text', nk.TEXT_LEFT, nk.Color(255,255,0,255))
+                    nk.text(ctx, b'Text without /0', 15, nk.TEXT_ALIGN_RIGHT)
+                    nk.layout_row_static(ctx, 100.0, 200, 1)
+                    nk.label_wrap(ctx, b'This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping')
+                    nk.layout_row_dynamic(ctx, 100.0, 1);
+                    nk.label_wrap(ctx, b'This is another long text to show dynamic window changes on multiline text')
+
+                    nk.tree_pop(ctx)
+                if nk.tree_push(ctx, nk.TREE_NODE, b'Button', nk.MINIMIZED) :
+                    nk.tree_pop(ctx)
+                if nk.tree_push(ctx, nk.TREE_NODE, b'Basic', nk.MINIMIZED) :
+                    nk.tree_pop(ctx)
+                if nk.tree_push(ctx, nk.TREE_NODE, b'Selectable', nk.MINIMIZED) :
+                    nk.tree_pop(ctx)
+                if nk.tree_push(ctx, nk.TREE_NODE, b'Combo', nk.MINIMIZED) :
+                    nk.tree_pop(ctx)
+                if nk.tree_push(ctx, nk.TREE_NODE, b'Input', nk.MINIMIZED) :
+                    nk.tree_pop(ctx)
+
                 nk.tree_pop(ctx);
             if nk.tree_push(ctx, nk.TREE_TAB, b'Chart', nk.MINIMIZED,) :
                 #TODO
