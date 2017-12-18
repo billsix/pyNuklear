@@ -138,6 +138,7 @@ if not window:
 glfw.glfwMakeContextCurrent(window)
 
 ctx = nk.glfw3_init(window, nk.GLFW3_INSTALL_CALLBACKS)
+nuklear = nk.NuklearContext(ctx)
 
 fontAtlas = nk.FontAtlas()
 nk.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
@@ -232,21 +233,19 @@ while not glfw.glfwWindowShouldClose(window):
     MAX_ELEMENT_BUFFER = 128 * 1024
 
 
-    if(nk.begin(ctx=ctx,
-                title="Demonstration",
-                bounds=nk.Rect(10.0,10.0,230.0,250.0),
-                flags=nk.WINDOW_BORDER
-                        |nk.WINDOW_MOVABLE
-                        |nk.WINDOW_SCALABLE
-                        |nk.WINDOW_MINIMIZABLE
-                        |nk.WINDOW_TITLE)):
+    if(nuklear.begin(title="Demonstration",
+                     bounds=nk.Rect(10.0,10.0,230.0,250.0),
+                     flags=nk.WINDOW_BORDER
+                       |nk.WINDOW_MOVABLE
+                       |nk.WINDOW_SCALABLE
+                       |nk.WINDOW_MINIMIZABLE
+                       |nk.WINDOW_TITLE)):
 
-        nk.layout_row_static(ctx, 30.0, 80, 5)
-        if nk.button_label(ctx=ctx,
-                           title="button"):
+        nuklear.layout_row_static(30.0, 80, 5)
+        if nuklear.button_label(title="button"):
             print('button pressed')
 
-        nk.layout_row_dynamic(ctx, 30.0, 2)
+        nuklear.layout_row_dynamic(30.0, 2)
 
         # simulate a local static variable
         try:
@@ -254,14 +253,12 @@ while not glfw.glfwWindowShouldClose(window):
         except Exception:
             op = 0
 
-        if nk.option_label(ctx=ctx,
-                           label="easy",
-                           active= op == 0): op = 0
-        if nk.option_label(ctx=ctx,
-                           label="hard",
-                           active= op == 1): op = 1
+        if nuklear.option_label(label="easy",
+                                active= op == 0): op = 0
+        if nuklear.option_label(label="hard",
+                                active= op == 1): op = 1
 
-        nk.layout_row_dynamic(ctx, 25.0, 1)
+        nuklear.layout_row_dynamic(25.0, 1)
 
         # simulate a local static variable
         try:
@@ -269,21 +266,16 @@ while not glfw.glfwWindowShouldClose(window):
         except Exception:
             prop = 20
 
+        prop = nuklear.property_int(name="Compression:",
+                                    minV=0,
+                                    val=prop,
+                                    maxV=100,
+                                    step=10,
+                                    inc_per_pixel=1);
 
-        prop = nk.property_int(ctx=ctx,
-                               name="Compression:",
-                               minV=0,
-                               val=prop,
-                               maxV=100,
-                               step=10,
-                               inc_per_pixel=1);
-
-        nk.layout_row_dynamic(ctx, 20.0, 1)
-        nk.label(ctx=ctx,
-                 text="background:",
-                 alignment=nk.TEXT_LEFT)
-
-
+        nuklear.layout_row_dynamic(20.0, 1)
+        nuklear.label(text="background:",
+                      alignment=nk.TEXT_LEFT)
 
         # simulate a local static variable
         try:
@@ -291,48 +283,41 @@ while not glfw.glfwWindowShouldClose(window):
         except Exception:
             background = nk.Color(0, 0, 0, 255)
 
-
-
-        nk.layout_row_dynamic(ctx, 25.0, 1)
-
+        nuklear.layout_row_dynamic(25.0, 1)
         if nk.combo_begin_color(ctx,
-                                        background,
-                                        nk.Vec2(nk.widget_width(ctx),
-                                                       400)):
-            nk.layout_row_dynamic(ctx, 120.0, 1);
+                                background,
+                                nk.Vec2(nk.widget_width(ctx),
+                                        400)):
+            nuklear.layout_row_dynamic(120.0, 1);
             background = nk.color_picker(ctx,
-                                                 background,
-                                                 nk.RGBA)
+                                         background,
+                                         nk.RGBA)
 
-            nk.layout_row_dynamic(ctx, 25.0, 1);
-            background.r = nk.propertyi(ctx=ctx,
-                                        name="#R:",
-                                        minVal=0,
-                                        val=background.r,
-                                        maxVal=255,
-                                        step=1,
-                                        inc_per_pixel=1.0)
-            background.g = nk.propertyi(ctx=ctx,
-                                        name="#G:",
-                                        minVal=0,
-                                        val=background.g,
-                                        maxVal=255,
-                                        step=1,
-                                        inc_per_pixel=1.0)
-            background.b = nk.propertyi(ctx=ctx,
-                                        name="#B:",
-                                        minVal=0,
-                                        val=background.b,
-                                        maxVal=255,
-                                        step=1,
-                                        inc_per_pixel=1.0)
-            background.a = nk.propertyi(ctx=ctx,
-                                        name="#A:",
-                                        minVal=0,
-                                        val=background.a,
-                                        maxVal=255,
-                                        step=1,
-                                        inc_per_pixel=1.0)
+            nuklear.layout_row_dynamic(25.0, 1);
+            background.r = nuklear.propertyi(name="#R:",
+                                             minVal=0,
+                                             val=background.r,
+                                             maxVal=255,
+                                             step=1,
+                                             inc_per_pixel=1.0)
+            background.g = nuklear.propertyi(name="#G:",
+                                             minVal=0,
+                                             val=background.g,
+                                             maxVal=255,
+                                             step=1,
+                                             inc_per_pixel=1.0)
+            background.b = nuklear.propertyi(name="#B:",
+                                             minVal=0,
+                                             val=background.b,
+                                             maxVal=255,
+                                             step=1,
+                                             inc_per_pixel=1.0)
+            background.a = nuklear.propertyi(name="#A:",
+                                             minVal=0,
+                                             val=background.a,
+                                             maxVal=255,
+                                             step=1,
+                                             inc_per_pixel=1.0)
 
 
             gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
@@ -394,10 +379,9 @@ while not glfw.glfwWindowShouldClose(window):
     if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
 
 
-    if nk.begin(ctx=ctx,
-                title="Overview",
-                bounds=nk.Rect(10,300,400,600),
-                flags=window_flags):
+    if nuklear.begin(title="Overview",
+                     bounds=nk.Rect(10,300,400,600),
+                     flags=window_flags):
         if show_menu:
             try:
                 mprog
@@ -420,46 +404,48 @@ while not glfw.glfwWindowShouldClose(window):
             nk.menubar_begin(ctx)
             nk.layout_row_begin(ctx, nk.STATIC, ctypes.c_float(25.0),5)
             nk.layout_row_push(ctx, ctypes.c_float(45.0))
-            if nk.menu_begin_label(ctx=ctx,
-                                   text="MENU",
-                                   align=nk.TEXT_LEFT,
-                                   size=nk.Vec2(120,120)):
-                nk.layout_row_dynamic(ctx, 25.0, 1)
-                if nk.menu_item_label(ctx=ctx,
-                                      label="Hide",
-                                      align=nk.TEXT_LEFT):
+            if nuklear.menu_begin_label(text="MENU",
+                                        align=nk.TEXT_LEFT,
+                                        size=nk.Vec2(120,120)):
+                nuklear.layout_row_dynamic(25.0, 1)
+                if nuklear.menu_item_label(label="Hide",
+                                           align=nk.TEXT_LEFT):
                     show_menu = False
-                if nk.menu_item_label(ctx=ctx,
-                                      label="About",
-                                      align=nk.TEXT_LEFT):
+                if nuklear.menu_item_label(label="About",
+                                           align=nk.TEXT_LEFT):
                     show_app_about = True
-                (mprog,_) = nk.progress(ctx, mprog, 100, nk.MODIFIABLE)
-                (mslider,_) = nk.slider_int(ctx, 0, mslider, 16, 1)
+                (mprog,clicked) = nuklear.progress(cur=mprog,
+                                                   max=100,
+                                                   is_modifyable=nk.MODIFIABLE)
+                (mslider,clicked) = nuklear.slider_int(minV=0,
+                                                       value=mslider,
+                                                       maxV=16,
+                                                       step=1)
                 # TODO, for some reason, this checkbox is not showing.
                 # if i move it up 2 lines, it does, and another widget
                 # is not showing
-                (mcheck,_) = nk.checkbox_label(ctx=ctx,
-                                               text="check",
-                                               active=mcheck)
-
-
+                (mcheck,clicked) = nuklear.checkbox_label(text="check",
+                                                          active=mcheck)
 
                 nk.menu_end(ctx)
             nk.layout_row_push(ctx, ctypes.c_float(60.0))
-            if nk.menu_begin_label(ctx=ctx,
-                                   text="Advanced",
-                                   align=nk.TEXT_LEFT,
-                                   size=nk.Vec2(200,600)):
+            if nuklear.menu_begin_label(text="Advanced",
+                                        align=nk.TEXT_LEFT,
+                                        size=nk.Vec2(200,600)):
                 # TODO -- do the advanced menu
 
                 nk.menu_end(ctx)
 
             nk.layout_row_push(ctx, ctypes.c_float(70.0));
-            (mprog, _) = nk.progress(ctx, mprog, 100, nk.MODIFIABLE)
-            (mslider,_) = nk.slider_int(ctx, 0, mslider, 16, 1)
-            (mcheck,_) = nk.checkbox_label(ctx=ctx,
-                                           text="check",
-                                           active=mcheck)
+            (mprog, clicked) = nuklear.progress(cur=mprog,
+                                                max=100,
+                                                is_modifyable=nk.MODIFIABLE)
+            (mslider,clicked) = nuklear.slider_int(minV=0,
+                                                   value=mslider,
+                                                   maxV=16,
+                                                   step=1)
+            (mcheck,clicked) = nuklear.checkbox_label(text="check",
+                                                      active=mcheck)
 
             nk.menubar_end(ctx)
 
@@ -469,15 +455,12 @@ while not glfw.glfwWindowShouldClose(window):
                                   title="About",
                                   flags=nk.WINDOW_CLOSABLE,
                                   rect=nk.Rect(20,100,300,190)):
-                    nk.layout_row_dynamic(ctx, 20.0, 1)
-                    nk.label(ctx=ctx,
-                             text="Nuklear",
-                             alignment=nk.TEXT_LEFT)
-                    nk.label(ctx=ctx,
-                             text="By Micha Mettke",
-                             alignment=nk.TEXT_LEFT)
-                    nk.label(ctx=ctx,
-                             text="nuklear is licensed under the public domain License.",
+                    nuklear.layout_row_dynamic(20.0, 1)
+                    nuklear.label(text="Nuklear",
+                                  alignment=nk.TEXT_LEFT)
+                    nuklear.label(text="By Micha Mettke",
+                                  alignment=nk.TEXT_LEFT)
+                    nuklear.label(text="nuklear is licensed under the public domain License.",
                              alignment=nk.TEXT_LEFT)
 
                     nk.popup_end(ctx)
@@ -487,31 +470,23 @@ while not glfw.glfwWindowShouldClose(window):
                             theType=nk.TREE_TAB,
                             title="Window",
                             state=nk.MINIMIZED) :
-                nk.layout_row_dynamic(ctx, 30.0, 2);
-                (titlebar,_) = nk.checkbox_label(ctx=ctx,
-                                                 text="Titlebar",
-                                                 active=titlebar);
-                (show_menu,_) = nk.checkbox_label(ctx=ctx,
-                                                  text="Menu",
-                                                  active=show_menu);
-                (border,_) = nk.checkbox_label(ctx=ctx,
-                                               text="Border",
-                                               active=border);
-                (resize,_) = nk.checkbox_label(ctx=ctx,
-                                               text="Resizable",
-                                               active=resize);
-                (movable,_) = nk.checkbox_label(ctx=ctx,
-                                                text="Movable",
-                                                active=movable);
-                (no_scrollbar,_) = nk.checkbox_label(ctx=ctx,
-                                                     text="No Scrollbar",
-                                                     active=no_scrollbar);
-                (minimizable,_) = nk.checkbox_label(ctx=ctx,
-                                                    text="Minimizable",
-                                                    active=minimizable);
-                (scale_left,_) = nk.checkbox_label(ctx=ctx,
-                                                   text="Scale Left",
-                                                   active=scale_left);
+                nuklear.layout_row_dynamic(30.0, 2);
+                (titlebar,clicked) = nuklear.checkbox_label(text="Titlebar",
+                                                            active=titlebar);
+                (show_menu,clicked) = nuklear.checkbox_label(text="Menu",
+                                                             active=show_menu);
+                (border,clicked) = nuklear.checkbox_label(text="Border",
+                                                          active=border);
+                (resize,clicked) = nuklear.checkbox_label(text="Resizable",
+                                                          active=resize);
+                (movable,clicked) = nuklear.checkbox_label(text="Movable",
+                                                           active=movable);
+                (no_scrollbar,clicked) = nuklear.checkbox_label(text="No Scrollbar",
+                                                                active=no_scrollbar);
+                (minimizable,clicked) = nuklear.checkbox_label(text="Minimizable",
+                                                               active=minimizable);
+                (scale_left,clicked) = nuklear.checkbox_label(text="Scale Left",
+                                                              active=scale_left);
                 nk.tree_pop(ctx);
             if nk.tree_push(ctx=ctx,
                             theType=nk.TREE_TAB,
@@ -521,35 +496,27 @@ while not glfw.glfwWindowShouldClose(window):
                                 theType=nk.TREE_NODE,
                                 title="Text",
                                 state=nk.MINIMIZED) :
-                    nk.layout_row_dynamic(ctx, 20.0 ,1)
-                    nk.label(ctx=ctx,
-                             text="Label aligned left",
-                             alignment=nk.TEXT_LEFT)
-                    nk.label(ctx=ctx,
-                             text="Label aligned centered",
-                             alignment=nk.TEXT_CENTERED)
+                    nuklear.layout_row_dynamic(20.0 ,1)
+                    nuklear.label(text="Label aligned left",
+                                  alignment=nk.TEXT_LEFT)
+                    nuklear.label(text="Label aligned centered",
+                                  alignment=nk.TEXT_CENTERED)
                     # TODO - why doesn't text_right work, but text_align_right does?
-                    nk.label(ctx=ctx,
-                             text="Label aligned right",
-                             alignment=nk.TEXT_ALIGN_RIGHT)
-                    nk.label_colored(ctx=ctx,
-                                     text="Blue text",
-                                     align=nk.TEXT_LEFT,
-                                     color=nk.Color(0,0,255,255))
-                    nk.label_colored(ctx=ctx,
-                                     text="Yellow text",
-                                     align=nk.TEXT_LEFT,
-                                     color=nk.Color(255,255,0,255))
-                    nk.text(ctx=ctx,
-                            text="Text without /0",
-                            length=15,
-                            alignment=nk.TEXT_ALIGN_RIGHT)
-                    nk.layout_row_static(ctx, 100.0, 200, 1)
-                    nk.label_wrap(ctx=ctx,
-                                  text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
-                    nk.layout_row_dynamic(ctx, 100.0, 1);
-                    nk.label_wrap(ctx=ctx,
-                                  text="This is another long text to show dynamic window changes on multiline text")
+                    nuklear.label(text="Label aligned right",
+                                  alignment=nk.TEXT_ALIGN_RIGHT)
+                    nuklear.label_colored(text="Blue text",
+                                          align=nk.TEXT_LEFT,
+                                          color=nk.Color(0,0,255,255))
+                    nuklear.label_colored(text="Yellow text",
+                                          align=nk.TEXT_LEFT,
+                                          color=nk.Color(255,255,0,255))
+                    nuklear.text(text="Text without /0",
+                                 length=15,
+                                 alignment=nk.TEXT_ALIGN_RIGHT)
+                    nuklear.layout_row_static(100.0, 200, 1)
+                    nuklear.label_wrap(text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
+                    nuklear.layout_row_dynamic(100.0, 1);
+                    nuklear.label_wrap(text="This is another long text to show dynamic window changes on multiline text")
 
                     nk.tree_pop(ctx)
                 if nk.tree_push(ctx=ctx,
