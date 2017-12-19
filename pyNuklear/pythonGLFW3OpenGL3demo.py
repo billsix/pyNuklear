@@ -125,7 +125,7 @@ glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,3)
 glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,3)
 glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,glfw.GLFW_OPENGL_CORE_PROFILE)
 #for osx
-glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);
+glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
 
 # Create a windowed mode window and its OpenGL context
@@ -198,7 +198,7 @@ while not glfw.glfwWindowShouldClose(window):
                    farZ= 10000.0)
 
     # get input from keyboard for camera movement
-    if not nk.item_is_any_active(ctx):
+    if not nuklear.item_is_any_active():
         # set up Camera
         if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
             camera.rotationY -= 0.03
@@ -271,7 +271,7 @@ while not glfw.glfwWindowShouldClose(window):
                                     val=prop,
                                     maxV=100,
                                     step=10,
-                                    inc_per_pixel=1);
+                                    inc_per_pixel=1)
 
         nuklear.layout_row_dynamic(20.0, 1)
         nuklear.label(text="background:",
@@ -284,16 +284,14 @@ while not glfw.glfwWindowShouldClose(window):
             background = nk.Color(0, 0, 0, 255)
 
         nuklear.layout_row_dynamic(25.0, 1)
-        if nk.combo_begin_color(ctx,
-                                background,
-                                nk.Vec2(nk.widget_width(ctx),
-                                        400)):
-            nuklear.layout_row_dynamic(120.0, 1);
-            background = nk.color_picker(ctx,
-                                         background,
-                                         nk.RGBA)
+        if nuklear.combo_begin_color(color=background,
+                                     size=nk.Vec2(nuklear.widget_width(),
+                                                  400)):
+            nuklear.layout_row_dynamic(120.0, 1)
+            background = nuklear.color_picker(color=background,
+                                              format=nk.RGBA)
 
-            nuklear.layout_row_dynamic(25.0, 1);
+            nuklear.layout_row_dynamic(25.0, 1)
             background.r = nuklear.propertyi(name="#R:",
                                              minVal=0,
                                              val=background.r,
@@ -322,9 +320,9 @@ while not glfw.glfwWindowShouldClose(window):
 
             gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
 
-            nk.combo_end(ctx);
+            nuklear.combo_end()
 
-    nk.end(ctx)
+    nuklear.end()
 
 
 
@@ -369,7 +367,7 @@ while not glfw.glfwWindowShouldClose(window):
     window_flags = 0
     #TODO -- map the ctx struct
 
-    #ctx->style.window.header.align = header_align;
+    #ctx->style.window.header.align = header_align
 
     if(border) : window_flags |= nk.WINDOW_BORDER
     if(resize) : window_flags |= nk.WINDOW_SCALABLE
@@ -401,9 +399,11 @@ while not glfw.glfwWindowShouldClose(window):
             except Exception:
                 show_app_about = False
 
-            nk.menubar_begin(ctx)
-            nk.layout_row_begin(ctx, nk.STATIC, ctypes.c_float(25.0),5)
-            nk.layout_row_push(ctx, ctypes.c_float(45.0))
+            nuklear.menubar_begin()
+            nuklear.layout_row_begin(fmt=nk.STATIC,
+                                     row_height=25.0,
+                                     cols=5)
+            nuklear.layout_row_push(ratio_or_width=45.0)
             if nuklear.menu_begin_label(text="MENU",
                                         align=nk.TEXT_LEFT,
                                         size=nk.Vec2(120,120)):
@@ -414,88 +414,90 @@ while not glfw.glfwWindowShouldClose(window):
                 if nuklear.menu_item_label(label="About",
                                            align=nk.TEXT_LEFT):
                     show_app_about = True
-                (mprog,clicked) = nuklear.progress(cur=mprog,
-                                                   max=100,
-                                                   is_modifyable=nk.MODIFIABLE)
-                (mslider,clicked) = nuklear.slider_int(minV=0,
-                                                       value=mslider,
-                                                       maxV=16,
-                                                       step=1)
+                (modified,mprog) = nuklear.progress(cur=mprog,
+                                                    max=100,
+                                                    is_modifyable=nk.MODIFIABLE)
+                (modified,mslider) = nuklear.slider_int(minV=0,
+                                                        value=mslider,
+                                                        maxV=16,
+                                                        step=1)
                 # TODO, for some reason, this checkbox is not showing.
                 # if i move it up 2 lines, it does, and another widget
                 # is not showing
-                (mcheck,clicked) = nuklear.checkbox_label(text="check",
-                                                          active=mcheck)
+                (modified,mcheck) = nuklear.checkbox_label(text="check",
+                                                           active=mcheck)
 
-                nk.menu_end(ctx)
-            nk.layout_row_push(ctx, ctypes.c_float(60.0))
+                nuklear.menu_end()
+            nuklear.layout_row_push(ratio_or_width=60.0)
             if nuklear.menu_begin_label(text="Advanced",
                                         align=nk.TEXT_LEFT,
                                         size=nk.Vec2(200,600)):
                 # TODO -- do the advanced menu
 
-                nk.menu_end(ctx)
+                nuklear.menu_end()
 
-            nk.layout_row_push(ctx, ctypes.c_float(70.0));
-            (mprog, clicked) = nuklear.progress(cur=mprog,
-                                                max=100,
-                                                is_modifyable=nk.MODIFIABLE)
-            (mslider,clicked) = nuklear.slider_int(minV=0,
-                                                   value=mslider,
-                                                   maxV=16,
-                                                   step=1)
-            (mcheck,clicked) = nuklear.checkbox_label(text="check",
-                                                      active=mcheck)
+            nuklear.layout_row_push(70.0)
+            (modified,mprog) = nuklear.progress(cur=mprog,
+                                                 max=100,
+                                                 is_modifyable=nk.MODIFIABLE)
+            (modified,mslider) = nuklear.slider_int(minV=0,
+                                                    value=mslider,
+                                                    maxV=16,
+                                                    step=1)
+            (modified,mcheck) = nuklear.checkbox_label(text="check",
+                                                       active=mcheck)
 
-            nk.menubar_end(ctx)
+            nuklear.menubar_end()
 
             if show_app_about:
-                if nk.popup_begin(ctx=ctx,
-                                  theType=nk.POPUP_STATIC,
-                                  title="About",
-                                  flags=nk.WINDOW_CLOSABLE,
-                                  rect=nk.Rect(20,100,300,190)):
+                if nuklear.popup_begin(theType=nk.POPUP_STATIC,
+                                       title="About",
+                                       flags=nk.WINDOW_CLOSABLE,
+                                       rect=nk.Rect(20,100,400,200)):
                     nuklear.layout_row_dynamic(20.0, 1)
-                    nuklear.label(text="Nuklear",
+                    nuklear.label(text="pyNuklear",
+                                  alignment=nk.TEXT_LEFT)
+                    nuklear.label(text="By William Emerison Six",
+                                  alignment=nk.TEXT_LEFT)
+                    nuklear.label(text="pyNuklear is MIT-licensed.",
+                             alignment=nk.TEXT_LEFT)
+                    nuklear.label(text="based on Nuklear",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="By Micha Mettke",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="nuklear is licensed under the public domain License.",
                              alignment=nk.TEXT_LEFT)
 
-                    nk.popup_end(ctx)
+                    nuklear.popup_end()
                 else:
                     show_app_about = False
-            if nk.tree_push(ctx=ctx,
-                            theType=nk.TREE_TAB,
-                            title="Window",
-                            state=nk.MINIMIZED) :
-                nuklear.layout_row_dynamic(30.0, 2);
-                (titlebar,clicked) = nuklear.checkbox_label(text="Titlebar",
-                                                            active=titlebar);
-                (show_menu,clicked) = nuklear.checkbox_label(text="Menu",
-                                                             active=show_menu);
-                (border,clicked) = nuklear.checkbox_label(text="Border",
-                                                          active=border);
-                (resize,clicked) = nuklear.checkbox_label(text="Resizable",
-                                                          active=resize);
-                (movable,clicked) = nuklear.checkbox_label(text="Movable",
-                                                           active=movable);
-                (no_scrollbar,clicked) = nuklear.checkbox_label(text="No Scrollbar",
-                                                                active=no_scrollbar);
-                (minimizable,clicked) = nuklear.checkbox_label(text="Minimizable",
-                                                               active=minimizable);
-                (scale_left,clicked) = nuklear.checkbox_label(text="Scale Left",
-                                                              active=scale_left);
-                nk.tree_pop(ctx);
-            if nk.tree_push(ctx=ctx,
-                            theType=nk.TREE_TAB,
-                            title="Widgets",
-                            state=nk.MINIMIZED) :
-                if nk.tree_push(ctx=ctx,
-                                theType=nk.TREE_NODE,
-                                title="Text",
-                                state=nk.MINIMIZED) :
+            if nuklear.tree_push(theType=nk.TREE_TAB,
+                                 title="Window",
+                                 state=nk.MINIMIZED) :
+                nuklear.layout_row_dynamic(30.0, 2)
+                (modified,titlebar) = nuklear.checkbox_label(text="Titlebar",
+                                                             active=titlebar)
+                (modified,show_menu) = nuklear.checkbox_label(text="Menu",
+                                                              active=show_menu)
+                (modified,border) = nuklear.checkbox_label(text="Border",
+                                                           active=border)
+                (modified,resize) = nuklear.checkbox_label(text="Resizable",
+                                                           active=resize)
+                (modified,movable) = nuklear.checkbox_label(text="Movable",
+                                                            active=movable)
+                (modified,no_scrollbar) = nuklear.checkbox_label(text="No Scrollbar",
+                                                                 active=no_scrollbar)
+                (modified,minimizable) = nuklear.checkbox_label(text="Minimizable",
+                                                                active=minimizable)
+                (modified,scale_left) = nuklear.checkbox_label(text="Scale Left",
+                                                               active=scale_left)
+                nuklear.tree_pop()
+            if nuklear.tree_push(theType=nk.TREE_TAB,
+                                 title="Widgets",
+                                 state=nk.MINIMIZED) :
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Text",
+                                     state=nk.MINIMIZED) :
                     nuklear.layout_row_dynamic(20.0 ,1)
                     nuklear.label(text="Label aligned left",
                                   alignment=nk.TEXT_LEFT)
@@ -515,64 +517,55 @@ while not glfw.glfwWindowShouldClose(window):
                                  alignment=nk.TEXT_ALIGN_RIGHT)
                     nuklear.layout_row_static(100.0, 200, 1)
                     nuklear.label_wrap(text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
-                    nuklear.layout_row_dynamic(100.0, 1);
+                    nuklear.layout_row_dynamic(100.0, 1)
                     nuklear.label_wrap(text="This is another long text to show dynamic window changes on multiline text")
 
-                    nk.tree_pop(ctx)
-                if nk.tree_push(ctx=ctx,
-                                theType=nk.TREE_NODE,
-                                title="Button",
-                                state=nk.MINIMIZED) :
-                    nk.tree_pop(ctx)
-                if nk.tree_push(ctx=ctx,
-                                theType=nk.TREE_NODE,
-                                title="Basic",
-                                state=nk.MINIMIZED) :
-                    nk.tree_pop(ctx)
-                if nk.tree_push(ctx=ctx,
-                                theType=nk.TREE_NODE,
-                                title="Selectable",
-                                state=nk.MINIMIZED) :
-                    nk.tree_pop(ctx)
-                if nk.tree_push(ctx=ctx,
-                                theType=nk.TREE_NODE,
-                                title="Combo",
-                                state=nk.MINIMIZED) :
-                    nk.tree_pop(ctx)
-                if nk.tree_push(ctx=ctx,
-                                theType=nk.TREE_NODE,
-                                title="Input",
-                                state=nk.MINIMIZED) :
-                    nk.tree_pop(ctx)
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Button",
+                                     state=nk.MINIMIZED) :
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Basic",
+                                     state=nk.MINIMIZED) :
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Selectable",
+                                     state=nk.MINIMIZED) :
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Combo",
+                                     state=nk.MINIMIZED) :
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Input",
+                                     state=nk.MINIMIZED) :
+                    nuklear.tree_pop()
 
-                nk.tree_pop(ctx);
-            if nk.tree_push(ctx=ctx,
-                            theType=nk.TREE_TAB,
-                            title="Chart",
-                            state=nk.MINIMIZED,) :
+                nuklear.tree_pop()
+            if nuklear.tree_push(theType=nk.TREE_TAB,
+                                 title="Chart",
+                                 state=nk.MINIMIZED,) :
                 #TODO
-                nk.tree_pop(ctx);
-            if nk.tree_push(ctx=ctx,
-                            theType=nk.TREE_TAB,
-                            title="Chart",
-                            state=nk.MINIMIZED) :
+                nuklear.tree_pop()
+            if nuklear.tree_push(theType=nk.TREE_TAB,
+                                 title="Chart",
+                                 state=nk.MINIMIZED) :
                 #TODO
-                nk.tree_pop(ctx);
-            if nk.tree_push(ctx=ctx,
-                            theType=nk.TREE_TAB,
-                            title="Popup",
-                            state=nk.MINIMIZED) :
+                nuklear.tree_pop()
+            if nuklear.tree_push(theType=nk.TREE_TAB,
+                                 title="Popup",
+                                 state=nk.MINIMIZED) :
                 #TODO
-                nk.tree_pop(ctx);
-            if nk.tree_push(ctx=ctx,
-                            theType=nk.TREE_TAB,
-                            title="Layout",
-                            state=nk.MINIMIZED) :
+                nuklear.tree_pop()
+            if nuklear.tree_push(theType=nk.TREE_TAB,
+                                 title="Layout",
+                                 state=nk.MINIMIZED) :
                 #TODO
-                nk.tree_pop(ctx);
+                nuklear.tree_pop()
 
 
-    nk.end(ctx)
+    nuklear.end()
 
     nk.glfw3_render(nk.ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
