@@ -241,7 +241,9 @@ while not glfw.glfwWindowShouldClose(window):
                        |nk.WINDOW_MINIMIZABLE
                        |nk.WINDOW_TITLE)):
 
-        nuklear.layout_row_static(30.0, 80, 5)
+        nuklear.layout_row_static(height=30.0,
+                                  item_width=80,
+                                  cols=5)
         if nuklear.button_label(title="button"):
             print('button pressed')
 
@@ -515,7 +517,9 @@ while not glfw.glfwWindowShouldClose(window):
                     nuklear.text(text="Text without /0",
                                  length=15,
                                  alignment=nk.TEXT_ALIGN_RIGHT)
-                    nuklear.layout_row_static(100.0, 200, 1)
+                    nuklear.layout_row_static(height=100.0,
+                                              item_width=200,
+                                              cols=1)
                     nuklear.label_wrap(text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
                     nuklear.layout_row_dynamic(100.0, 1)
                     nuklear.label_wrap(text="This is another long text to show dynamic window changes on multiline text")
@@ -524,14 +528,104 @@ while not glfw.glfwWindowShouldClose(window):
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Button",
                                      state=nk.MINIMIZED) :
+                    nuklear.layout_row_static(height=30,
+                                              item_width=100,
+                                              cols=3)
+                    if nuklear.button_label(title="Button"):
+                        print("Button pressed!")
+                    nuklear.button_set_behavior(nk.BUTTON_REPEATER)
+                    if nuklear.button_label(title="Repeater"):
+                        print("Repeater is being pressed!")
+                    nuklear.button_set_behavior(nk.BUTTON_DEFAULT)
+                    if nuklear.button_color(nk.Color(0,0,255,255)):
+                        pass
+                    nuklear.layout_row_static(height=25.0,
+                                              item_width=25,
+                                              cols=8)
+                    nuklear.button_symbol(nk.SYMBOL_CIRCLE_SOLID)
+                    nuklear.button_symbol(nk.SYMBOL_CIRCLE_OUTLINE)
+                    nuklear.button_symbol(nk.SYMBOL_RECT_SOLID)
+                    nuklear.button_symbol(nk.SYMBOL_RECT_OUTLINE)
+                    nuklear.button_symbol(nk.SYMBOL_TRIANGLE_UP)
+                    nuklear.button_symbol(nk.SYMBOL_TRIANGLE_DOWN)
+                    nuklear.button_symbol(nk.SYMBOL_TRIANGLE_LEFT)
+                    nuklear.button_symbol(nk.SYMBOL_TRIANGLE_RIGHT)
+
+                    nuklear.layout_row_static(height=30.0,
+                                              item_width=100,
+                                              cols=2)
+                    nuklear.button_symbol_label(symbol=nk.SYMBOL_TRIANGLE_LEFT,
+                                                label="prev",
+                                                align=nk.TEXT_RIGHT)
+                    nuklear.button_symbol_label(symbol=nk.SYMBOL_TRIANGLE_RIGHT,
+                                                label="next",
+                                                align=nk.TEXT_LEFT)
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Basic",
                                      state=nk.MINIMIZED) :
+                    nuklear.layout_row_static(height=30.0,
+                                              item_width=100,
+                                              cols=1)
+                    try:
+                        basicCheckBox
+                    except Exception:
+                        basicCheckBox = False
+                    (modified,basicCheckBox) = nuklear.checkbox_label(text="CheckBox",
+                                                                      active=basicCheckBox)
+
+                    nuklear.layout_row_static(height=30.0,
+                                              item_width=80,
+                                              cols=3)
+
+                    A = 1
+                    B = 2
+                    C = 3
+                    try:
+                        basicOption
+                    except Exception:
+                        basicOption = A
+
+                    if nuklear.option_label(label="optionA",
+                                            active= basicOption == A): basicOption = A
+                    if nuklear.option_label(label="optionB",
+                                            active= basicOption == B): basicOption = B
+                    if nuklear.option_label(label="optionC",
+                                            active= basicOption == C): basicOption = C
+
+
+                    #TODO -- figure out why this code isn't working quite correctly
+                    nuklear.layout_row(layout_format=nk.STATIC,
+                                       height=30.0,
+                                       cols=2,
+                                       ratio=[120.0,150.0])
+                    try:
+                        basicSlider
+                    except Exception:
+                        basicSlider = 5
+                    nuklear.labelf(flags=nk.TEXT_LEFT,
+                                   label="Slider int")
+                    (modified,basicSlider) = nuklear.slider_int(minV=0,
+                                                                value=basicSlider,
+                                                                maxV=10,
+                                                                step=1)
+                    try:
+                        floatSlider
+                    except Exception:
+                        floatSlider = 2.5
+                    nuklear.label(text="Slider Float",
+                                  alignment=nk.TEXT_LEFT)
+                    (modified,floatSlider) = nuklear.slider_float(minV=0.0,
+                                                                  value=floatSlider,
+                                                                  maxV=5.0,
+                                                                  step=0.5)
+
+
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Selectable",
                                      state=nk.MINIMIZED) :
+
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Combo",

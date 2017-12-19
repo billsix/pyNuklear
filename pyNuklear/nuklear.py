@@ -485,9 +485,8 @@ __layout_row_push__.arglist = [POINTER(Context), c_float]
 __layout_row_end__ = _nuklear.nk_layout_row_end
 __layout_row_end__.arglist = [POINTER(Context)]
 
-#TODO
-#layout_row = _nuklear.nk_layout_row
-#layout_row.arglist = [POINTER(Context), c_int, c_float, c_int, const c_float *ratio]
+__layout_row__ = _nuklear.nk_layout_row
+__layout_row__.arglist = [POINTER(Context), c_int, c_float, c_int, POINTER(c_float)]
 
 __layout_row_template_begin__ = _nuklear.nk_layout_row_template_begin
 __layout_row_template_begin__.arglist = [POINTER(Context), c_float]
@@ -645,7 +644,10 @@ __wrapped_label_wrap__.arglist = [POINTER(Context), c_char_p]
 
 # void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
 # void nk_image(struct nk_context*, struct nk_image);
-# void nk_labelf(struct nk_context*, nk_flags, const char*, ...);
+
+__labelf__ = _nuklear.nk_labelf
+__labelf__.arglist = [POINTER(Context), c_int, c_char_p]
+
 # void nk_labelf_colored(struct nk_context*, nk_flags align, struct nk_color, const char*,...);
 # void nk_labelf_wrap(struct nk_context*, const char*,...);
 # void nk_labelf_colored_wrap(struct nk_context*, struct nk_color, const char*,...);
@@ -666,10 +668,20 @@ __wrapped_button_label__.arglist = [POINTER(Context), c_char_p]
 __wrapped_button_label__.restype     = c_int
 
 
-# int nk_button_color(struct nk_context*, struct nk_color);
-# int nk_button_symbol(struct nk_context*, enum nk_symbol_type);
+__button_color__ = _nuklear.nk_button_color
+__button_color__.arglist = [POINTER(Context), Color]
+__button_color__.restype = c_int
+
+__button_symbol__ = _nuklear.nk_button_symbol
+__button_symbol__.arglist = [POINTER(Context), c_int]
+__button_symbol__.restype = c_int
+
 # int nk_button_image(struct nk_context*, struct nk_image img);
-# int nk_button_symbol_label(struct nk_context*, enum nk_symbol_type, const char*, nk_flags text_alignment);
+
+__button_symbol_label__ = _nuklear.nk_button_symbol_label
+__button_symbol_label__.arglist = [POINTER(Context), c_int, c_char_p, c_int]
+__button_symbol_label__.restype = c_int
+
 # int nk_button_symbol_text(struct nk_context*, enum nk_symbol_type, const char*, int, nk_flags alignment);
 # int nk_button_image_label(struct nk_context*, struct nk_image img, const char*, nk_flags text_alignment);
 # int nk_button_image_text(struct nk_context*, struct nk_image img, const char*, int, nk_flags alignment);
@@ -681,7 +693,11 @@ __wrapped_button_label__.restype     = c_int
 # int nk_button_symbol_label_styled(struct nk_context *ctx, const struct nk_style_button *style, enum nk_symbol_type symbol, const char *title, nk_flags align);
 # int nk_button_image_label_styled(struct nk_context*,const struct nk_style_button*, struct nk_image img, const char*, nk_flags text_alignment);
 # int nk_button_image_text_styled(struct nk_context*,const struct nk_style_button*, struct nk_image img, const char*, int, nk_flags alignment);
-# void nk_button_set_behavior(struct nk_context*, enum nk_button_behavior);
+
+
+__button_set_behavior__ = _nuklear.nk_button_set_behavior
+__button_set_behavior__.arglist = [POINTER(Context), c_int]
+
 # int nk_button_push_behavior(struct nk_context*, enum nk_button_behavior);
 # int nk_button_pop_behavior(struct nk_context*);
 
@@ -731,7 +747,11 @@ __wrapped_option_label__.restype = c_int
 # Slider
 # float nk_slide_float(struct nk_context*, float min, float val, float max, float step);
 # int nk_slide_int(struct nk_context*, int min, int val, int max, int step);
-# int nk_slider_float(struct nk_context*, float min, float *val, float max, float step);
+
+__wrapped_slider_float__ = _nuklear.nk_slider_float
+__wrapped_slider_float__.arglist = [POINTER(Context), c_float, POINTER(c_float), c_float, c_float]
+__wrapped_slider_float__.restype = c_int
+
 
 __wrapped_slider_int__ = _nuklear.nk_slider_int
 __wrapped_slider_int__.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
@@ -2643,6 +2663,11 @@ class NuklearContext:
     def option_label(self, label, active):
         return __wrapped_option_label__(self.ctx, str.encode(label), active)
 
+    def slider_float(self, minV, value, maxV, step):
+        v = ctypes.c_float(value)
+        wasModified = __wrapped_slider_float__(self.ctx, c_float(minV), ctypes.byref(v), c_float(maxV), c_float(step))
+        return (wasModified,v.value)
+
     def slider_int(self, minV, value, maxV, step):
         v = ctypes.c_int(value)
         wasModified = __wrapped_slider_int__(self.ctx, minV, ctypes.byref(v), maxV, step)
@@ -2701,6 +2726,10 @@ class NuklearContext:
     def menubar_begin(self):
         __menubar_begin__(self.ctx)
 
+    def layout_row(self, layout_format, height, cols, ratio):
+        arr = (ctypes.c_float * len(ratio))(*ratio)
+        __layout_row__(self.ctx, layout_format, ctypes.c_float(height), cols, arr)
+
     def layout_row_begin(self, fmt, row_height, cols):
         __layout_row_begin__(self.ctx,fmt, ctypes.c_float(row_height), cols)
 
@@ -2725,3 +2754,20 @@ class NuklearContext:
 
     def widget_width(self):
         return __widget_width__(self.ctx)
+
+    def button_set_behavior(self, behavior):
+        __button_set_behavior__(self.ctx, behavior)
+
+    def button_color(self,color):
+        return __button_color__(self.ctx,color)
+
+    def button_symbol(self, symbol):
+        return __button_symbol__(self.ctx, symbol)
+
+    def button_symbol_label(self,symbol,label,align):
+        return __button_symbol_label__(self.ctx, symbol, str.encode(label), align)
+
+    # although the C version takes in variable number of string argumets,
+    # along with formatting abilities, python already has such abilities natively
+    def labelf(self, flags, label):
+        __labelf__(self.ctx, flags, str.encode(label))
