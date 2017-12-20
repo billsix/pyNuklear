@@ -505,9 +505,8 @@ while not glfw.glfwWindowShouldClose(window):
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="Label aligned centered",
                                   alignment=nk.TEXT_CENTERED)
-                    # TODO - why doesn't text_right work, but text_align_right does?
                     nuklear.label(text="Label aligned right",
-                                  alignment=nk.TEXT_ALIGN_RIGHT)
+                                  alignment=nk.TEXT_RIGHT)
                     nuklear.label_colored(text="Blue text",
                                           align=nk.TEXT_LEFT,
                                           color=nk.Color(0,0,255,255))
@@ -595,16 +594,20 @@ while not glfw.glfwWindowShouldClose(window):
 
 
                     #TODO -- figure out why this code isn't working quite correctly
-                    nuklear.layout_row(layout_format=nk.STATIC,
-                                       height=30.0,
-                                       cols=2,
-                                       ratio=[120.0,150.0])
+                    # nuklear.layout_row(layout_format=nk.STATIC,
+                    #                    height=30.0,
+                    #                    cols=2,
+                    #                    ratio=[120.0,150.0])
+                    # once I figure that out, delete the subsequent 3 lines
+                    nuklear.layout_row_static(height=30.0,
+                                              item_width=100,
+                                              cols=2)
                     try:
                         basicSlider
                     except Exception:
                         basicSlider = 5
-                    nuklear.labelf(flags=nk.TEXT_LEFT,
-                                   label="Slider int")
+                    nuklear.label(text="Slider Int",
+                                  alignment=nk.TEXT_LEFT)
                     (modified,basicSlider) = nuklear.slider_int(minV=0,
                                                                 value=basicSlider,
                                                                 maxV=10,

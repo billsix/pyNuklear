@@ -613,12 +613,12 @@ __widget_height__.restype = c_float
 
 # Text
 
-TEXT_ALIGN_LEFT        = 1
-TEXT_ALIGN_CENTERED    = 2
-TEXT_ALIGN_RIGHT       = 4
-TEXT_ALIGN_TOP         = 8
-TEXT_ALIGN_MIDDLE      = 10
-TEXT_ALIGN_BOTTOM      = 20
+TEXT_ALIGN_LEFT        = 0x01
+TEXT_ALIGN_CENTERED    = 0x02
+TEXT_ALIGN_RIGHT       = 0x04
+TEXT_ALIGN_TOP         = 0x08
+TEXT_ALIGN_MIDDLE      = 0x10
+TEXT_ALIGN_BOTTOM      = 0x20
 
 TEXT_LEFT        = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_LEFT
 TEXT_CENTERED    = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_CENTERED
@@ -645,8 +645,9 @@ __wrapped_label_wrap__.arglist = [POINTER(Context), c_char_p]
 # void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
 # void nk_image(struct nk_context*, struct nk_image);
 
-__labelf__ = _nuklear.nk_labelf
-__labelf__.arglist = [POINTER(Context), c_int, c_char_p]
+# NO NEED TO BIND LABELF, python already has formatting abilities
+#__labelf__ = _nuklear.nk_labelf
+#__labelf__.arglist = [POINTER(Context), c_int, c_char_p]
 
 # void nk_labelf_colored(struct nk_context*, nk_flags align, struct nk_color, const char*,...);
 # void nk_labelf_wrap(struct nk_context*, const char*,...);
@@ -2727,7 +2728,10 @@ class NuklearContext:
         __menubar_begin__(self.ctx)
 
     def layout_row(self, layout_format, height, cols, ratio):
-        arr = (ctypes.c_float * len(ratio))(*ratio)
+        ctypesList = []
+        for x in range(len(ratio)):
+            ctypesList.append(ctypes.c_float(ratio[x]))
+        arr = (ctypes.c_float * len(ctypesList))(*ctypesList)
         __layout_row__(self.ctx, layout_format, ctypes.c_float(height), cols, arr)
 
     def layout_row_begin(self, fmt, row_height, cols):
@@ -2766,8 +2770,3 @@ class NuklearContext:
 
     def button_symbol_label(self,symbol,label,align):
         return __button_symbol_label__(self.ctx, symbol, str.encode(label), align)
-
-    # although the C version takes in variable number of string argumets,
-    # along with formatting abilities, python already has such abilities natively
-    def labelf(self, flags, label):
-        __labelf__(self.ctx, flags, str.encode(label))
