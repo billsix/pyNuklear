@@ -22,7 +22,6 @@ import os
 import ctypes.util
 from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_short,
                     c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
-import glfw.glfw as glfw
 import inspect
 import builtins
 
@@ -2630,28 +2629,6 @@ WINDOW_REMOVE_ROM    = 1 << 16
 # };
 
 
-
-GLFW3_DEFAULT=0
-GLFW3_INSTALL_CALLBACKS=1
-
-
-glfw3_init             = _nuklear.nk_glfw3_init
-glfw3_init.restype     = POINTER(Context)
-glfw3_init.arglist     = [POINTER(glfw.GLFWwindow), c_int]
-
-class FontAtlas(Structure): pass
-
-glfw3_font_stash_begin = _nuklear.nk_glfw3_font_stash_begin
-glfw3_font_stash_begin.arglist = [POINTER(POINTER(FontAtlas))]
-
-glfw3_font_stash_end = _nuklear.nk_glfw3_font_stash_end
-
-glfw3_new_frame = _nuklear.nk_glfw3_new_frame
-
-
-
-glfw3_render = _nuklear.nk_glfw3_render
-glfw3_render.arglist = [c_int, c_int, c_int]
 
 
 # because average programmers who are English speakers like Subject-Verb-Object

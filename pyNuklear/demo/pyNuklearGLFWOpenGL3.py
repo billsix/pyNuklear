@@ -34,6 +34,7 @@ pwd = os.path.dirname(os.path.abspath(__file__))
 builtins.NUKLEAR_PATH = ctypes.CDLL(os.path.join(pwd, '..', '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL3.so'))
 
 import nuklear as nk
+import nuklearGLFW3 as nkGLFW3
 from demoTriangle import *
 from overview import *
 
@@ -65,12 +66,12 @@ if not window:
 # Make the window's context current
 glfw.glfwMakeContextCurrent(window)
 
-ctx = nk.glfw3_init(window, nk.GLFW3_INSTALL_CALLBACKS)
+ctx = nkGLFW3.glfw3_init(window, nkGLFW3.GLFW3_INSTALL_CALLBACKS)
 nuklear = nk.NuklearContext(ctx)
 
-fontAtlas = nk.FontAtlas()
-nk.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
-nk.glfw3_font_stash_end()
+fontAtlas = nkGLFW3.FontAtlas()
+nkGLFW3.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
+nkGLFW3.glfw3_font_stash_end()
 
 # Install a key handler
 def on_key(window, key, scancode, action, mods):
@@ -109,7 +110,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     # Poll for and process events
     glfw.glfwPollEvents()
-    nk.glfw3_new_frame()
+    nkGLFW3.glfw3_new_frame()
 
     width, height = glfw.glfwGetFramebufferSize(window)
     gl.glViewport(0, 0, width, height)
@@ -263,7 +264,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     overview(nuklear)
 
-    nk.glfw3_render(nk.ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
+    nkGLFW3.glfw3_render(nk.ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers

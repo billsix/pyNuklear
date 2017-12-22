@@ -1,0 +1,63 @@
+#Copyright (c) 2017 William Emerison Six
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+
+
+import os
+import ctypes.util
+from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_short,
+                    c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
+import inspect
+import builtins
+import glfw.glfw as glfw
+
+# Load the nuklear shared library
+
+if hasattr(builtins, "NUKLEAR_PATH"):
+    NUKLEAR_PATH = builtins.NUKLEAR_PATH
+else:
+    print("Nuklear shared library not found")
+    sys.exit(1)
+_nuklear = NUKLEAR_PATH
+
+
+class Context(Structure): pass
+
+
+GLFW3_DEFAULT=0
+GLFW3_INSTALL_CALLBACKS=1
+
+
+glfw3_init             = _nuklear.nk_glfw3_init
+glfw3_init.restype     = POINTER(Context)
+glfw3_init.arglist     = [POINTER(glfw.GLFWwindow), c_int]
+
+class FontAtlas(Structure): pass
+
+glfw3_font_stash_begin = _nuklear.nk_glfw3_font_stash_begin
+glfw3_font_stash_begin.arglist = [POINTER(POINTER(FontAtlas))]
+
+glfw3_font_stash_end = _nuklear.nk_glfw3_font_stash_end
+
+glfw3_new_frame = _nuklear.nk_glfw3_new_frame
+
+
+
+glfw3_render = _nuklear.nk_glfw3_render
+glfw3_render.arglist = [c_int, c_int, c_int]
