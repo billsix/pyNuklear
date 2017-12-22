@@ -24,7 +24,19 @@ from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_sho
                     c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
 import glfw.glfw as glfw
 import inspect
-pwd = os.path.dirname(os.path.abspath(__file__))
+import builtins
+
+# Load the nuklear shared library
+
+if hasattr(builtins, "NUKLEAR_PATH"):
+    NUKLEAR_PATH = builtins.NUKLEAR_PATH
+else:
+    print("Nuklear shared library not found")
+    sys.exit(1)
+_nuklear = NUKLEAR_PATH
+
+
+
 
 # nuklear needs to uniquely identify widgets, and one
 # way to do so is to inspect the function caller's frame info
@@ -36,9 +48,6 @@ pwd = os.path.dirname(os.path.abspath(__file__))
 def callerFrameInfo():
     previous_frame = inspect.currentframe().f_back.f_back.f_back
     return inspect.getframeinfo(previous_frame)
-
-# Load it
-_nuklear = ctypes.CDLL(os.path.join(pwd, '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL3.so'))
 
 
 
