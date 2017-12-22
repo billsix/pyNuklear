@@ -24,7 +24,7 @@ import os
 import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
 import numpy as np
-import glfw
+import glfw.glfw as glfw
 import pyMatrixStack as ms
 import ctypes
 import math
