@@ -29,92 +29,11 @@ import pyMatrixStack as ms
 import ctypes
 import math
 import nuklear as nk
+from demoTriangle import *
+
 
 if __name__ != '__main__':
     sys.exit(1)
-
-pwd = os.path.dirname(os.path.abspath(__file__))
-
-glfloat_size = 4
-
-floatsPerVertex = 3
-
-class Triangle:
-    def __init__(self):
-        pass
-
-    def prepareToRender(self):
-        vertices = np.array([-0.6,  -0.4,  0.0,
-                             0.6,   -0.4,  0.0,
-                             0,     0.6,   0.0],
-                            dtype=np.float32)
-
-        self.numberOfVertices = np.size(vertices) // floatsPerVertex
-
-
-        self.vao = gl.glGenVertexArrays(1)
-        gl.glBindVertexArray(self.vao)
-
-        #initialize shaders
-
-        with open(os.path.join(pwd, '..', 'shaders', 'triangle.vert'), 'r') as f:
-            vs = shaders.compileShader(f.read() , gl.GL_VERTEX_SHADER)
-
-        with open(os.path.join(pwd, '..', 'shaders', 'triangle.frag'), 'r') as f:
-            fs = shaders.compileShader(f.read(), gl.GL_FRAGMENT_SHADER)
-
-        self.shader = shaders.compileProgram(vs,fs)
-
-        self.mvpMatrixLoc = gl.glGetUniformLocation(self.shader,"mvpMatrix")
-
-        #send the modelspace data to the GPU
-        vbo = gl.glGenBuffers(1)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
-
-        position = gl.glGetAttribLocation(self.shader, 'position')
-        gl.glEnableVertexAttribArray(position)
-
-        gl.glVertexAttribPointer(position,
-                                 floatsPerVertex,
-                                 gl.GL_FLOAT,
-                                 False,
-                                 0,
-                                 ctypes.c_void_p(0))
-
-        gl.glBufferData(gl.GL_ARRAY_BUFFER,
-                        glfloat_size * np.size(vertices),
-                        vertices,
-                        gl.GL_STATIC_DRAW)
-
-        # reset VAO/VBO to default
-        gl.glBindVertexArray(0)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
-
-
-    def render(self):
-        with ms.GLStackProtector(ms.MatrixStack.model):
-            # rotate the triangle along the positive z axis
-            ms.translate(ms.MatrixStack.model,
-                         math.sin(glfw.glfwGetTime()),
-                         0,
-                         0)
-            ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
-
-            gl.glUseProgram(self.shader)
-            gl.glBindVertexArray(self.vao)
-
-
-            gl.glUniformMatrix4fv(self.mvpMatrixLoc,
-                                  1,
-                                  gl.GL_TRUE,
-                                  np.ascontiguousarray(
-                                      ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
-                                      dtype=np.float32))
-            gl.glDrawArrays(gl.GL_TRIANGLES,
-                            0,
-                            self.numberOfVertices)
-            gl.glBindVertexArray(0)
-
 
 
 # Initialize the library
@@ -247,7 +166,8 @@ while not glfw.glfwWindowShouldClose(window):
         if nuklear.button_label(title="button"):
             print('button pressed')
 
-        nuklear.layout_row_dynamic(30.0, 2)
+        nuklear.layout_row_dynamic(height=30.0,
+                                   cols=2)
 
         # simulate a local static variable
         try:
@@ -260,7 +180,8 @@ while not glfw.glfwWindowShouldClose(window):
         if nuklear.option_label(label="hard",
                                 active= op == 1): op = 1
 
-        nuklear.layout_row_dynamic(25.0, 1)
+        nuklear.layout_row_dynamic(height=25.0,
+                                   cols=1)
 
         # simulate a local static variable
         try:
@@ -275,7 +196,8 @@ while not glfw.glfwWindowShouldClose(window):
                                     step=10,
                                     inc_per_pixel=1)
 
-        nuklear.layout_row_dynamic(20.0, 1)
+        nuklear.layout_row_dynamic(height=20.0,
+                                   cols=1)
         nuklear.label(text="background:",
                       alignment=nk.TEXT_LEFT)
 
@@ -285,15 +207,18 @@ while not glfw.glfwWindowShouldClose(window):
         except Exception:
             background = nk.Color(0, 0, 0, 255)
 
-        nuklear.layout_row_dynamic(25.0, 1)
+        nuklear.layout_row_dynamic(height=25.0,
+                                   cols=1)
         if nuklear.combo_begin_color(color=background,
                                      size=nk.Vec2(nuklear.widget_width(),
                                                   400)):
-            nuklear.layout_row_dynamic(120.0, 1)
+            nuklear.layout_row_dynamic(height=120.0,
+                                       cols=1)
             background = nuklear.color_picker(color=background,
                                               format=nk.RGBA)
 
-            nuklear.layout_row_dynamic(25.0, 1)
+            nuklear.layout_row_dynamic(height=25.0,
+                                       cols=1)
             background.r = nuklear.propertyi(name="#R:",
                                              minVal=0,
                                              val=background.r,
@@ -409,7 +334,8 @@ while not glfw.glfwWindowShouldClose(window):
             if nuklear.menu_begin_label(text="MENU",
                                         align=nk.TEXT_LEFT,
                                         size=nk.Vec2(120,120)):
-                nuklear.layout_row_dynamic(25.0, 1)
+                nuklear.layout_row_dynamic(height=25.0,
+                                           cols=1)
                 if nuklear.menu_item_label(label="Hide",
                                            align=nk.TEXT_LEFT):
                     show_menu = False
@@ -456,7 +382,8 @@ while not glfw.glfwWindowShouldClose(window):
                                        title="About",
                                        flags=nk.WINDOW_CLOSABLE,
                                        rect=nk.Rect(20,100,400,200)):
-                    nuklear.layout_row_dynamic(20.0, 1)
+                    nuklear.layout_row_dynamic(height=20.0,
+                                               cols=1)
                     nuklear.label(text="pyNuklear",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="By William Emerison Six",
@@ -476,7 +403,8 @@ while not glfw.glfwWindowShouldClose(window):
             if nuklear.tree_push(theType=nk.TREE_TAB,
                                  title="Window",
                                  state=nk.MINIMIZED) :
-                nuklear.layout_row_dynamic(30.0, 2)
+                nuklear.layout_row_dynamic(height=30.0,
+                                           cols=2)
                 (modified,titlebar) = nuklear.checkbox_label(text="Titlebar",
                                                              active=titlebar)
                 (modified,show_menu) = nuklear.checkbox_label(text="Menu",
@@ -500,7 +428,8 @@ while not glfw.glfwWindowShouldClose(window):
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Text",
                                      state=nk.MINIMIZED) :
-                    nuklear.layout_row_dynamic(20.0 ,1)
+                    nuklear.layout_row_dynamic(height=20.0 ,
+                                               cols=1)
                     nuklear.label(text="Label aligned left",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="Label aligned centered",
@@ -520,7 +449,8 @@ while not glfw.glfwWindowShouldClose(window):
                                               item_width=200,
                                               cols=1)
                     nuklear.label_wrap(text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
-                    nuklear.layout_row_dynamic(100.0, 1)
+                    nuklear.layout_row_dynamic(height=100.0,
+                                               cols=1)
                     nuklear.label_wrap(text="This is another long text to show dynamic window changes on multiline text")
 
                     nuklear.tree_pop()
@@ -622,33 +552,165 @@ while not glfw.glfwWindowShouldClose(window):
                                                                   value=floatSlider,
                                                                   maxV=5.0,
                                                                   step=0.5)
+                    #TODO -- figure out why this code isn't working quite correctly
+                    # nuklear.layout_row(NK_STATIC, 25, 2, ratio);
+                    # once I figure that out, delete the subsequent 3 lines
+                    nuklear.layout_row_static(height=25.0,
+                                              item_width=150,
+                                              cols=2)
+                    try:
+                        basicFloat
+                    except Exception:
+                        basicFloat = 2.0
+
+                    nuklear.label(text="Property float:",
+                                  alignment=nk.TEXT_LEFT);
+                    basicFloat = nuklear.property_float(name="Float:",
+                                                        minV=0.0,
+                                                        val=basicFloat,
+                                                        maxV=64.0,
+                                                        step=0.1,
+                                                        inc_per_pixel=0.2)
+                    try:
+                        basicInt
+                    except Exception:
+                        basicInt = 10
+                    nuklear.label(text="Property int:",
+                                  alignment=nk.TEXT_LEFT);
+                    basicInt = nuklear.property_int(name="Int:",
+                                                    minV=0,
+                                                    val=basicInt,
+                                                    maxV=100,
+                                                    step=1,
+                                                    inc_per_pixel=1);
+                    # TODO -- I don't think I need to port this
+                    # nuklear.label(text="Property neg:",
+                    #               alignment= nk.TEXT_LEFT);
+                    # nuklear.property_int("Neg:", -10, &property_neg, 10, 1, 1);
+
+
+
+                    # TODO - do this later
+                    # nk_layout_row_dynamic(height=ctx, 25, 1);
+                    # nk_label(ctx, "Range:", NK_TEXT_LEFT);
+                    # nk_layout_row_dynamic(ctx, 25, 3);
+                    # nk_property_float(ctx, "#min:", 0, &range_float_min, range_float_max, 1.0f, 0.2f);
+                    # nk_property_float(ctx, "#float:", range_float_min, &range_float_value, range_float_max, 1.0f, 0.2f);
+                    # nk_property_float(ctx, "#max:", range_float_min, &range_float_max, 100, 1.0f, 0.2f);
+
+                    # nk_property_int(ctx, "#min:", INT_MIN, &range_int_min, range_int_max, 1, 10);
+                    # nk_property_int(ctx, "#neg:", range_int_min, &range_int_value, range_int_max, 1, 10);
+                    # nk_property_int(ctx, "#max:", range_int_min, &range_int_max, INT_MAX, 1, 10);
 
 
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Selectable",
                                      state=nk.MINIMIZED) :
+                    if nuklear.tree_push(theType=nk.TREE_NODE,
+                                         title="List",
+                                         state=nk.MINIMIZED) :
+                        nuklear.layout_row_static(height=18.0,
+                                                  item_width=100,
+                                                  cols=1)
+
+                        try:
+                            selected
+                        except Exception:
+                            selected = [0,0,0,0]
+
+                        (wasModified, selected[0]) = nuklear.selectable_label(label="Selectable",
+                                                                              align=nk.TEXT_LEFT,
+                                                                              value=selected[0])
+                        (wasModified, selected[1]) = nuklear.selectable_label(label="Selectable",
+                                                                              align=nk.TEXT_LEFT,
+                                                                              value=selected[1])
+                        nuklear.label(text="Not Selectable",
+                                      alignment=nk.TEXT_LEFT)
+                        (wasModified, selected[2]) = nuklear.selectable_label(label="Selectable",
+                                                                              align=nk.TEXT_LEFT,
+                                                                              value=selected[2])
+                        (wasModified, selected[3]) = nuklear.selectable_label(label="Selectable",
+                                                                              align=nk.TEXT_LEFT,
+                                                                              value=selected[3])
+                        nuklear.tree_pop()
+
+                    if nuklear.tree_push(theType=nk.TREE_NODE,
+                                         title="Grid",
+                                         state=nk.MINIMIZED) :
+                        # TODO later
+                        # int i;
+                        # static int selected[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
+                        # nk_layout_row_static(ctx, 50, 50, 4);
+                        # for (i = 0; i < 16; ++i) {
+                        #         if (nk_selectable_label(ctx, "Z", NK_TEXT_CENTERED, &selected[i])) {
+                        #                 int x = (i % 4), y = i / 4;
+                        #                 if (x > 0) selected[i - 1] ^= 1;
+                        #                 if (x < 3) selected[i + 1] ^= 1;
+                        #                 if (y > 0) selected[i - 4] ^= 1;
+                        #                 if (y < 3) selected[i + 4] ^= 1;
+                        #         }
+                        # }
+                        nuklear.tree_pop()
 
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Combo",
                                      state=nk.MINIMIZED) :
+                    try:
+                        current_weapon
+                        weapons
+                    except Exception:
+                        current_weapon = 0
+                        weapons = ['Fist', 'Pistol', 'Shotgun', 'Plasma', 'BFG']
+
+                    nuklear.layout_row_static(height=25,
+                                              item_width=200,
+                                              cols=1)
+                    current_weapon = nuklear.combo(items=weapons,
+                                                   selected=current_weapon,
+                                                   item_height=25,
+                                                   size=nk.Vec2(200,200))
+
+                    # TODO
+                    #                 /* slider color combobox */
+                    #                /* complex color combobox */
+                    # etc
+
+
+
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Input",
                                      state=nk.MINIMIZED) :
+                    #TODO
                     nuklear.tree_pop()
 
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TREE_TAB,
                                  title="Chart",
-                                 state=nk.MINIMIZED,) :
-                #TODO
-                nuklear.tree_pop()
-            if nuklear.tree_push(theType=nk.TREE_TAB,
-                                 title="Chart",
                                  state=nk.MINIMIZED) :
                 #TODO
+                nuklear.layout_row_dynamic(height=100.0,
+                                           cols=1)
+                # TODO - why is this in the regular nuklear demo?  it is unused
+                #bounds = nuklear.widget_bounds()
+                if nuklear.chart_begin(chart_type=nk.CHART_LINES,
+                                       count=32,
+                                       minV=-1.0,
+                                       maxV=1.0):
+                    numberOfPoints = 32
+                    hoveredIndex = -1
+                    for x in range(32) :
+                        res = nuklear.chart_push(math.cos( x * (2*3.141592654) / numberOfPoints ))
+                        if res & nk.CHART_HOVERING:
+                            hoveredIndex = x
+
+                    nuklear.chart_end()
+
+                    if hoveredIndex != -1:
+                        nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TREE_TAB,
                                  title="Popup",

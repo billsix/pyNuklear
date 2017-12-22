@@ -38,7 +38,7 @@ def callerFrameInfo():
     return inspect.getframeinfo(previous_frame)
 
 # Load it
-_nuklear = ctypes.CDLL(os.path.join(pwd, '..', 'contrib', 'nuklear', 'nuklear.so'))
+_nuklear = ctypes.CDLL(os.path.join(pwd, '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL3.so'))
 
 
 
@@ -731,7 +731,10 @@ __wrapped_option_label__.restype = c_int
 
 
 # int nk_option_text(struct nk_context*, const char*, int, int active);
-# int nk_selectable_label(struct nk_context*, const char*, nk_flags align, int *value);
+
+__selectable_label__ = _nuklear.nk_selectable_label
+__selectable_label__.arglist = [POINTER(Context), c_char_p, c_int, POINTER(c_int)]
+__selectable_label__.restype = c_int
 
 
 # Selectable
@@ -782,7 +785,8 @@ __wrapped_property_int__ = _nuklear.nk_property_int
 __wrapped_property_int__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
 
 
-# void nk_property_float(struct nk_context*, const char *name, float min, float *val, float max, float step, float inc_per_pixel);
+__property_float__ = _nuklear.nk_property_float
+__property_float__.arglist = [POINTER(Context), c_char_p, c_float, POINTER(c_float), c_float, c_float, c_float]
 # void nk_property_double(struct nk_context*, const char *name, double min, double *val, double max, double step, float inc_per_pixel);
 
 __wrapped_propertyi__ = _nuklear.nk_propertyi
@@ -831,13 +835,23 @@ EDIT_COMMITED    = 1 << 4
 # void nk_edit_unfocus(struct nk_context*);
 
 # Chart
-# int nk_chart_begin(struct nk_context*, enum nk_chart_type, int num, float min, float max);
+__chart_begin__ = _nuklear.nk_chart_begin
+__chart_begin__.arglist = [POINTER(Context), c_int, c_int, c_float, c_float]
+__chart_begin__.restype = c_int
+
 # int nk_chart_begin_colored(struct nk_context*, enum nk_chart_type, struct nk_color, struct nk_color active, int num, float min, float max);
 # void nk_chart_add_slot(struct nk_context *ctx, const enum nk_chart_type, int count, float min_value, float max_value);
 # void nk_chart_add_slot_colored(struct nk_context *ctx, const enum nk_chart_type, struct nk_color, struct nk_color active, int count, float min_value, float max_value);
-# nk_flags nk_chart_push(struct nk_context*, float);
+
+__chart_push__ = _nuklear.nk_chart_push
+__chart_push__.arglist = [POINTER(Context), float]
+__chart_push__.restype = c_int
+
 # nk_flags nk_chart_push_slot(struct nk_context*, float, int);
-# void nk_chart_end(struct nk_context*);
+
+__chart_end__ = _nuklear.nk_chart_end
+__chart_end__.arglist = [POINTER(Context)]
+
 # void nk_plot(struct nk_context*, enum nk_chart_type, const float *values, int count, int offset);
 # void nk_plot_function(struct nk_context*, enum nk_chart_type, void *userdata, float(*value_getter)(void* user, int index), int count, int offset);
 
@@ -859,7 +873,10 @@ __popup_end__.arglist= [POINTER(Context)]
 
 
 # ComboBox
-# int nk_combo(struct nk_context*, const char **items, int count, int selected, int item_height, struct nk_vec2 size);
+__combo__ = _nuklear.nk_combo
+__combo__.arglist = [POINTER(Context), POINTER(POINTER(c_char_p)), c_int, c_int, c_int, Vec2]
+__combo__.restype = c_int
+
 # int nk_combo_separator(struct nk_context*, const char *items_separated_by_separator, int separator, int selected, int count, int item_height, struct nk_vec2 size);
 # int nk_combo_string(struct nk_context*, const char *items_separated_by_zeros, int selected, int count, int item_height, struct nk_vec2 size);
 # int nk_combo_callback(struct nk_context*, void(*item_getter)(void*, int, const char**), void *userdata, int selected, int count, int item_height, struct nk_vec2 size);
@@ -904,7 +921,9 @@ __combo_end__.arglist = [POINTER(Context)]
 
 
 # Tooltip
-# void nk_tooltip(struct nk_context*, const char*);
+__tooltip__ = _nuklear.nk_tooltip
+__tooltip__.arglist = [POINTER(Context), c_char_p]
+
 # void nk_tooltipf(struct nk_context*, const char*, ...);
 # int nk_tooltip_begin(struct nk_context*, float width);
 # void nk_tooltip_end(struct nk_context*);
@@ -2635,6 +2654,9 @@ class NuklearContext:
     def begin(self, title, bounds, flags):
         return __wrapped_begin__(self.ctx, str.encode(title), bounds, flags)
 
+    def layout_widget_bounds(self):
+        return __layout_widget_bounds__(self.ctx)
+
     def layout_row_dynamic(self,height,cols):
         __wrapped_layout_row_dynamic__(self.ctx,ctypes.c_float(height), cols)
 
@@ -2664,6 +2686,11 @@ class NuklearContext:
     def option_label(self, label, active):
         return __wrapped_option_label__(self.ctx, str.encode(label), active)
 
+    def selectable_label(self, label, align, value):
+        a = ctypes.c_int(value)
+        wasModified = __selectable_label__(self.ctx, str.encode(label), align, ctypes.byref(a))
+        return (wasModified, a.value)
+
     def slider_float(self, minV, value, maxV, step):
         v = ctypes.c_float(value)
         wasModified = __wrapped_slider_float__(self.ctx, c_float(minV), ctypes.byref(v), c_float(maxV), c_float(step))
@@ -2687,7 +2714,27 @@ class NuklearContext:
                                  ctypes.byref(v),
                                  maxV,
                                  step,
-                                 inc_per_pixel)
+                                 c_float(inc_per_pixel))
+        return v.value
+
+    def chart_begin(self,chart_type,count,minV,maxV):
+        return __chart_begin__(self.ctx,chart_type,count,c_float(minV),c_float(maxV))
+
+    def chart_push(self,value):
+        return __chart_push__(self.ctx,c_float(value))
+
+    def chart_end(self):
+        __chart_end__(self.ctx)
+
+    def property_float(self, name, minV, val, maxV, step, inc_per_pixel):
+        v = ctypes.c_float(val)
+        __property_float__(self.ctx,
+                           str.encode(name),
+                           c_float(minV),
+                           ctypes.byref(v),
+                           c_float(maxV),
+                           c_float(step),
+                           c_float(inc_per_pixel))
         return v.value
 
     def propertyi(self, name, minVal, val, maxVal, step, inc_per_pixel):
@@ -2724,6 +2771,9 @@ class NuklearContext:
     def end(self):
         __end__(self.ctx)
 
+    def tooltip(self, text):
+        __tooltip__(self.ctx, str.encode(text))
+
     def menubar_begin(self):
         __menubar_begin__(self.ctx)
 
@@ -2748,6 +2798,17 @@ class NuklearContext:
 
     def popup_end(self):
         __popup_end__(self.ctx)
+
+    def combo(self, items, selected, item_height, size):
+        count = len(items)
+
+        ctypesList = []
+        for x in range(count):
+            ctypesList.append(str.encode(items[x]))
+        arr = (ctypes.c_char_p * len(ctypesList)) (*ctypesList)
+
+        return __combo__(self.ctx, arr, count, selected, item_height, size)
+
 
 
     def tree_push(self, theType, title, state):
