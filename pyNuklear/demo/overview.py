@@ -25,34 +25,42 @@ import math
 def overview(nuklear):
     # show overview
     # simulate a local static variable
+    global show_menu
     try:
         show_menu
     except Exception:
         show_menu = True
+    global titlebar
     try:
         titlebar
     except Exception:
         titlebar  = True
+    global border
     try:
         border
     except Exception:
         border = True
+    global resize
     try:
         resize
     except Exception:
         resize = True
+    global movable
     try:
         movable
     except Exception:
         movable = True
+    global no_scrollbar
     try:
         no_scrollbar
     except Exception:
         no_scrollbar = False
+    global scale_left
     try:
         scale_left
     except Exception:
         scale_left = False
+    global minimizable
     try:
         minimizable
     except Exception:
@@ -77,19 +85,23 @@ def overview(nuklear):
                      bounds=nk.Rect(10,300,400,600),
                      flags=window_flags):
         if show_menu:
+            global mprog
             try:
                 mprog
             except Exception:
                 mprog = 60
+            global mslider
             try:
                 mslider
             except Exception:
                 mslider = 10
+            global mcheck
             try:
                 mcheck
             except Exception:
                 mcheck = False
 
+            global show_app_about
             try:
                 show_app_about
             except Exception:
@@ -265,6 +277,7 @@ def overview(nuklear):
                     nuklear.layout_row_static(height=30.0,
                                               item_width=100,
                                               cols=1)
+                    global basicCheckBox
                     try:
                         basicCheckBox
                     except Exception:
@@ -279,6 +292,7 @@ def overview(nuklear):
                     A = 1
                     B = 2
                     C = 3
+                    global basicOption
                     try:
                         basicOption
                     except Exception:
@@ -301,6 +315,7 @@ def overview(nuklear):
                     nuklear.layout_row_static(height=30.0,
                                               item_width=100,
                                               cols=2)
+                    global basicSlider
                     try:
                         basicSlider
                     except Exception:
@@ -311,6 +326,7 @@ def overview(nuklear):
                                                                 value=basicSlider,
                                                                 maxV=10,
                                                                 step=1)
+                    global floatSlider
                     try:
                         floatSlider
                     except Exception:
@@ -327,6 +343,7 @@ def overview(nuklear):
                     nuklear.layout_row_static(height=25.0,
                                               item_width=150,
                                               cols=2)
+                    global basicFloat
                     try:
                         basicFloat
                     except Exception:
@@ -340,6 +357,7 @@ def overview(nuklear):
                                                         maxV=64.0,
                                                         step=0.1,
                                                         inc_per_pixel=0.2)
+                    global basicInt
                     try:
                         basicInt
                     except Exception:
@@ -383,6 +401,7 @@ def overview(nuklear):
                                                   item_width=100,
                                                   cols=1)
 
+                        global selected
                         try:
                             selected
                         except Exception:
@@ -426,6 +445,7 @@ def overview(nuklear):
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Combo",
                                      state=nk.MINIMIZED) :
+                    global current_weapon
                     try:
                         current_weapon
                         weapons
