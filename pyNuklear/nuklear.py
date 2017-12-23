@@ -2748,8 +2748,8 @@ class NuklearContext:
     def combo_begin_color(self, color, size):
         return __combo_begin_color__(self.ctx, color, size)
 
-    def color_picker(self, color, fmt):
-        return __color_picker__(self.ctx, color, fmt)
+    def color_picker(self, color, format):
+        return __color_picker__(self.ctx, color, format)
 
     def combo_end(self):
         __combo_end__(self.ctx)
