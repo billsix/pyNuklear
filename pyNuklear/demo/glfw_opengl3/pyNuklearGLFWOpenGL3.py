@@ -31,13 +31,12 @@ import math
 
 import builtins
 pwd = os.path.dirname(os.path.abspath(__file__))
-builtins.NUKLEAR_PATH = ctypes.CDLL(os.path.join(pwd, '..', '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL3.so'))
+builtins.NUKLEAR_PATH = ctypes.CDLL(os.path.join(pwd, '..', '..', '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL3.so'))
 
 import nuklear as nk
 import nuklearGLFW3 as nkGLFW3
 from demoTriangle import *
-from overview import *
-
+from demo.overview import *
 
 
 

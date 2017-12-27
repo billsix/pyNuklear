@@ -1,4 +1,4 @@
+-make a glfw opengl2 demo
 -hide passing values by reference
--extract glfw3 into its own file
 -turn the procedures into methods on the context
 -turn all begin/ends into with statements

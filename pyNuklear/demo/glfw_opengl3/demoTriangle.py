@@ -54,10 +54,10 @@ class Triangle:
 
         #initialize shaders
 
-        with open(os.path.join(pwd, '..', '..', 'shaders', 'triangle.vert'), 'r') as f:
+        with open(os.path.join(pwd, 'shaders', 'triangle.vert'), 'r') as f:
             vs = shaders.compileShader(f.read() , gl.GL_VERTEX_SHADER)
 
-        with open(os.path.join(pwd, '..', '..', 'shaders', 'triangle.frag'), 'r') as f:
+        with open(os.path.join(pwd, 'shaders', 'triangle.frag'), 'r') as f:
             fs = shaders.compileShader(f.read(), gl.GL_FRAGMENT_SHADER)
 
         self.shader = shaders.compileProgram(vs,fs)
