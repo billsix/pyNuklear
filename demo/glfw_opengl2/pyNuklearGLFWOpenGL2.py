@@ -22,7 +22,7 @@
 import sys
 import os
 import OpenGL.GL as gl
-import OpenGL.GL.shaders as shaders
+#import OpenGL.GL.shaders as shaders
 import numpy as np
 import glfw.glfw as glfw
 import pyMatrixStack as ms
@@ -31,11 +31,10 @@ import math
 
 import builtins
 pwd = os.path.dirname(os.path.abspath(__file__))
-builtins.NUKLEAR_PATH = ctypes.CDLL(os.path.join(pwd, '..', '..', '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL3.so'))
+builtins.NUKLEAR_PATH = ctypes.CDLL(os.path.join(pwd, '..', '..', 'contrib', 'nuklear', 'nuklearGLFWOpenGL2.so'))
 
 import nuklear as nk
 import nuklearGLFW3 as nkGLFW3
-from demoTriangle import *
 from demo.overview import *
 
 
@@ -49,11 +48,8 @@ if __name__ != '__main__':
 if not glfw.glfwInit():
     sys.exit()
 
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,3)
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,3)
-glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,glfw.GLFW_OPENGL_CORE_PROFILE)
-#for osx
-glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
+glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,1)
+glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,4)
 
 
 # Create a windowed mode window and its OpenGL context
@@ -96,8 +92,8 @@ class Camera:
 
 camera = Camera()
 
-triangle = Triangle()
-triangle.prepareToRender()
+#triangle = Triangle()
+#triangle.prepareToRender()
 
 # does python have static local variables?  this declaration is way too far away from use
 #property = ctypes.c_int(20)
@@ -125,40 +121,40 @@ while not glfw.glfwWindowShouldClose(window):
                    nearZ= 0.1,
                    farZ= 10000.0)
 
-    # get input from keyboard for camera movement
-    if not nuklear.item_is_any_active():
-        # set up Camera
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
-            camera.rotationY -= 0.03
+    # # get input from keyboard for camera movement
+    # if not nuklear.item_is_any_active():
+    #     # set up Camera
+    #     if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
+    #         camera.rotationY -= 0.03
 
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_LEFT) == glfw.GLFW_PRESS:
-            camera.rotationY += 0.03
+    #     if glfw.glfwGetKey(window, glfw.GLFW_KEY_LEFT) == glfw.GLFW_PRESS:
+    #         camera.rotationY += 0.03
 
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_UP) == glfw.GLFW_PRESS:
-            camera.x -= math.sin(camera.rotationY)
-            camera.z -= math.cos(camera.rotationY)
+    #     if glfw.glfwGetKey(window, glfw.GLFW_KEY_UP) == glfw.GLFW_PRESS:
+    #         camera.x -= math.sin(camera.rotationY)
+    #         camera.z -= math.cos(camera.rotationY)
 
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_DOWN) == glfw.GLFW_PRESS:
-            camera.x += math.sin(camera.rotationY)
-            camera.z += math.cos(camera.rotationY)
+    #     if glfw.glfwGetKey(window, glfw.GLFW_KEY_DOWN) == glfw.GLFW_PRESS:
+    #         camera.x += math.sin(camera.rotationY)
+    #         camera.z += math.cos(camera.rotationY)
 
-    # move the camera to the correct position, which means
-    # updating the view stack
-    ms.rotateX(ms.MatrixStack.view,
-               camera.rotationX)
-    ms.rotateY(ms.MatrixStack.view,
-               -camera.rotationY)
-    ms.translate(ms.MatrixStack.view,
-                 -camera.x,
-                 -camera.y,
-                 -camera.z)
+    # # move the camera to the correct position, which means
+    # # updating the view stack
+    # ms.rotateX(ms.MatrixStack.view,
+    #            camera.rotationX)
+    # ms.rotateY(ms.MatrixStack.view,
+    #            -camera.rotationY)
+    # ms.translate(ms.MatrixStack.view,
+    #              -camera.x,
+    #              -camera.y,
+    #              -camera.z)
 
-    # render the models
+    # # render the models
 
-    triangle.render()
+    # triangle.render()
 
-    MAX_VERTEX_BUFFER = 512 * 1024
-    MAX_ELEMENT_BUFFER = 128 * 1024
+    # MAX_VERTEX_BUFFER = 512 * 1024
+    # MAX_ELEMENT_BUFFER = 128 * 1024
 
 
     if(nuklear.begin(title="Demonstration",
@@ -263,7 +259,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     overview(nuklear)
 
-    nkGLFW3.glfw3_render(nk.ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
+    nkGLFW3.glfw3_render(nk.ANTI_ALIASING_ON)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
