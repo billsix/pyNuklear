@@ -107,19 +107,19 @@ while not glfw.glfwWindowShouldClose(window):
     glfw.glfwPollEvents()
     nkGLFW3.glfw3_new_frame()
 
-    # width, height = glfw.glfwGetFramebufferSize(window)
-    # gl.glViewport(0, 0, width, height)
-    # gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+    width, height = glfw.glfwGetFramebufferSize(window)
+    gl.glViewport(0, 0, width, height)
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
-    # ms.setToIdentityMatrix(ms.MatrixStack.model)
-    # ms.setToIdentityMatrix(ms.MatrixStack.view)
-    # ms.setToIdentityMatrix(ms.MatrixStack.projection)
+    ms.setToIdentityMatrix(ms.MatrixStack.model)
+    ms.setToIdentityMatrix(ms.MatrixStack.view)
+    ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
-    # # set the projection matrix to be perspective
-    # ms.perspective(fov= 45.0,
-    #                aspectRatio= width / height,
-    #                nearZ= 0.1,
-    #                farZ= 10000.0)
+    # set the projection matrix to be perspective
+    ms.perspective(fov= 45.0,
+                   aspectRatio= width / height,
+                   nearZ= 0.1,
+                   farZ= 10000.0)
 
     # # get input from keyboard for camera movement
     # if not nuklear.item_is_any_active():
@@ -250,7 +250,7 @@ while not glfw.glfwWindowShouldClose(window):
                                              inc_per_pixel=1.0)
 
 
-            #gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
+            gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
 
             nuklear.combo_end()
 
