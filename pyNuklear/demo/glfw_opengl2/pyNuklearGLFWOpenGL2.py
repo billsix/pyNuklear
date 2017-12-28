@@ -48,8 +48,8 @@ if __name__ != '__main__':
 if not glfw.glfwInit():
     sys.exit()
 
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,2)
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,1)
+glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,1)
+glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,4)
 
 
 # Create a windowed mode window and its OpenGL context

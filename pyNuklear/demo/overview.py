@@ -446,6 +446,7 @@ def overview(nuklear):
                                      title="Combo",
                                      state=nk.MINIMIZED) :
                     global current_weapon
+                    global weapons
                     try:
                         current_weapon
                         weapons
