@@ -82,8 +82,8 @@ class Vec2(Structure):
                  ('y',  c_float)]
 
     def __init__(self,x,y):
-        self.x = x
-        self.y = y
+        self.x = ctypes.c_float(x)
+        self.y = ctypes.c_float(y)
 
 
 class Vec2i(Structure):
@@ -2771,7 +2771,7 @@ class NuklearContext:
         __layout_row__(self.ctx, layout_format, ctypes.c_float(height), cols, arr)
 
     def layout_row_begin(self, fmt, row_height, cols):
-        __layout_row_begin__(self.ctx,fmt, ctypes.c_float(row_height), cols)
+        __layout_row_begin__(self.ctx,ctypes.c_int(fmt), ctypes.c_float(row_height), ctypes.c_int(cols))
 
     def layout_row_push(self, ratio_or_width):
         __layout_row_push__(self.ctx, ctypes.c_float(ratio_or_width))

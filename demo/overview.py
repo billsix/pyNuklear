@@ -114,7 +114,7 @@ def overview(nuklear):
             nuklear.layout_row_push(ratio_or_width=45.0)
             if nuklear.menu_begin_label(text="MENU",
                                         align=nk.TEXT_LEFT,
-                                        size=nk.Vec2(120,120)):
+                                        size=nk.Vec2(120.0,200.0)):
                 nuklear.layout_row_dynamic(height=25.0,
                                            cols=1)
                 if nuklear.menu_item_label(label="Hide",
@@ -130,9 +130,6 @@ def overview(nuklear):
                                                         value=mslider,
                                                         maxV=16,
                                                         step=1)
-                # TODO, for some reason, this checkbox is not showing.
-                # if i move it up 2 lines, it does, and another widget
-                # is not showing
                 (modified,mcheck) = nuklear.checkbox_label(text="check",
                                                            active=mcheck)
 
