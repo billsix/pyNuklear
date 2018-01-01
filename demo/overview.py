@@ -178,6 +178,30 @@ def overview(nuklear):
                     nuklear.popup_end()
                 else:
                     show_app_about = False
+
+# Uncomment out the lines below to learn about how nuklear uniquely identifies graphical objects.
+# By default, nuklear will identify an object by a hash of the file name and the line number of the caller.
+# This technique works well enough, but not if the elements are created in a loop.
+# The following few lines if uncommented, will all be expanded or closed if any of them are clicked.
+#             theList = ['a','b','c']
+#             for x in range(len(theList)):
+#                 if nuklear.tree_push(theType=nk.TREE_TAB,
+#                                      title=theList[x],
+#                                      state=nk.MINIMIZED) :
+#                     nuklear.tree_pop()
+
+# To uniquely identify the objects in a loop ourselves, call the tree push id method, whereby the user
+# can add an id per object to help nuklear uniquely identify objects.
+
+#             theList = ['a','b','c']
+#             for x in range(len(theList)):
+#                 if nuklear.tree_push_id(theType=nk.TREE_TAB,
+#                                         title=theList[x],
+#                                         state=nk.MINIMIZED,
+#                                         id=x) :
+#                     nuklear.tree_pop()
+                   
+
             if nuklear.tree_push(theType=nk.TREE_TAB,
                                  title="Window",
                                  state=nk.MINIMIZED) :

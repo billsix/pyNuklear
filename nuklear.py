@@ -574,6 +574,11 @@ def __tree_push__(ctx, theType, title, state):
      function_name, lines, index) = callerFrameInfo()
     return __tree_push_hashed__(ctx, theType, str.encode(title), state, filename, len(filename),line_number)
 
+def __tree_push_id__(ctx, theType, title, state, id):
+    (filename, line_number,
+     function_name, lines, index) = callerFrameInfo()
+    return __tree_push_hashed__(ctx, theType, str.encode(title), state, filename, len(filename),id)
+
 
 # int nk_tree_image_push_hashed(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
 
@@ -2795,10 +2800,11 @@ class NuklearContext:
 
         return __combo__(self.ctx, arr, count, selected, item_height, size)
 
-
-
     def tree_push(self, theType, title, state):
         return __tree_push__(self.ctx, theType, title, state)
+
+    def tree_push_id(self, theType, title, state, id):
+        return __tree_push_id__(self.ctx, theType, title, state, id)
 
     def tree_pop(self):
         __tree_pop__(self.ctx)
