@@ -357,9 +357,9 @@ WINDOW_BACKGROUND        = 1 << 8
 WINDOW_SCALE_LEFT        = 1 << 9
 WINDOW_NO_INPUT          = 1 << 10
 
-__wrapped_begin__ = _nuklear.nk_begin
-__wrapped_begin__.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
-__wrapped_begin__.restype = c_int
+__begin__ = _nuklear.nk_begin
+__begin__.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
+__begin__.restype = c_int
 
 
 # c_int nk_begin_titled(POINTER(Context), c_char_p name, c_char_p title, Rect bounds, c_int flags);
@@ -478,11 +478,11 @@ __layout_ratio_from_pixel__ = _nuklear.nk_layout_ratio_from_pixel
 __layout_ratio_from_pixel__.arglist = [POINTER(Context), c_float]
 __layout_ratio_from_pixel__.restype = c_float
 
-__wrapped_layout_row_dynamic__ = _nuklear.nk_layout_row_dynamic
-__wrapped_layout_row_dynamic__.arglist = [POINTER(Context), c_float, c_int]
+__layout_row_dynamic__ = _nuklear.nk_layout_row_dynamic
+__layout_row_dynamic__.arglist = [POINTER(Context), c_float, c_int]
 
-__wrapped_layout_row_static__ = _nuklear.nk_layout_row_static
-__wrapped_layout_row_static__.arglist = [POINTER(Context), c_float, c_int, c_int]
+__layout_row_static__ = _nuklear.nk_layout_row_static
+__layout_row_static__.arglist = [POINTER(Context), c_float, c_int, c_int]
 
 __layout_row_begin__ = _nuklear.nk_layout_row_begin
 __layout_row_begin__.arglist = [POINTER(Context), c_int, c_float, c_int]
@@ -638,21 +638,21 @@ TEXT_CENTERED    = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_CENTERED
 TEXT_RIGHT       = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_RIGHT
 
 
-__wrapped_text__ = _nuklear.nk_text
-__wrapped_text__.arglist = [POINTER(Context), c_char_p, c_int, c_int]
+__text__ = _nuklear.nk_text
+__text__.arglist = [POINTER(Context), c_char_p, c_int, c_int]
 
 # void nk_text_colored(struct nk_context*, const char*, int, nk_flags, struct nk_color);
 # void nk_text_wrap(struct nk_context*, const char*, int);
 # void nk_text_wrap_colored(struct nk_context*, const char*, int, struct nk_color);
 
-__wrapped_label__ = _nuklear.nk_label
-__wrapped_label__.arglist = [POINTER(Context), c_char_p, c_uint]
+__label__ = _nuklear.nk_label
+__label__.arglist = [POINTER(Context), c_char_p, c_uint]
 
-__wrapped_label_colored__ = _nuklear.nk_label_colored
-__wrapped_label_colored__.arglist = [POINTER(Context), c_char_p, c_int, Color]
+__label_colored__ = _nuklear.nk_label_colored
+__label_colored__.arglist = [POINTER(Context), c_char_p, c_int, Color]
 
-__wrapped_label_wrap__ = _nuklear.nk_label_wrap
-__wrapped_label_wrap__.arglist = [POINTER(Context), c_char_p]
+__label_wrap__ = _nuklear.nk_label_wrap
+__label_wrap__.arglist = [POINTER(Context), c_char_p]
 
 
 # void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
@@ -677,9 +677,9 @@ __wrapped_label_wrap__.arglist = [POINTER(Context), c_char_p]
 # Button
 
 # int nk_button_text(struct nk_context*, const char *title, int len);
-__wrapped_button_label__ = _nuklear.nk_button_label
-__wrapped_button_label__.arglist = [POINTER(Context), c_char_p]
-__wrapped_button_label__.restype     = c_int
+__button_label__ = _nuklear.nk_button_label
+__button_label__.arglist = [POINTER(Context), c_char_p]
+__button_label__.restype     = c_int
 
 
 __button_color__ = _nuklear.nk_button_color
@@ -722,9 +722,9 @@ __button_set_behavior__.arglist = [POINTER(Context), c_int]
 # unsigned nk_check_flags_label(struct nk_context*, const char*, unsigned int flags, unsigned int value);
 # unsigned nk_check_flags_text(struct nk_context*, const char*, int, unsigned int flags, unsigned int value);
 
-__wrapped_checkbox_label__ = _nuklear.nk_checkbox_label
-__wrapped_checkbox_label__.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
-__wrapped_checkbox_label__.restype = c_int
+__checkbox_label__ = _nuklear.nk_checkbox_label
+__checkbox_label__.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
+__checkbox_label__.restype = c_int
 
 
 
@@ -738,9 +738,9 @@ __wrapped_checkbox_label__.restype = c_int
 # int nk_radio_label(struct nk_context*, const char*, int *active);
 # int nk_radio_text(struct nk_context*, const char*, int, int *active);
 
-__wrapped_option_label__ = _nuklear.nk_option_label
-__wrapped_option_label__.arglist = [POINTER(Context), c_char_p, c_int]
-__wrapped_option_label__.restype = c_int
+__option_label__ = _nuklear.nk_option_label
+__option_label__.arglist = [POINTER(Context), c_char_p, c_int]
+__option_label__.restype = c_int
 
 
 # int nk_option_text(struct nk_context*, const char*, int, int active);
@@ -765,20 +765,20 @@ __selectable_label__.restype = c_int
 # float nk_slide_float(struct nk_context*, float min, float val, float max, float step);
 # int nk_slide_int(struct nk_context*, int min, int val, int max, int step);
 
-__wrapped_slider_float__ = _nuklear.nk_slider_float
-__wrapped_slider_float__.arglist = [POINTER(Context), c_float, POINTER(c_float), c_float, c_float]
-__wrapped_slider_float__.restype = c_int
+__slider_float__ = _nuklear.nk_slider_float
+__slider_float__.arglist = [POINTER(Context), c_float, POINTER(c_float), c_float, c_float]
+__slider_float__.restype = c_int
 
 
-__wrapped_slider_int__ = _nuklear.nk_slider_int
-__wrapped_slider_int__.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
-__wrapped_slider_int__.restype = c_int
+__slider_int__ = _nuklear.nk_slider_int
+__slider_int__.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
+__slider_int__.restype = c_int
 
 
 
-__wrapped_progress__ = _nuklear.nk_progress
-__wrapped_progress__.arglist = [POINTER(Context), POINTER(c_int), c_int, c_int]
-__wrapped_progress__.restype = c_int
+__progress__ = _nuklear.nk_progress
+__progress__.arglist = [POINTER(Context), POINTER(c_int), c_int, c_int]
+__progress__.restype = c_int
 
 
 # ProgressBar
@@ -794,17 +794,17 @@ __color_picker__.restype = Color
 
 # Properties
 
-__wrapped_property_int__ = _nuklear.nk_property_int
-__wrapped_property_int__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+__property_int__ = _nuklear.nk_property_int
+__property_int__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
 
 
 __property_float__ = _nuklear.nk_property_float
 __property_float__.arglist = [POINTER(Context), c_char_p, c_float, POINTER(c_float), c_float, c_float, c_float]
 # void nk_property_double(struct nk_context*, const char *name, double min, double *val, double max, double step, float inc_per_pixel);
 
-__wrapped_propertyi__ = _nuklear.nk_propertyi
-__wrapped_propertyi__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
-__wrapped_propertyi__.restype = c_int
+__propertyi__ = _nuklear.nk_propertyi
+__propertyi__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+__propertyi__.restype = c_int
 
 
 # float nk_propertyf(struct nk_context*, const char *name, float min, float val, float max, float step, float inc_per_pixel);
@@ -871,9 +871,9 @@ __chart_end__.arglist = [POINTER(Context)]
 
 # Popup
 
-__wrapped_popup_begin__ = _nuklear.nk_popup_begin
-__wrapped_popup_begin__.arglist= [POINTER(Context), c_int, c_char_p, c_int,Rect]
-__wrapped_popup_begin__.restype = c_int
+__popup_begin__ = _nuklear.nk_popup_begin
+__popup_begin__.arglist= [POINTER(Context), c_int, c_char_p, c_int,Rect]
+__popup_begin__.restype = c_int
 
 
 # void nk_popup_close(struct nk_context*);
@@ -951,9 +951,9 @@ __menubar_end__.arglist = [POINTER(Context)]
 
 # int nk_menu_begin_text(struct nk_context*, const char* title, int title_len, nk_flags align, struct nk_vec2 size);
 
-__wrapped_menu_begin_label__ = _nuklear.nk_menu_begin_label
-__wrapped_menu_begin_label__.arglist = [POINTER(Context), c_char_p, c_int, Vec2]
-__wrapped_menu_begin_label__.restype = c_int
+__menu_begin_label__ = _nuklear.nk_menu_begin_label
+__menu_begin_label__.arglist = [POINTER(Context), c_char_p, c_int, Vec2]
+__menu_begin_label__.restype = c_int
 
 
 # int nk_menu_begin_image(struct nk_context*, const char*, struct nk_image, struct nk_vec2 size);
@@ -964,9 +964,9 @@ __wrapped_menu_begin_label__.restype = c_int
 # int nk_menu_begin_symbol_label(struct nk_context*, const char*, nk_flags align,enum nk_symbol_type, struct nk_vec2 size);
 # int nk_menu_item_text(struct nk_context*, const char*, int,nk_flags align);
 
-__wrapped_menu_item_label__ = _nuklear.nk_menu_item_label
-__wrapped_menu_item_label__.arglist = [POINTER(Context), c_char_p, c_int]
-__wrapped_menu_item_label__.restype = c_int
+__menu_item_label__ = _nuklear.nk_menu_item_label
+__menu_item_label__.arglist = [POINTER(Context), c_char_p, c_int]
+__menu_item_label__.restype = c_int
 
 # int nk_menu_item_image_label(struct nk_context*, struct nk_image, const char*, nk_flags alignment);
 # int nk_menu_item_image_text(struct nk_context*, struct nk_image, const char*, int len, nk_flags alignment);
@@ -2643,39 +2643,39 @@ class NuklearContext:
         self.ctx = ctx
 
     def begin(self, title, bounds, flags):
-        return __wrapped_begin__(self.ctx, str.encode(title), bounds, flags)
+        return __begin__(self.ctx, str.encode(title), bounds, flags)
 
     def layout_widget_bounds(self):
         return __layout_widget_bounds__(self.ctx)
 
     def layout_row_dynamic(self,height,cols):
-        __wrapped_layout_row_dynamic__(self.ctx,ctypes.c_float(height), cols)
+        __layout_row_dynamic__(self.ctx,ctypes.c_float(height), cols)
 
     def layout_row_static(self,height,item_width,cols):
-        __wrapped_layout_row_static__(self.ctx,ctypes.c_float(height), item_width,cols)
+        __layout_row_static__(self.ctx,ctypes.c_float(height), item_width,cols)
 
     def text(self, text, length, alignment):
-        __wrapped_text__(self.ctx,str.encode(text),length, alignment)
+        __text__(self.ctx,str.encode(text),length, alignment)
 
     def label(self, text, alignment):
-        __wrapped_label__(self.ctx, str.encode(text), alignment)
+        __label__(self.ctx, str.encode(text), alignment)
 
     def label_colored(self, text, align, color):
-        __wrapped_label_colored__(self.ctx,str.encode(text),align,color)
+        __label_colored__(self.ctx,str.encode(text),align,color)
 
     def label_wrap(self, text):
-        __wrapped_label_wrap__(self.ctx,str.encode(text))
+        __label_wrap__(self.ctx,str.encode(text))
 
     def button_label(self, title):
-        return __wrapped_button_label__(self.ctx, str.encode(title))
+        return __button_label__(self.ctx, str.encode(title))
 
     def checkbox_label(self, text, active):
         a = ctypes.c_int(active)
-        wasModified = __wrapped_checkbox_label__(self.ctx,str.encode(text),ctypes.byref(a))
+        wasModified = __checkbox_label__(self.ctx,str.encode(text),ctypes.byref(a))
         return (wasModified, a.value)
 
     def option_label(self, label, active):
-        return __wrapped_option_label__(self.ctx, str.encode(label), active)
+        return __option_label__(self.ctx, str.encode(label), active)
 
     def selectable_label(self, label, align, value):
         a = ctypes.c_int(value)
@@ -2684,22 +2684,22 @@ class NuklearContext:
 
     def slider_float(self, minV, value, maxV, step):
         v = ctypes.c_float(value)
-        wasModified = __wrapped_slider_float__(self.ctx, c_float(minV), ctypes.byref(v), c_float(maxV), c_float(step))
+        wasModified = __slider_float__(self.ctx, c_float(minV), ctypes.byref(v), c_float(maxV), c_float(step))
         return (wasModified,v.value)
 
     def slider_int(self, minV, value, maxV, step):
         v = ctypes.c_int(value)
-        wasModified = __wrapped_slider_int__(self.ctx, minV, ctypes.byref(v), maxV, step)
+        wasModified = __slider_int__(self.ctx, minV, ctypes.byref(v), maxV, step)
         return (wasModified,v.value)
 
     def progress(self, cur, max, is_modifyable):
         v = ctypes.c_int(cur)
-        wasModified = __wrapped_progress__(self.ctx, ctypes.byref(v), max, is_modifyable)
+        wasModified = __progress__(self.ctx, ctypes.byref(v), max, is_modifyable)
         return (wasModified, v.value)
 
     def property_int(self, name, minV, val, maxV, step, inc_per_pixel):
         v = ctypes.c_int(val)
-        __wrapped_property_int__(self.ctx,
+        __property_int__(self.ctx,
                                  str.encode(name),
                                  minV,
                                  ctypes.byref(v),
@@ -2729,7 +2729,7 @@ class NuklearContext:
         return v.value
 
     def propertyi(self, name, minVal, val, maxVal, step, inc_per_pixel):
-        return __wrapped_propertyi__(self.ctx,
+        return __propertyi__(self.ctx,
                                      str.encode(name),
                                      minVal,
                                      val,
@@ -2737,13 +2737,13 @@ class NuklearContext:
                                      step,
                                      ctypes.c_float(inc_per_pixel))
     def popup_begin(self, theType, title, flags, rect):
-        return __wrapped_popup_begin__(self.ctx, theType, str.encode(title), flags, rect)
+        return __popup_begin__(self.ctx, theType, str.encode(title), flags, rect)
 
     def menu_begin_label(self,text,align,size):
-        return __wrapped_menu_begin_label__(self.ctx,str.encode(text),align,size)
+        return __menu_begin_label__(self.ctx,str.encode(text),align,size)
 
     def menu_item_label(self, label, align):
-        return __wrapped_menu_item_label__(self.ctx,str.encode(label), align)
+        return __menu_item_label__(self.ctx,str.encode(label), align)
 
 
     def item_is_any_active(self):
