@@ -1,5 +1,5 @@
 /*
- Nuklear - 2.00.4 - public domain
+ Nuklear - 2.00.7 - public domain
  no warranty implied; use at your own risk.
  authored from 2015-2017 by Micha Mettke
 
@@ -254,13 +254,13 @@ extern "C" {
 #define NK_UTF_INVALID 0xFFFD /* internal invalid utf8 rune */
 #define NK_UTF_SIZE 4 /* describes the number of bytes a glyph consists of*/
 #ifndef NK_INPUT_MAX
-#define NK_INPUT_MAX 16
+  #define NK_INPUT_MAX 16
 #endif
 #ifndef NK_MAX_NUMBER_BUFFER
-#define NK_MAX_NUMBER_BUFFER 64
+  #define NK_MAX_NUMBER_BUFFER 64
 #endif
 #ifndef NK_SCROLLBAR_HIDING_TIMEOUT
-#define NK_SCROLLBAR_HIDING_TIMEOUT 4.0f
+  #define NK_SCROLLBAR_HIDING_TIMEOUT 4.0f
 #endif
 /*
  * ==============================================================
@@ -295,26 +295,41 @@ extern "C" {
 #define NK_STRING_JOIN(arg1, arg2) NK_STRING_JOIN_DELAY(arg1, arg2)
 
 #ifdef _MSC_VER
-#define NK_UNIQUE_NAME(name) NK_STRING_JOIN(name,__COUNTER__)
+  #define NK_UNIQUE_NAME(name) NK_STRING_JOIN(name,__COUNTER__)
 #else
-#define NK_UNIQUE_NAME(name) NK_STRING_JOIN(name,__LINE__)
+  #define NK_UNIQUE_NAME(name) NK_STRING_JOIN(name,__LINE__)
 #endif
 
 #ifndef NK_STATIC_ASSERT
-#define NK_STATIC_ASSERT(exp) typedef char NK_UNIQUE_NAME(_dummy_array)[(exp)?1:-1]
+  #define NK_STATIC_ASSERT(exp) typedef char NK_UNIQUE_NAME(_dummy_array)[(exp)?1:-1]
 #endif
 
 #ifndef NK_FILE_LINE
 #ifdef _MSC_VER
-#define NK_FILE_LINE __FILE__ ":" NK_MACRO_STRINGIFY(__COUNTER__)
+  #define NK_FILE_LINE __FILE__ ":" NK_MACRO_STRINGIFY(__COUNTER__)
 #else
-#define NK_FILE_LINE __FILE__ ":" NK_MACRO_STRINGIFY(__LINE__)
+  #define NK_FILE_LINE __FILE__ ":" NK_MACRO_STRINGIFY(__LINE__)
 #endif
 #endif
 
 #define NK_MIN(a,b) ((a) < (b) ? (a) : (b))
 #define NK_MAX(a,b) ((a) < (b) ? (b) : (a))
 #define NK_CLAMP(i,v,x) (NK_MAX(NK_MIN(v,x), i))
+
+#ifdef NK_INCLUDE_STANDARD_VARARGS
+  #if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
+    #include <sal.h>
+    #define NK_PRINTF_FORMAT_STRING _Printf_format_string_
+  #else
+    #define NK_PRINTF_FORMAT_STRING
+  #endif
+  #if defined(__GNUC__)
+    #define NK_PRINTF_VARARG_FUNC(fmtargnumber) __attribute__((format(__printf__, fmtargnumber, fmtargnumber+1)))
+  #else
+    #define NK_PRINTF_VARARG_FUNC(fmtargnumber)
+  #endif
+#endif
+
 /*
  * ===============================================================
  *
@@ -1788,12 +1803,127 @@ NK_API struct nk_rect nk_layout_space_rect_to_local(struct nk_context*, struct n
  *
  *                                  GROUP
  *
- * ============================================================================= */
+ * ============================================================================= 
+ * Groups are basically windows inside windows. They allow to subdivide space
+ * in a window to layout widgets as a group. Almost all more complex widget
+ * layouting requirements can be solved using groups and basic layouting
+ * fuctionality. Groups just like windows are identified by an unique name and
+ * internally keep track of scrollbar offsets by default. However additional
+ * versions are provided to directly manage the scrollbar.
+ *
+ * Usage
+ * -------------------
+ * To create a group you have to call one of the three `nk_group_begin_xxx`
+ * functions to start group declarations and `nk_group_end` at the end. Furthermore it
+ * is required to check the return value of `nk_group_begin_xxx` and only process
+ * widgets inside the window if the value is not 0.
+ * Nesting groups is possible and even encouraged since many layouting schemes
+ * can only be achieved by nesting. Groups, unlike windows, need `nk_group_end`
+ * to be only called if the corosponding `nk_group_begin_xxx` call does not return 0:
+ *
+ *      if (nk_group_begin_xxx(ctx, ...) {
+ *          [... widgets ...]
+ *          nk_group_end(ctx);
+ *      }
+ *
+ * In the grand concept groups groups can be called after starting a window
+ * with `nk_begin_xxx` and before calling `nk_end`:
+ *
+ *      struct nk_context ctx;
+ *      nk_init_xxx(&ctx, ...);
+ *      while (1) {
+ *          Event evt;
+ *          nk_input_begin(&ctx);
+ *          while (GetEvent(&evt)) {
+ *              if (evt.type == MOUSE_MOVE)
+ *                  nk_input_motion(&ctx, evt.motion.x, evt.motion.y);
+ *              else if (evt.type == [...]) {
+ *                  nk_input_xxx(...);
+ *              }
+ *          }
+ *          nk_input_end(&ctx);
+ *
+ *          if (nk_begin_xxx(...) {
+ *              [...widgets...]
+ *              nk_layout_row_dynamic(...);
+ *              if (nk_group_begin_xxx(ctx, ...) {
+ *                  [... widgets ...]
+ *                  nk_group_end(ctx);
+ *              }
+ *          }
+ *          nk_end(ctx);
+ *
+ *          const struct nk_command *cmd = 0;
+ *          nk_foreach(cmd, &ctx) {
+ *          case NK_COMMAND_LINE:
+ *              your_draw_line_function(...)
+ *              break;
+ *          case NK_COMMAND_RECT
+ *              your_draw_rect_function(...)
+ *              break;
+ *          case ...:
+ *              [...]
+ *          }
+ *          nk_clear(&ctx);
+ *      }
+ *      nk_free(&ctx);
+ *
+ *  Reference
+ *  -------------------
+ *  nk_group_begin                  - Start a new group with internal scrollbar handling
+ *  nk_group_end                    - Ends a group. Should only be called if nk_group_begin returned non-zero
+ *  nk_group_scrolled_offset_begin  - Start a new group with manual separated handling of scrollbar x- and y-offset
+ *  nk_group_scrolled_begin         - Start a new group with manual scrollbar handling
+ *  nk_group_scrolled_end           - Ends a group with manual scrollbar handling. Should only be called if nk_group_begin returned non-zero
+ */
+/*  nk_group_begin - starts a new widget group. Requires a previous layouting
+ *  function to specify a pos/size.
+ *  Parameters:
+ *      @ctx must point to a previously initialized `nk_context` struct after call `nk_begin_xxx`
+ *      @title window unique group title used to both for identification and display title in the group header
+ *      @flags same as window flags from `enum nk_panel_flags` */
 NK_API int nk_group_begin(struct nk_context*, const char *title, nk_flags);
-NK_API int nk_group_scrolled_offset_begin(struct nk_context*, nk_uint *x_offset, nk_uint *y_offset, const char*, nk_flags);
-NK_API int nk_group_scrolled_begin(struct nk_context*, struct nk_scroll*, const char *title, nk_flags);
-NK_API void nk_group_scrolled_end(struct nk_context*);
+/*  nk_group_end - ends a widget group
+ *  Parameters:
+ *      @ctx must point to a previously initialized `nk_context` struct after call `nk_group_begin` */
 NK_API void nk_group_end(struct nk_context*);
+/*  nk_group_scrolled_offset_begin - starts a new widget group. requires a previous
+ *  layouting function to specify a size. Does not keep track of scrollbar.
+ *  Parameters:
+ *      @ctx must point to an previously initialized `nk_context` struct after call `nk_begin_xxx`
+ *      @x_offset scrollbar x-offset to offset all widgets inside the group horizontally.
+ *      @y_offset scrollbar y-offset to offset all widgets inside the group vertically
+ *      @title window unique group title used to both identify and display in the group header
+ *      @flags same as window flags from `enum nk_panel_flags` */
+NK_API int nk_group_scrolled_offset_begin(struct nk_context*, nk_uint *x_offset, nk_uint *y_offset, const char *title, nk_flags flags);
+/*  nk_group_scrolled_begin - starts a new widget group. requires a previous
+ *  layouting function to specify a size. Does not keep track of scrollbar.
+ *  Parameters:
+ *      @ctx must point to an previously initialized `nk_context` struct after call `nk_begin_xxx`
+ *      @off both x- and y- scroll offset. Allows for manual scrollbar control
+ *      @title window unique group title used to both identify and display in the group header
+ *      @flags same as window flags from `enum nk_panel_flags` */
+NK_API int nk_group_scrolled_begin(struct nk_context*, struct nk_scroll *off, const char *title, nk_flags);
+/*  nk_group_end - ends a widget group after calling nk_group_scrolled_offset_begin or
+ *  nk_group_scrolled_begin.
+ *  Parameters:
+ *      @ctx must point to a previously initialized `nk_context`. */
+NK_API void nk_group_scrolled_end(struct nk_context*);
+/* =============================================================================
+ *
+ *                                  TREE
+ *
+ * ============================================================================= */
+#define nk_tree_push(ctx, type, title, state) nk_tree_push_hashed(ctx, type, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),__LINE__)
+#define nk_tree_push_id(ctx, type, title, state, id) nk_tree_push_hashed(ctx, type, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),id)
+NK_API int nk_tree_push_hashed(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
+#define nk_tree_image_push(ctx, type, img, title, state) nk_tree_image_push_hashed(ctx, type, img, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),__LINE__)
+#define nk_tree_image_push_id(ctx, type, img, title, state, id) nk_tree_image_push_hashed(ctx, type, img, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),id)
+NK_API int nk_tree_image_push_hashed(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
+NK_API void nk_tree_pop(struct nk_context*);
+NK_API int nk_tree_state_push(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states *state);
+NK_API int nk_tree_state_image_push(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states *state);
+NK_API void nk_tree_state_pop(struct nk_context*);
 /* =============================================================================
  *
  *                                  LIST VIEW
@@ -1810,21 +1940,6 @@ struct nk_list_view {
 };
 NK_API int nk_list_view_begin(struct nk_context*, struct nk_list_view *out, const char *id, nk_flags, int row_height, int row_count);
 NK_API void nk_list_view_end(struct nk_list_view*);
-/* =============================================================================
- *
- *                                  TREE
- *
- * ============================================================================= */
-#define nk_tree_push(ctx, type, title, state) nk_tree_push_hashed(ctx, type, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),__LINE__)
-#define nk_tree_push_id(ctx, type, title, state, id) nk_tree_push_hashed(ctx, type, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),id)
-NK_API int nk_tree_push_hashed(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
-#define nk_tree_image_push(ctx, type, img, title, state) nk_tree_image_push_hashed(ctx, type, img, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),__LINE__)
-#define nk_tree_image_push_id(ctx, type, img, title, state, id) nk_tree_image_push_hashed(ctx, type, img, title, state, NK_FILE_LINE,nk_strlen(NK_FILE_LINE),id)
-NK_API int nk_tree_image_push_hashed(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
-NK_API void nk_tree_pop(struct nk_context*);
-NK_API int nk_tree_state_push(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states *state);
-NK_API int nk_tree_state_image_push(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states *state);
-NK_API void nk_tree_state_pop(struct nk_context*);
 /* =============================================================================
  *
  *                                  WIDGET
@@ -1884,10 +1999,10 @@ NK_API void nk_label_wrap(struct nk_context*, const char*);
 NK_API void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
 NK_API void nk_image(struct nk_context*, struct nk_image);
 #ifdef NK_INCLUDE_STANDARD_VARARGS
-NK_API void nk_labelf(struct nk_context*, nk_flags, const char*, ...);
-NK_API void nk_labelf_colored(struct nk_context*, nk_flags align, struct nk_color, const char*,...);
-NK_API void nk_labelf_wrap(struct nk_context*, const char*,...);
-NK_API void nk_labelf_colored_wrap(struct nk_context*, struct nk_color, const char*,...);
+NK_API void nk_labelf(struct nk_context*, nk_flags, NK_PRINTF_FORMAT_STRING const char*, ...) NK_PRINTF_VARARG_FUNC(3);
+NK_API void nk_labelf_colored(struct nk_context*, nk_flags, struct nk_color, NK_PRINTF_FORMAT_STRING const char*,...) NK_PRINTF_VARARG_FUNC(4);
+NK_API void nk_labelf_wrap(struct nk_context*, NK_PRINTF_FORMAT_STRING const char*,...) NK_PRINTF_VARARG_FUNC(2);
+NK_API void nk_labelf_colored_wrap(struct nk_context*, struct nk_color, NK_PRINTF_FORMAT_STRING const char*,...) NK_PRINTF_VARARG_FUNC(3);
 NK_API void nk_value_bool(struct nk_context*, const char *prefix, int);
 NK_API void nk_value_int(struct nk_context*, const char *prefix, int);
 NK_API void nk_value_uint(struct nk_context*, const char *prefix, unsigned int);
@@ -3332,7 +3447,6 @@ NK_API void nk_draw_list_clear(struct nk_draw_list*);
 NK_API const struct nk_draw_command* nk__draw_list_begin(const struct nk_draw_list*, const struct nk_buffer*);
 NK_API const struct nk_draw_command* nk__draw_list_next(const struct nk_draw_command*, const struct nk_buffer*, const struct nk_draw_list*);
 NK_API const struct nk_draw_command* nk__draw_list_end(const struct nk_draw_list*, const struct nk_buffer*);
-NK_API void nk_draw_list_clear(struct nk_draw_list *list);
 
 /* path */
 NK_API void nk_draw_list_path_clear(struct nk_draw_list*);
@@ -5593,13 +5707,14 @@ nk_murmur_hash(const void * key, int len, nk_hash seed)
     tail = (const nk_byte*)(data + nblocks*4);
     k1 = 0;
     switch (len & 3) {
-    case 3: k1 ^= (nk_uint)(tail[2] << 16);
-    case 2: k1 ^= (nk_uint)(tail[1] << 8u);
+    case 3: k1 ^= (nk_uint)(tail[2] << 16); /* fallthrough */
+    case 2: k1 ^= (nk_uint)(tail[1] << 8u); /* fallthrough */
     case 1: k1 ^= tail[0];
             k1 *= c1;
             k1 = NK_ROTL(k1,15);
             k1 *= c2;
             h1 ^= k1;
+            break;
     default: break;
     }
 
@@ -8033,74 +8148,79 @@ nk_draw_vertex_layout_element_is_end_of_layout(
 }
 
 NK_INTERN void
-nk_draw_vertex_color(void *attribute, const float *values,
+nk_draw_vertex_color(void *attr, const float *vals,
     enum nk_draw_vertex_layout_format format)
 {
     /* if this triggers you tried to provide a value format for a color */
+    float val[4];
     NK_ASSERT(format >= NK_FORMAT_COLOR_BEGIN);
     NK_ASSERT(format <= NK_FORMAT_COLOR_END);
     if (format < NK_FORMAT_COLOR_BEGIN || format > NK_FORMAT_COLOR_END) return;
+
+    val[0] = NK_SATURATE(vals[0]);
+    val[1] = NK_SATURATE(vals[1]);
+    val[2] = NK_SATURATE(vals[2]);
+    val[3] = NK_SATURATE(vals[3]);
 
     switch (format) {
     default: NK_ASSERT(0 && "Invalid vertex layout color format"); break;
     case NK_FORMAT_R8G8B8A8:
     case NK_FORMAT_R8G8B8: {
-        struct nk_color col = nk_rgba_fv(values);
-        NK_MEMCPY(attribute, &col.r, sizeof(col));
+        struct nk_color col = nk_rgba_fv(val);
+        NK_MEMCPY(attr, &col.r, sizeof(col));
     } break;
     case NK_FORMAT_B8G8R8A8: {
-        struct nk_color col = nk_rgba_fv(values);
+        struct nk_color col = nk_rgba_fv(val);
         struct nk_color bgra = nk_rgba(col.b, col.g, col.r, col.a);
-        NK_MEMCPY(attribute, &bgra, sizeof(bgra));
+        NK_MEMCPY(attr, &bgra, sizeof(bgra));
     } break;
     case NK_FORMAT_R16G15B16: {
         nk_ushort col[3];
-        col[0] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[0] * NK_USHORT_MAX, NK_USHORT_MAX);
-        col[1] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[1] * NK_USHORT_MAX, NK_USHORT_MAX);
-        col[2] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[2] * NK_USHORT_MAX, NK_USHORT_MAX);
-        NK_MEMCPY(attribute, col, sizeof(col));
+        col[0] = (nk_ushort)(val[0]*(float)NK_USHORT_MAX);
+        col[1] = (nk_ushort)(val[1]*(float)NK_USHORT_MAX);
+        col[2] = (nk_ushort)(val[2]*(float)NK_USHORT_MAX);
+        NK_MEMCPY(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R16G15B16A16: {
         nk_ushort col[4];
-        col[0] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[0] * NK_USHORT_MAX, NK_USHORT_MAX);
-        col[1] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[1] * NK_USHORT_MAX, NK_USHORT_MAX);
-        col[2] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[2] * NK_USHORT_MAX, NK_USHORT_MAX);
-        col[3] = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[3] * NK_USHORT_MAX, NK_USHORT_MAX);
-        NK_MEMCPY(attribute, col, sizeof(col));
+        col[0] = (nk_ushort)(val[0]*(float)NK_USHORT_MAX);
+        col[1] = (nk_ushort)(val[1]*(float)NK_USHORT_MAX);
+        col[2] = (nk_ushort)(val[2]*(float)NK_USHORT_MAX);
+        col[3] = (nk_ushort)(val[3]*(float)NK_USHORT_MAX);
+        NK_MEMCPY(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R32G32B32: {
         nk_uint col[3];
-        col[0] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[0] * NK_UINT_MAX, NK_UINT_MAX);
-        col[1] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[1] * NK_UINT_MAX, NK_UINT_MAX);
-        col[2] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[2] * NK_UINT_MAX, NK_UINT_MAX);
-        NK_MEMCPY(attribute, col, sizeof(col));
+        col[0] = (nk_uint)(val[0]*(float)NK_UINT_MAX);
+        col[1] = (nk_uint)(val[1]*(float)NK_UINT_MAX);
+        col[2] = (nk_uint)(val[2]*(float)NK_UINT_MAX);
+        NK_MEMCPY(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R32G32B32A32: {
         nk_uint col[4];
-        col[0] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[0] * NK_UINT_MAX, NK_UINT_MAX);
-        col[1] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[1] * NK_UINT_MAX, NK_UINT_MAX);
-        col[2] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[2] * NK_UINT_MAX, NK_UINT_MAX);
-        col[3] = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[3] * NK_UINT_MAX, NK_UINT_MAX);
-        NK_MEMCPY(attribute, col, sizeof(col));
+        col[0] = (nk_uint)(val[0]*(float)NK_UINT_MAX);
+        col[1] = (nk_uint)(val[1]*(float)NK_UINT_MAX);
+        col[2] = (nk_uint)(val[2]*(float)NK_UINT_MAX);
+        col[3] = (nk_uint)(val[3]*(float)NK_UINT_MAX);
+        NK_MEMCPY(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R32G32B32A32_FLOAT:
-        NK_MEMCPY(attribute, values, sizeof(float)*4);
+        NK_MEMCPY(attr, val, sizeof(float)*4);
         break;
     case NK_FORMAT_R32G32B32A32_DOUBLE: {
         double col[4];
-        col[0] = (double)NK_SATURATE(values[0]);
-        col[1] = (double)NK_SATURATE(values[1]);
-        col[2] = (double)NK_SATURATE(values[2]);
-        col[3] = (double)NK_SATURATE(values[3]);
-        NK_MEMCPY(attribute, col, sizeof(col));
+        col[0] = (double)val[0];
+        col[1] = (double)val[1];
+        col[2] = (double)val[2];
+        col[3] = (double)val[3];
+        NK_MEMCPY(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_RGB32:
     case NK_FORMAT_RGBA32: {
-        struct nk_color col = nk_rgba_fv(values);
+        struct nk_color col = nk_rgba_fv(val);
         nk_uint color = nk_color_u32(col);
-        NK_MEMCPY(attribute, &color, sizeof(color));
-    } break;
-    }
+        NK_MEMCPY(attr, &color, sizeof(color));
+    } break; }
 }
 
 NK_INTERN void
@@ -8116,32 +8236,32 @@ nk_draw_vertex_element(void *dst, const float *values, int value_count,
         switch (format) {
         default: NK_ASSERT(0 && "invalid vertex layout format"); break;
         case NK_FORMAT_SCHAR: {
-            char value = (char)NK_CLAMP(NK_SCHAR_MIN, values[value_index], NK_SCHAR_MAX);
+            char value = (char)NK_CLAMP((float)NK_SCHAR_MIN, values[value_index], (float)NK_SCHAR_MAX);
             NK_MEMCPY(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(char));
         } break;
         case NK_FORMAT_SSHORT: {
-            nk_short value = (nk_short)NK_CLAMP(NK_SSHORT_MIN, values[value_index], NK_SSHORT_MAX);
+            nk_short value = (nk_short)NK_CLAMP((float)NK_SSHORT_MIN, values[value_index], (float)NK_SSHORT_MAX);
             NK_MEMCPY(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(value));
         } break;
         case NK_FORMAT_SINT: {
-            nk_int value = (nk_int)NK_CLAMP(NK_SINT_MIN, values[value_index], NK_SINT_MAX);
+            nk_int value = (nk_int)NK_CLAMP((float)NK_SINT_MIN, values[value_index], (float)NK_SINT_MAX);
             NK_MEMCPY(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(nk_int));
         } break;
         case NK_FORMAT_UCHAR: {
-            unsigned char value = (unsigned char)NK_CLAMP(NK_UCHAR_MIN, values[value_index], NK_UCHAR_MAX);
+            unsigned char value = (unsigned char)NK_CLAMP((float)NK_UCHAR_MIN, values[value_index], (float)NK_UCHAR_MAX);
             NK_MEMCPY(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(unsigned char));
         } break;
         case NK_FORMAT_USHORT: {
-            nk_ushort value = (nk_ushort)NK_CLAMP(NK_USHORT_MIN, values[value_index], NK_USHORT_MAX);
+            nk_ushort value = (nk_ushort)NK_CLAMP((float)NK_USHORT_MIN, values[value_index], (float)NK_USHORT_MAX);
             NK_MEMCPY(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(value));
             } break;
         case NK_FORMAT_UINT: {
-            nk_uint value = (nk_uint)NK_CLAMP(NK_UINT_MIN, values[value_index], NK_UINT_MAX);
+            nk_uint value = (nk_uint)NK_CLAMP((float)NK_UINT_MIN, values[value_index], (float)NK_UINT_MAX);
             NK_MEMCPY(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(nk_uint));
         } break;
@@ -14752,8 +14872,7 @@ nk_slider_behavior(nk_flags *state, struct nk_rect *logical_cursor,
     left_mouse_click_in_cursor = in && nk_input_has_mouse_click_down_in_rect(in,
             NK_BUTTON_LEFT, *visual_cursor, nk_true);
 
-    if (left_mouse_down && left_mouse_click_in_cursor)
-    {
+    if (left_mouse_down && left_mouse_click_in_cursor) {
         float ratio = 0;
         const float d = in->mouse.pos.x - (visual_cursor->x+visual_cursor->w*0.5f);
         const float pxstep = bounds.w / slider_steps;
@@ -14938,30 +15057,33 @@ nk_do_slider(nk_flags *state,
  *
  * ===============================================================*/
 NK_INTERN nk_size
-nk_progress_behavior(nk_flags *state, const struct nk_input *in,
-    struct nk_rect r, nk_size max, nk_size value, int modifiable)
+nk_progress_behavior(nk_flags *state, struct nk_input *in,
+    struct nk_rect r, struct nk_rect cursor, nk_size max, nk_size value, int modifiable)
 {
+    int left_mouse_down = 0;
+    int left_mouse_click_in_cursor = 0;
+
     nk_widget_state_reset(state);
-    if (in && modifiable && nk_input_is_mouse_hovering_rect(in, r)) {
-        int left_mouse_down = in->mouse.buttons[NK_BUTTON_LEFT].down;
-        int left_mouse_click_in_cursor = nk_input_has_mouse_click_down_in_rect(in,
-            NK_BUTTON_LEFT, r, nk_true);
+    if (!in || !modifiable) return value;
+    left_mouse_down = in && in->mouse.buttons[NK_BUTTON_LEFT].down;
+    left_mouse_click_in_cursor = in && nk_input_has_mouse_click_down_in_rect(in,
+            NK_BUTTON_LEFT, cursor, nk_true);
+    if (nk_input_is_mouse_hovering_rect(in, r))
+        *state = NK_WIDGET_STATE_HOVERED;
 
+    if (in && left_mouse_down && left_mouse_click_in_cursor) {
         if (left_mouse_down && left_mouse_click_in_cursor) {
-            float ratio = NK_MAX(0, (float)(in->mouse.pos.x - r.x)) / (float)r.w;
-            value = (nk_size)NK_MAX(0,((float)max * ratio));
-            *state = NK_WIDGET_STATE_ACTIVE;
-        } else *state = NK_WIDGET_STATE_HOVERED;
+            float ratio = NK_MAX(0, (float)(in->mouse.pos.x - cursor.x)) / (float)cursor.w;
+            value = (nk_size)NK_CLAMP(0, (float)max * ratio, (float)max);
+            in->mouse.buttons[NK_BUTTON_LEFT].clicked_pos.x = cursor.x + cursor.w/2.0f;
+            *state |= NK_WIDGET_STATE_ACTIVE;
+        }
     }
-
     /* set progressbar widget state */
     if (*state & NK_WIDGET_STATE_HOVER && !nk_input_is_mouse_prev_hovering_rect(in, r))
         *state |= NK_WIDGET_STATE_ENTERED;
     else if (nk_input_is_mouse_prev_hovering_rect(in, r))
         *state |= NK_WIDGET_STATE_LEFT;
-
-    if (!max) return value;
-    value = NK_MIN(value, max);
     return value;
 }
 
@@ -15005,7 +15127,7 @@ NK_INTERN nk_size
 nk_do_progress(nk_flags *state,
     struct nk_command_buffer *out, struct nk_rect bounds,
     nk_size value, nk_size max, int modifiable,
-    const struct nk_style_progress *style, const struct nk_input *in)
+    const struct nk_style_progress *style, struct nk_input *in)
 {
     float prog_scale;
     nk_size prog_value;
@@ -15020,11 +15142,11 @@ nk_do_progress(nk_flags *state,
     cursor.h = NK_MAX(bounds.h, 2 * style->padding.y + 2 * style->border);
     cursor = nk_pad_rect(bounds, nk_vec2(style->padding.x + style->border, style->padding.y + style->border));
     prog_scale = (float)value / (float)max;
-    cursor.w = (bounds.w - 2) * prog_scale;
 
     /* update progressbar */
     prog_value = NK_MIN(value, max);
-    prog_value = nk_progress_behavior(state, in, bounds, max, prog_value, modifiable);
+    prog_value = nk_progress_behavior(state, in, bounds, cursor,max, prog_value, modifiable);
+    cursor.w = cursor.w * prog_scale;
 
     /* draw progressbar */
     if (style->draw_begin) style->draw_begin(out, style->userdata);
@@ -15524,8 +15646,6 @@ nk_do_edit(nk_flags *state, struct nk_command_buffer *out,
         const enum nk_text_edit_type type = (flags & NK_EDIT_MULTILINE) ?
             NK_TEXT_EDIT_MULTI_LINE: NK_TEXT_EDIT_SINGLE_LINE;
         nk_textedit_clear_state(edit, type, filter);
-        if (flags & NK_EDIT_ALWAYS_INSERT_MODE)
-            edit->mode = NK_TEXT_EDIT_MODE_INSERT;
         if (flags & NK_EDIT_AUTO_SELECT)
             select_all = nk_true;
         if (flags & NK_EDIT_GOTO_END_ON_ACTIVATE) {
@@ -15535,6 +15655,8 @@ nk_do_edit(nk_flags *state, struct nk_command_buffer *out,
     } else if (!edit->active) edit->mode = NK_TEXT_EDIT_MODE_VIEW;
     if (flags & NK_EDIT_READ_ONLY)
         edit->mode = NK_TEXT_EDIT_MODE_VIEW;
+    else if (flags & NK_EDIT_ALWAYS_INSERT_MODE)
+        edit->mode = NK_TEXT_EDIT_MODE_INSERT;
 
     ret = (edit->active) ? NK_EDIT_ACTIVE: NK_EDIT_INACTIVE;
     if (prev_state != edit->active)
@@ -21199,7 +21321,7 @@ nk_progress(struct nk_context *ctx, nk_size *cur, nk_size max, int is_modifyable
     struct nk_window *win;
     struct nk_panel *layout;
     const struct nk_style *style;
-    const struct nk_input *in;
+    struct nk_input *in;
 
     struct nk_rect bounds;
     enum nk_widget_layout_states state;
@@ -21318,8 +21440,7 @@ nk_edit_string(struct nk_context *ctx, nk_flags flags,
         win->edit.mode = edit->mode;
         win->edit.scrollbar.x = (nk_uint)edit->scrollbar.x;
         win->edit.scrollbar.y = (nk_uint)edit->scrollbar.y;
-    }
-    return state;
+    } return state;
 }
 
 NK_API nk_flags
@@ -21381,8 +21502,7 @@ nk_edit_buffer(struct nk_context *ctx, nk_flags flags,
     } else if (prev_state && !edit->active) {
         /* current edit is now cold */
         win->edit.active = nk_false;
-    }
-    return ret_flags;
+    } return ret_flags;
 }
 
 NK_API nk_flags
@@ -22458,6 +22578,7 @@ nk_popup_end(struct nk_context *ctx)
 NK_API int
 nk_tooltip_begin(struct nk_context *ctx, float width)
 {
+    int x,y,w,h;
     struct nk_window *win;
     const struct nk_input *in;
     struct nk_rect bounds;
@@ -22475,10 +22596,15 @@ nk_tooltip_begin(struct nk_context *ctx, float width)
     if (win->popup.win && (win->popup.type & NK_PANEL_SET_NONBLOCK))
         return 0;
 
-    bounds.w = nk_iceilf(width);
-    bounds.h = nk_iceilf(nk_null_rect.h);
-    bounds.x = nk_ifloorf(in->mouse.pos.x + 1) - win->layout->clip.x;
-    bounds.y = nk_ifloorf(in->mouse.pos.y + 1) - win->layout->clip.y;
+    w = nk_iceilf(width);
+    h = nk_iceilf(nk_null_rect.h);
+    x = nk_ifloorf(in->mouse.pos.x + 1) - (int)win->layout->clip.x;
+    y = nk_ifloorf(in->mouse.pos.y + 1) - (int)win->layout->clip.y;
+
+    bounds.x = (float)x;
+    bounds.y = (float)y;
+    bounds.w = (float)w;
+    bounds.h = (float)h;
 
     ret = nk_popup_begin(ctx, NK_POPUP_DYNAMIC,
         "__##Tooltip##__", NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER, bounds);
