@@ -1,4 +1,6 @@
--make a glfw opengl2 demo
--hide passing values by reference
--turn the procedures into methods on the context
--turn all begin/ends into with statements
+- get a build working on windows
+- Most of pyNuklear's implementation has been driven by porting nuklear's overview.c
+  to python, in the file demo/overview.py.  I need help in completing the bindings to
+  implement all of overview.c.
+  Afterwards, or concurrently, make the python bindings necessary to implement
+  calculator.c, node_editor.c, and style.c
