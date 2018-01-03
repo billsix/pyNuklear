@@ -608,7 +608,9 @@ WIDGET_STATE_ACTIVE      = WIDGET_STATE_ACTIVED|WIDGET_STATE_MODIFIED
 
 # enum nk_widget_layout_states nk_widget(struct nk_rect*, const struct nk_context*);
 # enum nk_widget_layout_states nk_widget_fitting(struct nk_rect*, struct nk_context*, struct nk_vec2);
-# struct nk_rect nk_widget_bounds(struct nk_context*);
+__widget_bounds__ = _nuklear.nk_widget_bounds
+__widget_bounds__.arglist = [POINTER(Context)]
+__widget_bounds__.restype = Rect
 # struct nk_vec2 nk_widget_position(struct nk_context*);
 # struct nk_vec2 nk_widget_size(struct nk_context*);
 __widget_width__ = _nuklear.nk_widget_width
@@ -922,16 +924,20 @@ __combo_end__ = _nuklear.nk_combo_end
 __combo_end__.arglist = [POINTER(Context)]
 
 # Contextual
-# int nk_contextual_begin(struct nk_context*, nk_flags, struct nk_vec2, struct nk_rect trigger_bounds);
+__contextual_begin__  = _nuklear.nk_contextual_begin
+__contextual_begin__.arglist = [POINTER(Context), c_int, Vec2, Rect]
+__contextual_begin__.restype = c_int
 # int nk_contextual_item_text(struct nk_context*, const char*, int,nk_flags align);
-# int nk_contextual_item_label(struct nk_context*, const char*, nk_flags align);
+__contextual_item_label__ = _nuklear.nk_contextual_item_label
+__contextual_item_label__.arglist = [POINTER(Context), c_char_p, c_int]
+__contextual_item_label__.restype = c_int
 # int nk_contextual_item_image_label(struct nk_context*, struct nk_image, const char*, nk_flags alignment);
 # int nk_contextual_item_image_text(struct nk_context*, struct nk_image, const char*, int len, nk_flags alignment);
 # int nk_contextual_item_symbol_label(struct nk_context*, enum nk_symbol_type, const char*, nk_flags alignment);
 # int nk_contextual_item_symbol_text(struct nk_context*, enum nk_symbol_type, const char*, int, nk_flags alignment);
 # void nk_contextual_close(struct nk_context*);
-# void nk_contextual_end(struct nk_context*);
-
+__contextual_end__ = _nuklear.nk_contextual_end
+__contextual_end__.arglist = [POINTER(Context)]
 
 # Tooltip
 __tooltip__ = _nuklear.nk_tooltip
@@ -2758,6 +2764,15 @@ class NuklearContext:
     def combo_end(self):
         __combo_end__(self.ctx)
 
+    def contextual_begin(self,flags, size, triggerBounds):
+        return __contextual_begin__(self.ctx,flags, size, triggerBounds)
+
+    def contextual_item_label(self, text, align):
+        return __contextual_item_label__(self.ctx, str.encode(text), align)
+
+    def contextual_end(self):
+        __contextual_end__(self.ctx)
+
     def end(self):
         __end__(self.ctx)
 
@@ -2810,6 +2825,9 @@ class NuklearContext:
 
     def widget_width(self):
         return __widget_width__(self.ctx)
+    
+    def widget_bounds(self):
+        return __widget_bounds__(self.ctx)
 
     def button_set_behavior(self, behavior):
         __button_set_behavior__(self.ctx, behavior)

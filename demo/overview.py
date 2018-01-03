@@ -527,11 +527,68 @@ def overview(nuklear):
                                  title="Popup",
                                  state=nk.MINIMIZED) :
                 #TODO
+                nuklear.layout_row_static(height=30.0,
+                                          item_width=160,
+                                          cols=1)
+                bounds = nuklear.widget_bounds()
+                nuklear.label(text="Right click me for menu",
+                              alignment=nk.TEXT_LEFT)
+
+                if nuklear.contextual_begin(flags=0,
+                                            size=nk.Vec2(100,300),
+                                            triggerBounds=bounds):
+                    nuklear.layout_row_dynamic(height=25.0,
+                                               cols=1)
+                    (modified,show_menu) = nuklear.checkbox_label(text="Menu",
+                                                                  active=show_menu)
+                    (modified,mprog) = nuklear.progress(cur=mprog,
+                                                        max=100,
+                                                        is_modifyable=nk.MODIFIABLE)
+                    (modified,mslider) = nuklear.slider_int(minV=0,
+                                                            value=mslider,
+                                                            maxV=16,
+                                                            step=1)
+                    if nuklear.contextual_item_label(text="About",
+                                                     align=nk.TEXT_CENTERED):
+                        show_app_about = True
+                    nuklear.contextual_end()
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TREE_TAB,
                                  title="Layout",
                                  state=nk.MINIMIZED) :
                 #TODO
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Widget",
+                                     state=nk.MINIMIZED) :
+                    #TODO
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Group",
+                                     state=nk.MINIMIZED) :
+                    #TODO
+                    nuklear.tree_pop()
+
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Notebook",
+                                     state=nk.MINIMIZED) :
+                    #TODO
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Simple",
+                                     state=nk.MINIMIZED) :
+                    #TODO
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Complex",
+                                     state=nk.MINIMIZED) :
+                    #TODO
+                    nuklear.tree_pop()
+                if nuklear.tree_push(theType=nk.TREE_NODE,
+                                     title="Splitter",
+                                     state=nk.MINIMIZED) :
+                    #TODO
+                    nuklear.tree_pop()
+
                 nuklear.tree_pop()
 
 
