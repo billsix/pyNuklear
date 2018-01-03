@@ -1816,7 +1816,6 @@ VERTEX_ATTRIBUTE_COUNT=3
 # const struct nk_draw_command* nk__draw_list_begin(const struct nk_draw_list*, const struct nk_buffer*);
 # const struct nk_draw_command* nk__draw_list_next(const struct nk_draw_command*, const struct nk_buffer*, const struct nk_draw_list*);
 # const struct nk_draw_command* nk__draw_list_end(const struct nk_draw_list*, const struct nk_buffer*);
-# void nk_draw_list_clear(struct nk_draw_list *list);
 # void nk_draw_list_path_clear(struct nk_draw_list*);
 # void nk_draw_list_path_line_to(struct nk_draw_list*, struct nk_vec2 pos);
 # void nk_draw_list_path_arc_to_fast(struct nk_draw_list*, struct nk_vec2 center, float radius, int a_min, int a_max);
