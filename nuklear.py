@@ -362,7 +362,10 @@ __begin__.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
 __begin__.restype = c_int
 
 
-# c_int nk_begin_titled(POINTER(Context), c_char_p name, c_char_p title, Rect bounds, c_int flags);
+__begin_titled__ = _nuklear.nk_begin_titled
+__begin_titled__.arglist = [POINTER(Context), c_char_p, c_char_p, Rect, c_int]
+__begin_titled__.restype = c_int
+
 __end__            = _nuklear.nk_end
 __end__.arglist    = [POINTER(Context)]
 # struct nk_window *nk_window_find(POINTER(Context), c_char_p name);
@@ -2650,6 +2653,15 @@ class NuklearContext:
     def begin(self, title, bounds, flags):
         return __begin__(self.ctx, str.encode(title), bounds, flags)
 
+    # if two windows are going to have the same title, you need to provide
+    # a unique string "name" so that nuklear can identify it
+    def begin_titled(self, name, title, bounds, flags):
+        return __begin_titled__(self.ctx,
+                                str.encode(name),
+                                str.encode(title),
+                                bounds,
+                                flags)
+
     def layout_widget_bounds(self):
         return __layout_widget_bounds__(self.ctx)
 
@@ -2825,7 +2837,7 @@ class NuklearContext:
 
     def widget_width(self):
         return __widget_width__(self.ctx)
-    
+
     def widget_bounds(self):
         return __widget_bounds__(self.ctx)
 
