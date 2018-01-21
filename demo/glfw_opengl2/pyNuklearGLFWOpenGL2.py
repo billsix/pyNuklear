@@ -53,7 +53,7 @@ glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,4)
 
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.glfwCreateWindow(1000, 1000, str.encode("Hello World"), None, None)
+window = glfw.glfwCreateWindow(1000, 1000, str.encode("pyNuklear demo - GLFW OpenGL2"), None, None)
 if not window:
     glfw.glfwTerminate()
     sys.exit()
