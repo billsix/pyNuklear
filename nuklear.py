@@ -792,9 +792,9 @@ __progress__.restype = c_int
 
 # ColorPicker#
 __color_picker__ = _nuklear.nk_color_picker
-__color_picker__.arglist = [POINTER(Context), Color, c_int]
-__color_picker__.restype = Color
-# int nk_color_pick(struct nk_context*, struct nk_color*, enum nk_color_format);
+__color_picker__.arglist = [POINTER(Context), ColorF, c_int]
+__color_picker__.restype = ColorF
+# int nk_color_pick(struct nk_context*, struct nk_colorf*, enum nk_color_format);
 
 
 # Properties
@@ -812,7 +812,9 @@ __propertyi__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int,
 __propertyi__.restype = c_int
 
 
-# float nk_propertyf(struct nk_context*, const char *name, float min, float val, float max, float step, float inc_per_pixel);
+__propertyf__ = _nuklear.nk_propertyf
+__propertyf__.arglist = [POINTER(Context), c_char_p, c_float, c_float, c_float, c_float, c_float]
+__propertyf__.restype = c_float
 # double nk_propertyd(struct nk_context*, const char *name, double min, double val, double max, double step, float inc_per_pixel);
 
 
@@ -1060,6 +1062,9 @@ CURSOR_COUN=7
 # struct nk_color nk_rgb_bv(const nk_byte* rgb);
 # struct nk_color nk_rgb_f(float r, float g, float b);
 # struct nk_color nk_rgb_fv(const float *rgb);
+__rgb_cf__ = _nuklear.nk_rgb_cf
+__rgb_cf__.arglist = [ColorF]
+__rgb_cf__.restype = Color
 # struct nk_color nk_rgb_hex(const char *rgb);
 # struct nk_color nk_rgba(int r, int g, int b, int a);
 # struct nk_color nk_rgba_u32(nk_uint);
@@ -1067,7 +1072,14 @@ CURSOR_COUN=7
 # struct nk_color nk_rgba_bv(const nk_byte *rgba);
 # struct nk_color nk_rgba_f(float r, float g, float b, float a);
 # struct nk_color nk_rgba_fv(const float *rgba);
+# struct nk_color nk_rgba_cf(struct nk_colorf c);
 # struct nk_color nk_rgba_hex(const char *rgb);
+
+# struct nk_colorf nk_hsva_colorf(float h, float s, float v, float a);
+# struct nk_colorf nk_hsva_colorfv(float *c);
+# void nk_colorf_hsva_f(float *out_h, float *out_s, float *out_v, float *out_a, struct nk_colorf in);
+# void nk_colorf_hsva_fv(float *hsva, struct nk_colorf in);
+
 # struct nk_color nk_hsv(int h, int s, int v);
 # struct nk_color nk_hsv_iv(const int *hsv);
 # struct nk_color nk_hsv_bv(const nk_byte *hsv);
@@ -1080,6 +1092,7 @@ CURSOR_COUN=7
 # struct nk_color nk_hsva_fv(const float *hsva);
 # void nk_color_f(float *r, float *g, float *b, float *a, struct nk_color);
 # void nk_color_fv(float *rgba_out, struct nk_color);
+# struct nk_colorf nk_color_cf(struct nk_color);
 # void nk_color_d(double *r, double *g, double *b, double *a, struct nk_color);
 # void nk_color_dv(double *rgba_out, struct nk_color);
 # nk_uint nk_color_u32(struct nk_color);
@@ -2747,12 +2760,22 @@ class NuklearContext:
 
     def propertyi(self, name, minVal, val, maxVal, step, inc_per_pixel):
         return __propertyi__(self.ctx,
-                                     str.encode(name),
-                                     minVal,
-                                     val,
-                                     maxVal,
-                                     step,
-                                     ctypes.c_float(inc_per_pixel))
+                             str.encode(name),
+                             minVal,
+                             val,
+                             maxVal,
+                             step,
+                             ctypes.c_float(inc_per_pixel))
+
+    def propertyf(self, name, minVal, val, maxVal, step, inc_per_pixel):
+        return __propertyf__(self.ctx,
+                             str.encode(name),
+                             c_float(minVal),
+                             c_float(val),
+                             c_float(maxVal),
+                             c_float(step),
+                             c_float(inc_per_pixel))
+
     def popup_begin(self, theType, title, flags, rect):
         return __popup_begin__(self.ctx, theType, str.encode(title), flags, rect)
 
@@ -2809,6 +2832,10 @@ class NuklearContext:
 
     def menu_end(self):
         __menu_end__(self.ctx)
+
+
+    def rgb_cf(self,colorf):
+        return __rgb_cf__(self.ctx, colorf)
 
     def menubar_end(self):
         __menubar_end__(self.ctx)

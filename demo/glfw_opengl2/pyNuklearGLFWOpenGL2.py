@@ -210,11 +210,14 @@ while not glfw.glfwWindowShouldClose(window):
         try:
             background
         except Exception:
-            background = nk.Color(0, 0, 0, 255)
+            background = nk.ColorF(r=0.10,
+                                   g=0.18,
+                                   b=0.24,
+                                   a=1.0)
 
         nuklear.layout_row_dynamic(height=25.0,
                                    cols=1)
-        if nuklear.combo_begin_color(color=background,
+        if nuklear.combo_begin_color(color=nuklear.rgb_cf(background),
                                      size=nk.Vec2(nuklear.widget_width(),
                                                   400)):
             nuklear.layout_row_dynamic(height=120.0,
@@ -224,33 +227,32 @@ while not glfw.glfwWindowShouldClose(window):
 
             nuklear.layout_row_dynamic(height=25.0,
                                        cols=1)
-            background.r = nuklear.propertyi(name="#R:",
-                                             minVal=0,
+            background.r = nuklear.propertyf(name="#R:",
+                                             minVal=0.0,
                                              val=background.r,
-                                             maxVal=255,
-                                             step=1,
-                                             inc_per_pixel=1.0)
-            background.g = nuklear.propertyi(name="#G:",
-                                             minVal=0,
+                                             maxVal=1.0,
+                                             step=0.01,
+                                             inc_per_pixel=0.005)
+            background.g = nuklear.propertyf(name="#G:",
+                                             minVal=0.0,
                                              val=background.g,
-                                             maxVal=255,
-                                             step=1,
-                                             inc_per_pixel=1.0)
-            background.b = nuklear.propertyi(name="#B:",
-                                             minVal=0,
+                                             maxVal=1.0,
+                                             step=0.01,
+                                             inc_per_pixel=0.005)
+            background.b = nuklear.propertyf(name="#B:",
+                                             minVal=0.0,
                                              val=background.b,
-                                             maxVal=255,
-                                             step=1,
-                                             inc_per_pixel=1.0)
-            background.a = nuklear.propertyi(name="#A:",
-                                             minVal=0,
+                                             maxVal=1.0,
+                                             step=0.01,
+                                             inc_per_pixel=0.005)
+            background.a = nuklear.propertyf(name="#A:",
+                                             minVal=0.0,
                                              val=background.a,
-                                             maxVal=255,
-                                             step=1,
-                                             inc_per_pixel=1.0)
+                                             maxVal=1.0,
+                                             step=0.01,
+                                             inc_per_pixel=0.005)
 
-
-            gl.glClearColor(background.r/255,background.g/255,background.b/255,background.a/255)
+            gl.glClearColor(background.r,background.g,background.b,background.a)
 
             nuklear.combo_end()
 
