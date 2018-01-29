@@ -39,7 +39,20 @@ glfw3_init             = nk._nuklear.nk_glfw3_init
 glfw3_init.restype     = POINTER(nk.Context)
 glfw3_init.arglist     = [POINTER(glfw.GLFWwindow), c_int]
 
-class FontAtlas(Structure): pass
+class FontAtlas(Structure): 
+    _fields_ = [ ('pixel', ctypes.c_void_p),
+                 ('tex_width',  c_int),
+                 ('tex_height',  c_int),
+                 ('permanent',  nk.Allocator),
+                 ('temporary',  nk.Allocator),
+                 ('custom',  nk.Recti),
+                 ('cunsors',  POINTER(nk.Cursor)),
+                 ('glyph_count',  c_int),
+                 ('glypts',  ctypes.c_void_p), # TODO  POINTER(nk.FontGlyph)),
+                 ('default_font',  nk.Font),
+                 ('fonts', ctypes.c_void_p), # TODO  POINTER(nk.Font)),
+                 ('config', ctypes.c_void_p), # TODO  POINTER(nk.FontConfig )),
+                 ('font_num', c_int )]
 
 glfw3_font_stash_begin = nk._nuklear.nk_glfw3_font_stash_begin
 glfw3_font_stash_begin.arglist = [POINTER(POINTER(FontAtlas))]

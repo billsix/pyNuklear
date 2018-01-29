@@ -50,33 +50,6 @@ def callerFrameInfo():
 
 
 
-class Context(Structure): pass
-
-class Color(Structure):
-    _fields_ = [ ('r',  c_ubyte),
-                 ('g',  c_ubyte),
-                 ('b',  c_ubyte),
-                 ('a',  c_ubyte)]
-
-    def __init__(self,r,g,b,a):
-        self.r = r
-        self.g = g
-        self.b = b
-        self.a = a
-
-class ColorF(Structure):
-    _fields_ = [ ('r',  c_float),
-                 ('g',  c_float),
-                 ('b',  c_float),
-                 ('a',  c_float)]
-
-    def __init__(self,r,g,b,a):
-        self.r = r
-        self.g = g
-        self.b = b
-        self.a = a
-
-
 class Vec2(Structure):
     _fields_ = [ ('x',  c_float),
                  ('y',  c_float)]
@@ -121,8 +94,33 @@ class Recti(Structure):
         self.h = h
 
 
-# TODO - figure out if there is a void pointer type
-Handle = POINTER(c_int)
+class Color(Structure):
+    _fields_ = [ ('r',  c_ubyte),
+                 ('g',  c_ubyte),
+                 ('b',  c_ubyte),
+                 ('a',  c_ubyte)]
+
+    def __init__(self,r,g,b,a):
+        self.r = r
+        self.g = g
+        self.b = b
+        self.a = a
+
+class ColorF(Structure):
+    _fields_ = [ ('r',  c_float),
+                 ('g',  c_float),
+                 ('b',  c_float),
+                 ('a',  c_float)]
+
+    def __init__(self,r,g,b,a):
+        self.r = r
+        self.g = g
+        self.b = b
+        self.a = a
+
+
+
+Handle = ctypes.c_void_p
 
 class Image(Structure):
     _fields_ = [ ('handle', Handle),
@@ -153,6 +151,376 @@ class Scroll(Structure):
     def __init__(self,x,y):
         self.x = x
         self.y = y
+
+
+
+class Input(Structure): pass
+
+
+class UserFontGlyph(Structure): pass
+
+Rune = c_uint
+
+
+TextWidthF           = CFUNCTYPE(c_float, Handle, c_float, c_char_p, c_int)
+QueryFontGlyphF      = CFUNCTYPE(None, Handle, c_float, UserFontGlyph, Rune, Rune)
+
+
+
+
+
+class UserFont(Structure):
+    _fields_ = [ ('userdata', Handle),
+                 ('height',  c_float),
+                 ('width',  TextWidthF),
+                 ('query',  QueryFontGlyphF),
+                 ('texture',  Handle)]
+    def __init__(self,userdata,height,width,query,texture):
+        self.userdata = userdata
+        self.height = height
+        self.width = width
+        self.query = query
+        self.texture = texture
+
+class Font(Structure): pass
+
+class StyleToggle(Structure): pass
+
+class StyleSelectable(Structure): pass
+
+class StyleSlider(Structure): pass
+
+class StyleProgress(Structure): pass
+
+class StyleProperty(Structure): pass
+
+class StyleEdit(Structure): pass
+
+class StyleChart(Structure): pass
+
+class StyleScrollbar(Structure): pass
+
+class StyleTab(Structure): pass
+
+class StyleCombo(Structure): pass
+
+class StyleWindowHeader(Structure):  pass
+
+class StyleItem(Structure):  pass
+
+class StyleText(Structure): pass
+
+class Buffer(Structure): pass
+
+class CommandBuffer(Structure):
+    _fields_ = [ ('base',  POINTER(Buffer)),
+                 ('clip', Rect ),
+                 ('use_clipping', c_int  ),
+                 ('userdata', Handle ),
+                 ('begin', POINTER(c_uint)),
+                 ('end', POINTER(c_uint)),
+                 ('last', POINTER(c_uint))]
+    def __init__(self,
+                 base,
+                 clip,
+                 use_clipping,
+                 userdata,
+                 begin,
+                 end,
+                 last):
+        self.normal = normal
+        self.hover = hover
+        self.active = active
+        self.border_color = border_color
+        self.text_background = text_background
+        self.text_normal = text_normal
+        self.text_hover = text_hover
+        self.text_active = text_active
+        self.text_alignment = text_alignment
+        self.border = border
+        self.rounding = rounding
+        self.padding = padding
+        self.image_padding = image_padding
+        self.touch_padding = touch_padding
+        self.userdata = userdata
+        self.draw_begin = draw_begin
+        self.draw_end = draw_end
+
+
+DrawF                = CFUNCTYPE(None, CommandBuffer, Handle)
+
+
+class StyleButton(Structure): 
+    _fields_ = [('normal', StyleItem ),
+                ('hover', StyleItem ),
+                ('active', StyleItem ),
+                ('border_color', Color ),                
+                ('text_background', Color ),
+                ('text_normal', Color ),
+                ('text_hover', Color ),
+                ('text_active', Color ),
+                ('text_alignment', c_uint ),                
+                ('border', c_float ),
+                ('rounding', c_float ),
+                ('padding', Vec2 ),
+                ('image_padding', Vec2 ),
+                ('touch_padding', Vec2 ),
+                ('userdata', Handle ),
+                ('draw_begin', DrawF ),
+                ('draw_end', DrawF )]
+    def __init__(self,
+                 normal,
+                 hover,
+                 active,
+                 border_color,
+                 text_background,
+                 text_normal,
+                 text_hover,
+                 text_active,
+                 text_alignment,
+                 border,
+                 rounding,
+                 padding,
+                 image_padding,
+                 touch_padding,
+                 userdata,
+                 draw_begin,
+                 draw_end):
+        self.font = font
+        self.header = header
+        self.fixed_background = fixed_background
+        self.background = background
+        self.border_color = border_color
+        self.popup_border_color = popup_border_color
+        self.combo_border_color = combo_border_color
+        self.contextual_border_color = contextual_border_color
+        self.menu_border_color = menu_border_color
+        self.group_border_color = group_border_color
+        self.tooltip_border_color = tooltip_border_color
+        self.scaler = scaler
+        self.border = border
+        self.combo_border = combo_border
+        self.contextual_border = contextual_border
+        self.menu_border = menu_border
+        self.group_border = group_border
+        self.tooltip_border = tooltip_border
+        self.popup_border = popup_border
+        self.min_row_height_padding = min_row_height_padding
+        self.rounding = rounding
+        self.spacing = spacing
+        self.scrollbar_size = scrollbar_size
+        self.min_size = min_size
+        self.padding = padding
+        self.group_padding = group_padding
+        self.popup_padding = popup_padding
+        self.combo_padding = combo_padding
+        self.contextual_padding = contextual_padding
+        self.menu_padding = menu_padding
+        self.tooltip_padding = tooltip_padding
+        
+
+class StyleWindow(Structure): 
+    _fields_ = [ ('font',  UserFont),
+                 ('header', StyleWindowHeader ),
+                 ('fixed_background', StyleItem ),
+                 ('background', Color ),
+                 ('border_color', Color ),
+                 ('popup_border_color', Color ),
+                 ('combo_border_color', Color ),
+                 ('contextual_border_color', Color ),
+                 ('menu_border_color', Color ),
+                 ('group_border_color', Color ),
+                 ('tooltip_border_color', Color ),
+                 ('scaler', StyleItem ),
+                 ('border', c_float ),
+                 ('combo_border', c_float ),
+                 ('contextual_border', c_float ),
+                 ('menu_border', c_float ),
+                 ('group_border', c_float ),
+                 ('tooltip_border', c_float ),
+                 ('popup_border', c_float ),
+                 ('min_row_height_padding', c_float ),
+                 ('rounding', c_float ),
+                 ('spacing', Vec2 ),
+                 ('scrollbar_size', Vec2 ),
+                 ('min_size', Vec2 ),
+                 ('padding', Vec2 ),
+                 ('group_padding', Vec2 ),
+                 ('popup_padding', Vec2 ),
+                 ('combo_padding', Vec2 ),
+                 ('contextual_padding', Vec2 ),
+                 ('menu_padding', Vec2 ),
+                 ('tooltip_padding', Vec2 )]
+    def __init__(self,
+                 font,
+                 header,
+                 fixed_background,
+                 background,
+                 border_color,
+                 popup_border_color,
+                 combo_border_color,
+                 contextual_border_color,
+                 menu_border_color,
+                 group_border_color,
+                 tooltip_border_color,
+                 scaler,
+                 border,
+                 combo_border,
+                 contextual_border,
+                 menu_border,
+                 group_border,
+                 tooltip_border,
+                 popup_border,
+                 min_row_height_padding,
+                 rounding,
+                 spacing,
+                 scrollbar_size,
+                 min_size,
+                 padding,
+                 group_padding,
+                 popup_padding,
+                 combo_padding,
+                 contextual_padding,
+                 menu_padding,
+                 tooltip_padding):
+        self.font = font
+        self.header = header
+        self.fixed_background = fixed_background
+        self.background = background
+        self.border_color = border_color
+        self.popup_border_color = popup_border_color
+        self.combo_border_color = combo_border_color
+        self.contextual_border_color = contextual_border_color
+        self.menu_border_color = menu_border_color
+        self.group_border_color = group_border_color
+        self.tooltip_border_color = tooltip_border_color
+        self.scaler = scaler
+        self.border = border
+        self.combo_border = combo_border
+        self.contextual_border = contextual_border
+        self.menu_border = menu_border
+        self.group_border = group_border
+        self.tooltip_border = tooltip_border
+        self.popup_border = popup_border
+        self.min_row_height_padding = min_row_height_padding
+        self.rounding = rounding
+        self.spacing = spacing
+        self.scrollbar_size = scrollbar_size
+        self.min_size = min_size
+        self.padding = padding
+        self.group_padding = group_padding
+        self.popup_padding = popup_padding
+        self.combo_padding = combo_padding
+        self.contextual_padding = contextual_padding
+        self.menu_padding = menu_padding
+        self.tooltip_padding = tooltip_padding
+
+class Style(Structure):
+    _fields_ = [ ('font',  POINTER(UserFont)),
+                 ('cursor',  POINTER(Cursor)),
+                 ('cursor_active',  POINTER(Cursor)),
+                 ('cursor_last',  POINTER(Cursor)),
+                 ('cursor_visible',  c_int),
+                 ('text',  StyleText),
+                 ('button',  StyleButton),
+                 ('contextual_button',  StyleButton),
+                 ('menu_botton',  StyleButton),
+                 ('option',  StyleToggle),
+                 ('checkbox',  StyleToggle),
+                 ('selecetable',  StyleSelectable),
+                 ('slider',  StyleSlider),
+                 ('progress',  StyleProgress),
+                 ('property',  StyleProperty),
+                 ('edit',  StyleEdit),
+                 ('chart',  StyleChart),
+                 ('scrollh',  StyleScrollbar),
+                 ('scrollv',  StyleScrollbar),
+                 ('tab',  StyleTab),
+                 ('combo',  StyleCombo),
+                 ('window',  StyleWindow)]
+    def __init__(self,
+                 font,
+                 cursor,
+                 cursor_active,
+                 cursor_last,
+                 cursor_visible,
+                 text,
+                 button,
+                 contextual_button,
+                 menu_botton,
+                 option,
+                 checkbox,
+                 selecetable,
+                 slider,
+                 progress,
+                 property,
+                 edit,
+                 chart,
+                 scrollh,
+                 scrollv,
+                 tab,
+                 combo,
+                 window):
+        self.font = font
+        self.cursor = cursor
+        self.cursor_active = cursor_active
+        self.cursor_last = cursor_last
+        self.cursor_visible = cursor_visible
+        self.text = text
+        self.button = button
+        self.contextual_button = contextual_button
+        self.menu_botton = menu_botton
+        self.option = option
+        self.checkbox = checkbox
+        self.selecetable = selecetable
+        self.slider = slider
+        self.progress = progress
+        self.property = property
+        self.edit = edit
+        self.chart = chart
+        self.scrollh = scrollh
+        self.scrollv = scrollv
+        self.tab = tab
+        self.combo = combo
+        self.window = window
+        
+class Clipboard(Structure): pass
+
+class ConfigurationStacks(Structure): pass
+
+class Context(Structure):
+    _fields_ = [ ('input',  Input),
+                 ('style',  Style),
+                 ('memory',  Buffer),
+                 ('clip',  Clipboard),
+                 ('last_widget_state',  c_int),
+                 ('button_behavior',  c_int),
+                 ('stacks',  ConfigurationStacks),
+                 ('delta_time_seconds',  c_float)]
+    def __init__(self,
+                 input,
+                 style,
+                 memory,
+                 clip,
+                 last_widget_state,
+                 button_behavior,
+                 stacks,
+                 delta_time_seconds):
+        self.input = input
+        self.style = style
+        self.memory = memory
+        self.clip = clip
+        self.last_widget_state = last_widget_state
+        self.button_behavior = button_behavior
+        self.stacks = stacks
+        self.delta_time_seconds = delta_time_seconds
+
+class Allocator(Structure):
+    _fields_ = [ ('userdata',  Handle),
+                 ('alloc',  ctypes.c_void_p), # TODO - actually represent the function
+                 ('free',  ctypes.c_void_p)# TODO - actually represent the function
+                 ]
+
 
 UP=0
 RIGHT=1
@@ -200,11 +568,7 @@ TREE_TAB=1
 # typedef void(*nk_plugin_paste)(nk_handle, struct nk_text_edit*);
 # typedef void(*nk_plugin_copy)(nk_handle, const char*, int len);
 
-# struct nk_allocator {
-#     nk_handle userdata;
-#     nk_plugin_alloc alloc;
-#     nk_plugin_free free;
-# };
+
 
 SYMBOL_NONE=0
 SYMBOL_X=1
@@ -1042,14 +1406,30 @@ CURSOR_COUN=7
 # void nk_style_show_cursor(struct nk_context*);
 # void nk_style_hide_cursor(struct nk_context*);
 # int nk_style_push_font(struct nk_context*, const struct nk_user_font*);
-# int nk_style_push_float(struct nk_context*, float*, float);
-# int nk_style_push_vec2(struct nk_context*, struct nk_vec2*, struct nk_vec2);
+
+__style_push_float__ = _nuklear.nk_style_push_float
+__style_push_float__.arglist = [POINTER(Context), POINTER(c_float), c_float]
+__style_push_float__.restype = c_int
+
+
+__style_push_vec2__ = _nuklear.nk_style_push_vec2
+__style_push_vec2__.arglist = [POINTER(Context), POINTER(Vec2), Vec2]
+__style_push_vec2__.restype = c_int
+
+
 # int nk_style_push_style_item(struct nk_context*, struct nk_style_item*, struct nk_style_item);
 # int nk_style_push_flags(struct nk_context*, nk_flags*, nk_flags);
 # int nk_style_push_color(struct nk_context*, struct nk_color*, struct nk_color);
 # int nk_style_pop_font(struct nk_context*);
-# int nk_style_pop_float(struct nk_context*);
-# int nk_style_pop_vec2(struct nk_context*);
+
+__style_pop_float__ = _nuklear.nk_style_pop_float
+__style_pop_float__.arglist = [POINTER(Context)]
+__style_pop_float__.restype = c_int
+
+__style_pop_vec2__ = _nuklear.nk_style_pop_vec2
+__style_pop_vec2__.arglist = [POINTER(Context)]
+__style_pop_vec2__.restype = c_int
+
 # int nk_style_pop_style_item(struct nk_context*);
 # int nk_style_pop_flags(struct nk_context*);
 # int nk_style_pop_color(struct nk_context*);
@@ -2832,6 +3212,23 @@ class NuklearContext:
 
     def menu_end(self):
         __menu_end__(self.ctx)
+
+
+    def style_push_vec2(self, vec2, stack):
+        v = vec2
+        returnVal = __style_push_vec2__(self.ctx, ctypes.byref(v), stack)
+        return (returnVal, v)
+
+    def style_push_float(self, flt, stack):
+        f = c_float(flt)
+        returnVal = __style_push_float__(self.ctx, ctypes.byref(f), c_float(stack))
+        return (returnVal, f)
+
+    def style_pop_float(self):
+        return __style_pop_float__(self.ctx)
+
+    def style_pop_vec2(self):
+        return __style_pop_vec2__(self.ctx)
 
 
     def rgb_cf(self,colorf):

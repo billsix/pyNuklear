@@ -69,9 +69,8 @@ def overview(nuklear):
 
 
     window_flags = 0
-    #TODO -- map the ctx struct
 
-    #ctx->style.window.header.align = header_align
+    nuklear.ctx.contents.style.window.header.align = nk.HEADER_RIGHT
 
     if(border) : window_flags |= nk.WINDOW_BORDER
     if(resize) : window_flags |= nk.WINDOW_SCALABLE
@@ -572,6 +571,51 @@ def overview(nuklear):
                                      title="Notebook",
                                      state=nk.MINIMIZED) :
                     #TODO
+                    global currentTab
+                    try:
+                        currentTab
+                    except Exception:
+                        currentTab = 0
+
+
+                    print("BAZ")
+                    
+                    print(nuklear.ctx.contents.style)
+                    print(dir(nuklear.ctx.contents.style))
+                    
+                    print(nuklear.ctx.contents.style.window.spacing)
+                    print(nuklear.ctx.contents.style.button.rounding)
+
+                    nuklear.style_push_vec2(nuklear.ctx.contents.style.window.spacing, nk.Vec2(0,0))
+                    nuklear.style_push_float(nuklear.ctx.contents.style.button.rounding, 0.0)
+
+
+                    nuklear.layout_row_begin(fmt=nk.STATIC,
+                                             row_height=20.0,
+                                             cols=3)
+
+                    names = ["Lines", "Columns", "Mixed"]
+                    
+                    for i in range(len(names)):
+                        # TODO - get the dimensions from the font
+                        print("Foo")
+                        print(nuklear.ctx.contents.style.text)
+                        f = nuklear.ctx.contents.style.font
+                        foo = nk.TextWidthF(f.contents.width)(f.contents.userdata, 
+                                                               f.contents.height, 
+                                                               str.encode(names[i]),
+                                                               len(names[i]))
+                        text_width = 100
+                        text_height = 100
+                        nuklear.layout_row_push(ratio_or_width=text_width)
+                        # TODO color them differently
+                        if nuklear.button_label(title="Button"):
+                            currentTab = i
+
+                    nuklear.style_pop_float()
+                    nuklear.style_pop_vec2()
+
+
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
                                      title="Simple",
