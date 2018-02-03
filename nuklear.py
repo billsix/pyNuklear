@@ -26,6 +26,11 @@ from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_sho
 import inspect
 import builtins
 
+if __name__ == '__main__':
+    print("nuklear.py is a library, not a program.  Look at README.md for use of pyNuklear")
+    sys.exit(1)
+
+
 # Load the nuklear shared library
 
 if hasattr(builtins, "NUKLEAR_PATH"):

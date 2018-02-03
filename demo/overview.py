@@ -18,6 +18,12 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
+import os
+import sys
+
+if __name__ == '__main__':
+    print("overview.py is a library, not a program.  Look at README.md for use of pyNuklear")
+    sys.exit(1)
 
 import nuklear as nk
 import math
