@@ -39,7 +39,7 @@ glfw3_init             = nk._nuklear.nk_glfw3_init
 glfw3_init.restype     = POINTER(nk.Context)
 glfw3_init.arglist     = [POINTER(glfw.GLFWwindow), c_int]
 
-class FontAtlas(Structure): 
+class FontAtlas(Structure):
     _fields_ = [ ('pixel', ctypes.c_void_p),
                  ('tex_width',  c_int),
                  ('tex_height',  c_int),

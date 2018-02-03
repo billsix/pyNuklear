@@ -19,6 +19,7 @@
 #SOFTWARE.
 
 import os
+import sys
 import ctypes.util
 from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_short,
                     c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
@@ -250,16 +251,16 @@ class CommandBuffer(Structure):
 DrawF                = CFUNCTYPE(None, CommandBuffer, Handle)
 
 
-class StyleButton(Structure): 
+class StyleButton(Structure):
     _fields_ = [('normal', StyleItem ),
                 ('hover', StyleItem ),
                 ('active', StyleItem ),
-                ('border_color', Color ),                
+                ('border_color', Color ),
                 ('text_background', Color ),
                 ('text_normal', Color ),
                 ('text_hover', Color ),
                 ('text_active', Color ),
-                ('text_alignment', c_uint ),                
+                ('text_alignment', c_uint ),
                 ('border', c_float ),
                 ('rounding', c_float ),
                 ('padding', Vec2 ),
@@ -317,9 +318,9 @@ class StyleButton(Structure):
         self.contextual_padding = contextual_padding
         self.menu_padding = menu_padding
         self.tooltip_padding = tooltip_padding
-        
 
-class StyleWindow(Structure): 
+
+class StyleWindow(Structure):
     _fields_ = [ ('font',  UserFont),
                  ('header', StyleWindowHeader ),
                  ('fixed_background', StyleItem ),
@@ -483,7 +484,7 @@ class Style(Structure):
         self.tab = tab
         self.combo = combo
         self.window = window
-        
+
 class Clipboard(Structure): pass
 
 class ConfigurationStacks(Structure): pass

@@ -199,7 +199,7 @@ def overview(nuklear):
 #                                         state=nk.MINIMIZED,
 #                                         id=x) :
 #                     nuklear.tree_pop()
-                   
+
 
             if nuklear.tree_push(theType=nk.TREE_TAB,
                                  title="Window",
@@ -579,10 +579,10 @@ def overview(nuklear):
 
 
                     print("BAZ")
-                    
+
                     print(nuklear.ctx.contents.style)
                     print(dir(nuklear.ctx.contents.style))
-                    
+
                     print(nuklear.ctx.contents.style.window.spacing)
                     print(nuklear.ctx.contents.style.button.rounding)
 
@@ -595,14 +595,14 @@ def overview(nuklear):
                                              cols=3)
 
                     names = ["Lines", "Columns", "Mixed"]
-                    
+
                     for i in range(len(names)):
                         # TODO - get the dimensions from the font
                         print("Foo")
                         print(nuklear.ctx.contents.style.text)
                         f = nuklear.ctx.contents.style.font
-                        foo = nk.TextWidthF(f.contents.width)(f.contents.userdata, 
-                                                               f.contents.height, 
+                        foo = nk.TextWidthF(f.contents.width)(f.contents.userdata,
+                                                               f.contents.height,
                                                                str.encode(names[i]),
                                                                len(names[i]))
                         text_width = 100
