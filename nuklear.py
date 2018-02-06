@@ -1053,12 +1053,33 @@ CURSOR_COUN=7
 # int nk_style_push_style_item(struct nk_context*, struct nk_style_item*, struct nk_style_item);
 # int nk_style_push_flags(struct nk_context*, nk_flags*, nk_flags);
 # int nk_style_push_color(struct nk_context*, struct nk_color*, struct nk_color);
-# int nk_style_pop_font(struct nk_context*);
-# int nk_style_pop_float(struct nk_context*);
-# int nk_style_pop_vec2(struct nk_context*);
-# int nk_style_pop_style_item(struct nk_context*);
-# int nk_style_pop_flags(struct nk_context*);
-# int nk_style_pop_color(struct nk_context*);
+
+__style_pop_font__ = _nuklear.nk_style_pop_font
+__style_pop_font__.arglist = [POINTER(Context)]
+__style_pop_font__.restype = c_int
+
+__style_pop_float__ = _nuklear.nk_style_pop_float
+__style_pop_float__.arglist = [POINTER(Context)]
+__style_pop_float__.restype = c_int
+
+__style_pop_vec2__ = _nuklear.nk_style_pop_vec2
+__style_pop_vec2__.arglist = [POINTER(Context)]
+__style_pop_vec2__.restype = c_int
+
+__style_pop_style_item__ = _nuklear.nk_style_pop_style_item
+__style_pop_style_item__.arglist = [POINTER(Context)]
+__style_pop_style_item__.restype = c_int
+
+__style_pop_flags__ = _nuklear.nk_style_pop_flags
+__style_pop_flags__.arglist = [POINTER(Context)]
+__style_pop_flags__.restype = c_int
+
+__style_pop_color__ = _nuklear.nk_style_pop_color
+__style_pop_color__.arglist = [POINTER(Context)]
+__style_pop_color__.restype = c_int
+
+
+
 # struct nk_color nk_rgb(int r, int g, int b);
 
 
@@ -2662,6 +2683,31 @@ WINDOW_REMOVE_ROM    = 1 << 16
 
 
 
+# because I don't want to recreate all of the nuklear data structures,
+# I have made some wrapper procedures
+__set_style_window_header_align__ = _nuklear.nkWrapper_context_set_style_window_header_align
+__set_style_window_header_align__.arglist = [POINTER(Context), c_int]
+__set_style_window_header_align__.restype = c_int
+
+
+__input_is_mouse_hovering_rect__ = _nuklear.nkWrapper_input_is_mouse_hovering_rect
+__input_is_mouse_hovering_rect__.arglist = [POINTER(Context), Rect]
+__input_is_mouse_hovering_rect__.restype = c_int
+
+__style_push_window_spacing__ = _nuklear.nkWrapper_style_push_window_spacing
+__style_push_window_spacing__.arglist = [POINTER(Context), Vec2]
+__style_push_window_spacing__.restype = c_int
+
+__style_push_button_rounding__ = _nuklear.nkWrapper_style_push_button_rounding
+__style_push_button_rounding__.arglist = [POINTER(Context), c_float]
+__style_push_button_rounding__.restype = c_int
+
+
+__get_text_width__ = _nuklear.nkWrapper_get_text_width
+__get_text_width__.arglist = [POINTER(Context), c_char_p]
+__get_text_width__.restype = c_float
+
+
 
 # because average programmers who are English speakers like Subject-Verb-Object
 # word ordering, create an object that holds the nuklear context.
@@ -2839,6 +2885,24 @@ class NuklearContext:
     def menu_end(self):
         __menu_end__(self.ctx)
 
+    def style_pop_font(self):
+        return __style_pop_font__(self.ctx)
+
+    def style_pop_float(self):
+        return __style_pop_float__(self.ctx)
+
+    def style_pop_vec2(self):
+        return __style_pop_vec2__(self.ctx)
+
+    def style_pop_style_item(self):
+        return __style_pop_style_item__(self.ctx)
+
+    def style_pop_flags(self):
+        return __style_pop_flags__(self.ctx)
+
+    def style_pop_color(self):
+        return __style_pop_color__(self.ctx)
+
 
     def rgb_cf(self,colorf):
         return __rgb_cf__(self.ctx, colorf)
@@ -2885,3 +2949,18 @@ class NuklearContext:
 
     def button_symbol_label(self,symbol,label,align):
         return __button_symbol_label__(self.ctx, symbol, str.encode(label), align)
+
+    def set_style_window_header_align(self, header_align):
+        __set_style_window_header_align__(self.ctx, header_align)
+
+    def input_is_mouse_hovering_rect(self, bounds):
+        return __input_is_mouse_hovering_rect__(self.ctx, bounds)
+
+    def style_push_window_spacing(self, vec2):
+        return __style_push_window_spacing__(self.ctx, vec2)
+
+    def style_push_button_rounding(self, f):
+        return __style_push_button_rounding__(self.ctx,ctypes.c_float(f))
+
+    def get_text_width(self, s):
+        return __get_text_width__(self.ctx, str.encode(s))

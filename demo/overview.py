@@ -75,9 +75,9 @@ def overview(nuklear):
 
 
     window_flags = 0
-    #TODO -- map the ctx struct
 
     #ctx->style.window.header.align = header_align
+    nuklear.set_style_window_header_align(nk.HEADER_RIGHT)
 
     if(border) : window_flags |= nk.WINDOW_BORDER
     if(resize) : window_flags |= nk.WINDOW_SCALABLE
@@ -579,6 +579,35 @@ def overview(nuklear):
                                      state=nk.MINIMIZED) :
                     #TODO
 
+                    nuklear.style_push_window_spacing(vec2=nk.Vec2(x=0.0,
+                                                                   y=0.0))
+                    nuklear.style_push_button_rounding(f=0.0)
+
+                    names = ["Lines", "Columns", "Mixed"]
+                    nuklear.layout_row_begin(fmt=nk.STATIC,
+                                             row_height=20.0,
+                                             cols=3)
+                    for i in range(len(names)):
+                        nuklear.layout_row_push(ratio_or_width=nuklear.get_text_width(names[i]))
+
+                        if nuklear.button_label(title=names[i]):
+                            print(names[i])
+
+                        # TODO, make it like the following
+                        # if (current_tab == i) {
+                        #     /* active tab gets highlighted */
+                        #     struct nk_style_item button_color = ctx->style.button.normal;
+                        #     ctx->style.button.normal = ctx->style.button.active;
+                        #     current_tab = nk_button_label(ctx, names[i]) ? i: current_tab;
+                        #     ctx->style.button.normal = button_color;
+                        # } else current_tab = nk_button_label(ctx, names[i]) ? i: current_tab;
+
+
+
+                    nuklear.style_pop_float()
+
+                    # TODO -- this should not be here
+                    nuklear.style_pop_vec2()
 
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,
