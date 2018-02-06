@@ -1,12 +1,12 @@
 all: nuklearGLFWOpenGL3.so nuklearGLFWOpenGL2.so
 
-nuklearGLFWOpenGL3.so: nuklearGLFWOpenGL3.c
+nuklearGLFWOpenGL3.so: nuklearGLFWOpenGL3.c nuklearWrappers.c
 	gcc -Wl,-undefined -Wl,dynamic_lookup -dynamiclib \
 		$(shell pkg-config --cflags glfw3) $(shell pkg-config --libs glfw3)  \
 		$(shell pkg-config --cflags glew) $(shell pkg-config --libs glew) \
 		nuklearGLFWOpenGL3.c -o nuklearGLFWOpenGL3.so
 
-nuklearGLFWOpenGL2.so: nuklearGLFWOpenGL2.c
+nuklearGLFWOpenGL2.so: nuklearGLFWOpenGL2.c nuklearWrappers.c
 	gcc -Wl,-undefined -Wl,dynamic_lookup -dynamiclib \
 		$(shell pkg-config --cflags glfw3) $(shell pkg-config --libs glfw3)  \
 		$(shell pkg-config --cflags glew) $(shell pkg-config --libs glew) \

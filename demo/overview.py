@@ -76,7 +76,8 @@ def overview(nuklear):
 
     window_flags = 0
 
-    nuklear.ctx.contents.style.window.header.align = nk.HEADER_RIGHT
+    #ctx->style.window.header.align = header_align
+    nuklear.set_style_window_header_align(nk.HEADER_RIGHT)
 
     if(border) : window_flags |= nk.WINDOW_BORDER
     if(resize) : window_flags |= nk.WINDOW_SCALABLE
@@ -577,50 +578,36 @@ def overview(nuklear):
                                      title="Notebook",
                                      state=nk.MINIMIZED) :
                     #TODO
-                    global currentTab
-                    try:
-                        currentTab
-                    except Exception:
-                        currentTab = 0
 
+                    nuklear.style_push_window_spacing(vec2=nk.Vec2(x=0.0,
+                                                                   y=0.0))
+                    nuklear.style_push_button_rounding(f=0.0)
 
-                    print("BAZ")
-
-                    print(nuklear.ctx.contents.style)
-                    print(dir(nuklear.ctx.contents.style))
-
-                    print(nuklear.ctx.contents.style.window.spacing)
-                    print(nuklear.ctx.contents.style.button.rounding)
-
-                    nuklear.style_push_vec2(nuklear.ctx.contents.style.window.spacing, nk.Vec2(0,0))
-                    nuklear.style_push_float(nuklear.ctx.contents.style.button.rounding, 0.0)
-
-
+                    names = ["Lines", "Columns", "Mixed"]
                     nuklear.layout_row_begin(fmt=nk.STATIC,
                                              row_height=20.0,
                                              cols=3)
-
-                    names = ["Lines", "Columns", "Mixed"]
-
                     for i in range(len(names)):
-                        # TODO - get the dimensions from the font
-                        print("Foo")
-                        print(nuklear.ctx.contents.style.text)
-                        f = nuklear.ctx.contents.style.font
-                        foo = nk.TextWidthF(f.contents.width)(f.contents.userdata,
-                                                               f.contents.height,
-                                                               str.encode(names[i]),
-                                                               len(names[i]))
-                        text_width = 100
-                        text_height = 100
-                        nuklear.layout_row_push(ratio_or_width=text_width)
-                        # TODO color them differently
-                        if nuklear.button_label(title="Button"):
-                            currentTab = i
+                        nuklear.layout_row_push(ratio_or_width=nuklear.get_text_width(names[i]))
+
+                        if nuklear.button_label(title=names[i]):
+                            print(names[i])
+
+                        # TODO, make it like the following
+                        # if (current_tab == i) {
+                        #     /* active tab gets highlighted */
+                        #     struct nk_style_item button_color = ctx->style.button.normal;
+                        #     ctx->style.button.normal = ctx->style.button.active;
+                        #     current_tab = nk_button_label(ctx, names[i]) ? i: current_tab;
+                        #     ctx->style.button.normal = button_color;
+                        # } else current_tab = nk_button_label(ctx, names[i]) ? i: current_tab;
+
+
 
                     nuklear.style_pop_float()
-                    nuklear.style_pop_vec2()
 
+                    # TODO -- this should not be here
+                    nuklear.style_pop_vec2()
 
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TREE_NODE,

@@ -26,3 +26,4 @@
 #define NK_GLFW_GL2_IMPLEMENTATION
 #include "nuklear.h"
 #include "nuklear_glfw_gl2.h"
+#include "nuklearWrappers.c"
