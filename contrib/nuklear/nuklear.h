@@ -11045,7 +11045,7 @@ nk_tt_GetGlyphBox(const struct nk_tt_fontinfo *info, int glyph_index,
 }
 
 NK_INTERN int
-stbtt__close_shape(struct nk_tt_vertex *vertices, int num_vertices, int was_off,
+nk_tt__close_shape(struct nk_tt_vertex *vertices, int num_vertices, int was_off,
     int start_off, nk_int sx, nk_int sy, nk_int scx, nk_int scy, nk_int cx, nk_int cy)
 {
    if (start_off) {
@@ -11151,7 +11151,7 @@ nk_tt_GetGlyphShape(const struct nk_tt_fontinfo *info, struct nk_allocator *allo
 
             if (next_move == i) {
                 if (i != 0)
-                    num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx,sy,scx,scy,cx,cy);
+                    num_vertices = nk_tt__close_shape(vertices, num_vertices, was_off, start_off, sx,sy,scx,scy,cx,cy);
 
                 /* now start the new one                */
                 start_off = !(flags & 1);
@@ -11194,7 +11194,7 @@ nk_tt_GetGlyphShape(const struct nk_tt_fontinfo *info, struct nk_allocator *allo
                 }
             }
         }
-        num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx,sy,scx,scy,cx,cy);
+        num_vertices = nk_tt__close_shape(vertices, num_vertices, was_off, start_off, sx,sy,scx,scy,cx,cy);
     } else if (numberOfContours == -1) {
         /* Compound shapes. */
         int more = 1;
@@ -11852,7 +11852,7 @@ nk_tt__rasterize(struct nk_tt__bitmap *result, struct nk_tt__point *pts,
     }
 
     /* now sort the edges by their highest point (should snap to integer, and then by x) */
-    /*STBTT_sort(e, n, sizeof(e[0]), stbtt__edge_compare); */
+    /*STBTT_sort(e, n, sizeof(e[0]), nk_tt__edge_compare); */
     nk_tt__sort_edges(e, n);
     /* now, traverse the scanlines and find the intersections on each scanline, use xor winding rule */
     nk_tt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y, alloc);
@@ -12555,8 +12555,8 @@ nk_font_bake_pack(struct nk_font_baker *baker,
             /* pack custom user data first so it will be in the upper left corner*/
             struct nk_rp_rect custom_space;
             nk_zero(&custom_space, sizeof(custom_space));
-            custom_space.w = (nk_rp_coord)((custom->w * 2) + 1);
-            custom_space.h = (nk_rp_coord)(custom->h + 1);
+            custom_space.w = (nk_rp_coord)(custom->w);
+            custom_space.h = (nk_rp_coord)(custom->h);
 
             nk_tt_PackSetOversampling(&baker->spc, 1, 1);
             nk_rp_pack_rects((struct nk_rp_context*)baker->spc.pack_info, &custom_space, 1);
@@ -19258,30 +19258,14 @@ nk_panel_end(struct nk_context *ctx)
     if (layout->flags & NK_WINDOW_BORDER)
     {
         struct nk_color border_color = nk_panel_get_border_color(style, layout->type);
-        const float padding_y = (layout->flags & NK_WINDOW_MINIMIZED) ?
-            style->window.border + window->bounds.y + layout->header_height:
-            (layout->flags & NK_WINDOW_DYNAMIC)?
-            layout->bounds.y + layout->bounds.h + layout->footer_height:
-            window->bounds.y + window->bounds.h;
-
-        /* draw border top */
-        nk_stroke_line(out,window->bounds.x,window->bounds.y,
-            window->bounds.x + window->bounds.w, window->bounds.y,
-            layout->border, border_color);
-
-        /* draw bottom border */
-        nk_stroke_line(out, window->bounds.x, padding_y,
-            window->bounds.x + window->bounds.w, padding_y, layout->border, border_color);
-
-        /* draw left border */
-        nk_stroke_line(out, window->bounds.x + layout->border*0.5f,
-            window->bounds.y, window->bounds.x + layout->border*0.5f,
-            padding_y, layout->border, border_color);
-
-        /* draw right border */
-        nk_stroke_line(out, window->bounds.x + window->bounds.w - layout->border*0.5f,
-            window->bounds.y, window->bounds.x + window->bounds.w - layout->border*0.5f,
-            padding_y, layout->border, border_color);
+        const float padding_y = (layout->flags & NK_WINDOW_MINIMIZED)
+            ? (style->window.border + window->bounds.y + layout->header_height)
+            : ((layout->flags & NK_WINDOW_DYNAMIC)
+                ? (layout->bounds.y + layout->bounds.h + layout->footer_height)
+                : (window->bounds.y + window->bounds.h));
+        struct nk_rect b = window->bounds;
+        b.h = padding_y - window->bounds.y;
+        nk_stroke_rect(out, b, 0, layout->border, border_color);
     }
 
     /* scaler */
@@ -20957,7 +20941,7 @@ nk_layout_widget_space(struct nk_rect *bounds, const struct nk_context *ctx,
     switch (layout->row.type) {
     case NK_LAYOUT_DYNAMIC_FIXED: {
         /* scaling fixed size widgets item width */
-        item_width = NK_MAX(1.0f,panel_space-1.0f) / (float)layout->row.columns;
+        item_width = NK_MAX(1.0f,panel_space) / (float)layout->row.columns;
         item_offset = (float)layout->row.index * item_width;
         item_spacing = (float)layout->row.index * spacing.x;
     } break;
@@ -24926,6 +24910,9 @@ nk_menu_end(struct nk_context *ctx)
 ///    - [yy]: Minor version with non-breaking API and library changes
 ///    - [zz]: Bug fix version with no direct changes to API
 ///
+/// - 2017/01/31 (3.00.5) - Fixed overcalculation of cursor data in font baking process
+/// - 2017/01/31 (3.00.4) - Removed name collision with stb_truetype
+/// - 2017/01/28 (3.00.3) - Fixed panel window border drawing bug
 /// - 2017/01/12 (3.00.2) - Added `nk_group_begin_titled` for separed group identifier and title
 /// - 2017/01/07 (3.00.1) - Started to change documentation style
 /// - 2017/01/05 (3.00.0) - BREAKING CHANGE: The previous color picker API was broken
