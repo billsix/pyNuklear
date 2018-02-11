@@ -595,21 +595,19 @@ def overview(nuklear):
                     nuklear.layout_row_begin(fmt=nk.STATIC,
                                              row_height=20.0,
                                              columns=3)
+                    global currentTab
+                    try:
+                        currentTab
+                    except Exception:
+                        currentTab = 0
+
+                    
                     for i in range(len(names)):
                         nuklear.layout_row_push(ratio_or_width=nuklear.get_text_width(names[i]))
 
-                        if nuklear.button_label(title=names[i]):
-                            print(names[i])
-
-                        # TODO, make it like the following
-                        # if (current_tab == i) {
-                        #     /* active tab gets highlighted */
-                        #     struct nk_style_item button_color = ctx->style.button.normal;
-                        #     ctx->style.button.normal = ctx->style.button.active;
-                        #     current_tab = nk_button_label(ctx, names[i]) ? i: current_tab;
-                        #     ctx->style.button.normal = button_color;
-                        # } else current_tab = nk_button_label(ctx, names[i]) ? i: current_tab;
-
+                        if nuklear.button_label(title=names[i],
+                                                active=currentTab != i):
+                            currentTab = i
 
 
                     nuklear.style_pop_float()

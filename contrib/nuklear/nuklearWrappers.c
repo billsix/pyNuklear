@@ -58,3 +58,15 @@ nkWrapper_get_text_width(struct nk_context *ctx,
   float text_width = f->width(f->userdata, f->height, str, nk_strlen(str));
   return text_width + 3 * ctx->style.button.padding.x;
 }
+
+int
+nkWrapper_button_label_active(struct nk_context *ctx,
+			      char *str)
+{
+  /* active tab gets highlighted */
+  struct nk_style_item button_color = ctx->style.button.normal;
+  ctx->style.button.normal = ctx->style.button.active;
+  int wrapped_return_val = nk_button_label(ctx, str);
+  ctx->style.button.normal = button_color;
+  return wrapped_return_val;
+}

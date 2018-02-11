@@ -1498,6 +1498,11 @@ __get_text_width__.arglist = [POINTER(Context), c_char_p]
 __get_text_width__.restype = c_float
 
 
+__button_label_active__ = _nuklear.nkWrapper_button_label_active
+__button_label_active__.arglist = [POINTER(Context), c_char_p]
+__button_label_active__.restype     = c_int
+
+
 
 # because average programmers who are English speakers like Subject-Verb-Object
 # word ordering, create an object that holds the nuklear context.
@@ -1538,8 +1543,11 @@ class NuklearContext:
     def label_wrap(self, text):
         __label_wrap__(self.ctx,str.encode(text))
 
-    def button_label(self, title):
-        return __button_label__(self.ctx, str.encode(title))
+    def button_label(self, title, active=False):
+        if active:
+            return __button_label__(self.ctx, str.encode(title))
+        else:
+            return __button_label_active__(self.ctx, str.encode(title))
 
     def checkbox_label(self, text, active):
         a = ctypes.c_int(active)
