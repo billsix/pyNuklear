@@ -30,66 +30,68 @@ import math
 
 def overview(nuklear):
     # show overview
-    # simulate a local static variable
-    global show_menu
-    try:
-        show_menu
-    except Exception:
-        show_menu = True
-    global titlebar
-    try:
-        titlebar
-    except Exception:
-        titlebar  = True
+    window_flags = 0
+
+    nuklear.set_style_window_header_align(nk.HEADER_RIGHT)
+
     global border
     try:
         border
     except Exception:
         border = True
+
+    if(border) : window_flags |= nk.WINDOW_BORDER
+
     global resize
     try:
         resize
     except Exception:
         resize = True
+
+    if(resize) : window_flags |= nk.WINDOW_SCALABLE
+
     global movable
     try:
         movable
     except Exception:
         movable = True
+
+    if(movable) : window_flags |= nk.WINDOW_MOVABLE
+
     global no_scrollbar
     try:
         no_scrollbar
     except Exception:
         no_scrollbar = False
+
+    if(no_scrollbar) : window_flags |= nk.WINDOW_NO_SCROLLBAR
+
     global scale_left
     try:
         scale_left
     except Exception:
         scale_left = False
+
+    if(scale_left) : window_flags |= nk.WINDOW_SCALE_LEFT
+
     global minimizable
     try:
         minimizable
     except Exception:
         minimizable = True
 
-
-
-    window_flags = 0
-
-    #ctx->style.window.header.align = header_align
-    nuklear.set_style_window_header_align(nk.HEADER_RIGHT)
-
-    if(border) : window_flags |= nk.WINDOW_BORDER
-    if(resize) : window_flags |= nk.WINDOW_SCALABLE
-    if(movable) : window_flags |= nk.WINDOW_MOVABLE
-    if(no_scrollbar) : window_flags |= nk.WINDOW_NO_SCROLLBAR
-    if(scale_left) : window_flags |= nk.WINDOW_SCALE_LEFT
     if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
 
 
     if nuklear.begin(title="Overview",
                      bounds=nk.Rect(10,300,400,600),
                      flags=window_flags):
+        global show_menu
+        try:
+            show_menu
+        except Exception:
+            show_menu = True
+
         if show_menu:
             global mprog
             try:
@@ -116,13 +118,13 @@ def overview(nuklear):
             nuklear.menubar_begin()
             nuklear.layout_row_begin(fmt=nk.STATIC,
                                      row_height=25.0,
-                                     cols=5)
+                                     columns=5)
             nuklear.layout_row_push(ratio_or_width=45.0)
             if nuklear.menu_begin_label(text="MENU",
                                         align=nk.TEXT_LEFT,
                                         size=nk.Vec2(120.0,200.0)):
                 nuklear.layout_row_dynamic(height=25.0,
-                                           cols=1)
+                                           columns=1)
                 if nuklear.menu_item_label(label="Hide",
                                            align=nk.TEXT_LEFT):
                     show_menu = False
@@ -150,8 +152,8 @@ def overview(nuklear):
 
             nuklear.layout_row_push(70.0)
             (modified,mprog) = nuklear.progress(cur=mprog,
-                                                 max=100,
-                                                 is_modifyable=nk.MODIFIABLE)
+                                                max=100,
+                                                is_modifyable=nk.MODIFIABLE)
             (modified,mslider) = nuklear.slider_int(minV=0,
                                                     value=mslider,
                                                     maxV=16,
@@ -167,7 +169,7 @@ def overview(nuklear):
                                        flags=nk.WINDOW_CLOSABLE,
                                        rect=nk.Rect(20,100,400,200)):
                     nuklear.layout_row_dynamic(height=20.0,
-                                               cols=1)
+                                               columns=1)
                     nuklear.label(text="pyNuklear",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="By William Emerison Six",
@@ -179,7 +181,7 @@ def overview(nuklear):
                     nuklear.label(text="By Micha Mettke",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="nuklear is licensed under the public domain License.",
-                             alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TEXT_LEFT)
 
                     nuklear.popup_end()
                 else:
@@ -212,7 +214,13 @@ def overview(nuklear):
                                  title="Window",
                                  state=nk.MINIMIZED) :
                 nuklear.layout_row_dynamic(height=30.0,
-                                           cols=2)
+                                           columns=2)
+                global titlebar
+                try:
+                    titlebar
+                except Exception:
+                    titlebar  = True
+
                 (modified,titlebar) = nuklear.checkbox_label(text="Titlebar",
                                                              active=titlebar)
                 (modified,show_menu) = nuklear.checkbox_label(text="Menu",
@@ -237,7 +245,7 @@ def overview(nuklear):
                                      title="Text",
                                      state=nk.MINIMIZED) :
                     nuklear.layout_row_dynamic(height=20.0 ,
-                                               cols=1)
+                                               columns=1)
                     nuklear.label(text="Label aligned left",
                                   alignment=nk.TEXT_LEFT)
                     nuklear.label(text="Label aligned centered",
@@ -255,10 +263,10 @@ def overview(nuklear):
                                  alignment=nk.TEXT_ALIGN_RIGHT)
                     nuklear.layout_row_static(height=100.0,
                                               item_width=200,
-                                              cols=1)
+                                              columns=1)
                     nuklear.label_wrap(text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
                     nuklear.layout_row_dynamic(height=100.0,
-                                               cols=1)
+                                               columns=1)
                     nuklear.label_wrap(text="This is another long text to show dynamic window changes on multiline text")
 
                     nuklear.tree_pop()
@@ -267,7 +275,7 @@ def overview(nuklear):
                                      state=nk.MINIMIZED) :
                     nuklear.layout_row_static(height=30,
                                               item_width=100,
-                                              cols=3)
+                                              columns=3)
                     if nuklear.button_label(title="Button"):
                         print("Button pressed!")
                     nuklear.button_set_behavior(nk.BUTTON_REPEATER)
@@ -278,7 +286,7 @@ def overview(nuklear):
                         pass
                     nuklear.layout_row_static(height=25.0,
                                               item_width=25,
-                                              cols=8)
+                                              columns=8)
                     nuklear.button_symbol(nk.SYMBOL_CIRCLE_SOLID)
                     nuklear.button_symbol(nk.SYMBOL_CIRCLE_OUTLINE)
                     nuklear.button_symbol(nk.SYMBOL_RECT_SOLID)
@@ -290,7 +298,7 @@ def overview(nuklear):
 
                     nuklear.layout_row_static(height=30.0,
                                               item_width=100,
-                                              cols=2)
+                                              columns=2)
                     nuklear.button_symbol_label(symbol=nk.SYMBOL_TRIANGLE_LEFT,
                                                 label="prev",
                                                 align=nk.TEXT_RIGHT)
@@ -303,7 +311,7 @@ def overview(nuklear):
                                      state=nk.MINIMIZED) :
                     nuklear.layout_row_static(height=30.0,
                                               item_width=100,
-                                              cols=1)
+                                              columns=1)
                     global basicCheckBox
                     try:
                         basicCheckBox
@@ -314,7 +322,7 @@ def overview(nuklear):
 
                     nuklear.layout_row_static(height=30.0,
                                               item_width=80,
-                                              cols=3)
+                                              columns=3)
 
                     A = 1
                     B = 2
@@ -336,12 +344,12 @@ def overview(nuklear):
                     #TODO -- figure out why this code isn't working quite correctly
                     # nuklear.layout_row(layout_format=nk.STATIC,
                     #                    height=30.0,
-                    #                    cols=2,
+                    #                    columns=2,
                     #                    ratio=[120.0,150.0])
                     # once I figure that out, delete the subsequent 3 lines
                     nuklear.layout_row_static(height=30.0,
                                               item_width=100,
-                                              cols=2)
+                                              columns=2)
                     global basicSlider
                     try:
                         basicSlider
@@ -369,7 +377,7 @@ def overview(nuklear):
                     # once I figure that out, delete the subsequent 3 lines
                     nuklear.layout_row_static(height=25.0,
                                               item_width=150,
-                                              cols=2)
+                                              columns=2)
                     global basicFloat
                     try:
                         basicFloat
@@ -426,7 +434,7 @@ def overview(nuklear):
                                          state=nk.MINIMIZED) :
                         nuklear.layout_row_static(height=18.0,
                                                   item_width=100,
-                                                  cols=1)
+                                                  columns=1)
 
                         global selected
                         try:
@@ -483,7 +491,7 @@ def overview(nuklear):
 
                     nuklear.layout_row_static(height=25,
                                               item_width=200,
-                                              cols=1)
+                                              columns=1)
                     current_weapon = nuklear.combo(items=weapons,
                                                    selected=current_weapon,
                                                    item_height=25,
@@ -509,7 +517,7 @@ def overview(nuklear):
                                  state=nk.MINIMIZED) :
                 #TODO
                 nuklear.layout_row_dynamic(height=100.0,
-                                           cols=1)
+                                           columns=1)
                 # TODO - why is this in the regular nuklear demo?  it is unused
                 #bounds = nuklear.widget_bounds()
                 if nuklear.chart_begin(chart_type=nk.CHART_LINES,
@@ -535,7 +543,7 @@ def overview(nuklear):
                 #TODO
                 nuklear.layout_row_static(height=30.0,
                                           item_width=160,
-                                          cols=1)
+                                          columns=1)
                 bounds = nuklear.widget_bounds()
                 nuklear.label(text="Right click me for menu",
                               alignment=nk.TEXT_LEFT)
@@ -544,7 +552,7 @@ def overview(nuklear):
                                             size=nk.Vec2(100,300),
                                             triggerBounds=bounds):
                     nuklear.layout_row_dynamic(height=25.0,
-                                               cols=1)
+                                               columns=1)
                     (modified,show_menu) = nuklear.checkbox_label(text="Menu",
                                                                   active=show_menu)
                     (modified,mprog) = nuklear.progress(cur=mprog,
@@ -586,7 +594,7 @@ def overview(nuklear):
                     names = ["Lines", "Columns", "Mixed"]
                     nuklear.layout_row_begin(fmt=nk.STATIC,
                                              row_height=20.0,
-                                             cols=3)
+                                             columns=3)
                     for i in range(len(names)):
                         nuklear.layout_row_push(ratio_or_width=nuklear.get_text_width(names[i]))
 

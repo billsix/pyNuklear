@@ -75,7 +75,7 @@ def on_key(window, key, scancode, action, mods):
         glfw.glfwSetWindowShouldClose(window,1)
 glfw.glfwSetKeyCallback(window, on_key)
 
-gl.glClearColor(0.0,0.0,0.0,1.0)
+gl.glClearColor(0.1,0.18,0.24,1.0)
 gl.glEnable(gl.GL_DEPTH_TEST)
 gl.glClearDepth(1.0)
 gl.glDepthFunc(gl.GL_LEQUAL)
@@ -168,14 +168,13 @@ while not glfw.glfwWindowShouldClose(window):
 
         nuklear.layout_row_static(height=30.0,
                                   item_width=80,
-                                  cols=5)
+                                  columns=5)
         if nuklear.button_label(title="button"):
             print('button pressed')
 
         nuklear.layout_row_dynamic(height=30.0,
-                                   cols=2)
+                                   columns=2)
 
-        # simulate a local static variable
         try:
             op
         except Exception:
@@ -187,9 +186,8 @@ while not glfw.glfwWindowShouldClose(window):
                                 active= op == 1): op = 1
 
         nuklear.layout_row_dynamic(height=25.0,
-                                   cols=1)
+                                   columns=1)
 
-        # simulate a local static variable
         try:
             prop
         except Exception:
@@ -203,11 +201,10 @@ while not glfw.glfwWindowShouldClose(window):
                                     inc_per_pixel=1)
 
         nuklear.layout_row_dynamic(height=20.0,
-                                   cols=1)
+                                   columns=1)
         nuklear.label(text="background:",
                       alignment=nk.TEXT_LEFT)
 
-        # simulate a local static variable
         try:
             background
         except Exception:
@@ -217,17 +214,17 @@ while not glfw.glfwWindowShouldClose(window):
                                    a=1.0)
 
         nuklear.layout_row_dynamic(height=25.0,
-                                   cols=1)
+                                   columns=1)
         if nuklear.combo_begin_color(color=nuklear.rgb_cf(background),
                                      size=nk.Vec2(nuklear.widget_width(),
                                                   400)):
             nuklear.layout_row_dynamic(height=120.0,
-                                       cols=1)
+                                       columns=1)
             background = nuklear.color_picker(color=background,
                                               format=nk.RGBA)
 
             nuklear.layout_row_dynamic(height=25.0,
-                                       cols=1)
+                                       columns=1)
             background.r = nuklear.propertyf(name="#R:",
                                              minVal=0.0,
                                              val=background.r,
