@@ -25,6 +25,7 @@ from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_sho
                     c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
 import inspect
 import builtins
+from enum import Enum
 
 if __name__ == '__main__':
     print("nuklear.py is a library, not a program.  Look at README.md for use of pyNuklear")
@@ -164,60 +165,73 @@ class Scroll(Structure):
         self.x = x
         self.y = y
 
-UP=0
-RIGHT=1
-DOWN=2
-LEFT=3
+class Heading(Enum):
+    UP=0
+    RIGHT=1
+    DOWN=2
+    LEFT=3
 
-BUTTON_DEFAULT=0
-BUTTON_REPEATER=1
+class ButtonBehavior(Enum):
+    BUTTON_DEFAULT=0
+    BUTTON_REPEATER=1
 
-FIXED=0
-MODIFIABLE=1
+class Modify(Enum):
+    FIXED=0
+    MODIFIABLE=1
 
-VERTICAL=0
-HORIZONTAL=1
+class Orientation(Enum):
+    VERTICAL=0
+    HORIZONTAL=1
 
-MINIMIZED=0
-MAXIMIZED=1
+class CollapseStates(Enum):
+    MINIMIZED=0
+    MAXIMIZED=1
 
-HIDDEN=0
-SHOWN=1
+class ShowStates(Enum):
+    HIDDEN=0
+    SHOWN=1
 
-CHART_LINES=0
-CHART_COLUMN=1
-CHART_MAX=2
+class ChartType(Enum):
+    CHART_LINES=0
+    CHART_COLUMN=1
+    CHART_MAX=2
 
-CHART_HOVERING=1
-CHART_CLICKED=2
+class ChartEvent(Enum):
+    CHART_HOVERING=1
+    CHART_CLICKED=2
 
-RGB = 0
-RGBA = 1
+class ColorFormat(Enum):
+    RGB = 0
+    RGBA = 1
 
-POPUP_STATIC=0
-POPUP_DYNAMIC=1
+class PopupType(Enum):
+    POPUP_STATIC=0
+    POPUP_DYNAMIC=1
 
-DYNAMIC=0
-STATIC=1
+class LayoutFormat(Enum):
+    DYNAMIC=0
+    STATIC=1
 
-TREE_NODE=0
-TREE_TAB=1
+class TreeType(Enum):
+    TREE_NODE=0
+    TREE_TAB=1
 
 
-SYMBOL_NONE=0
-SYMBOL_X=1
-SYMBOL_UNDERSCORE=2
-SYMBOL_CIRCLE_SOLID=3
-SYMBOL_CIRCLE_OUTLINE=4
-SYMBOL_RECT_SOLID=5
-SYMBOL_RECT_OUTLINE=6
-SYMBOL_TRIANGLE_UP=7
-SYMBOL_TRIANGLE_DOWN=8
-SYMBOL_TRIANGLE_LEFT=9
-SYMBOL_TRIANGLE_RIGHT=10
-SYMBOL_PLUS=11
-SYMBOL_MINUS=12
-SYMBOL_MAX=13
+class SymbolType(Enum):
+    SYMBOL_NONE=0
+    SYMBOL_X=1
+    SYMBOL_UNDERSCORE=2
+    SYMBOL_CIRCLE_SOLID=3
+    SYMBOL_CIRCLE_OUTLINE=4
+    SYMBOL_RECT_SOLID=5
+    SYMBOL_RECT_OUTLINE=6
+    SYMBOL_TRIANGLE_UP=7
+    SYMBOL_TRIANGLE_DOWN=8
+    SYMBOL_TRIANGLE_LEFT=9
+    SYMBOL_TRIANGLE_RIGHT=10
+    SYMBOL_PLUS=11
+    SYMBOL_MINUS=12
+    SYMBOL_MAX=13
 
 
 # Context
@@ -1498,6 +1512,11 @@ __get_text_width__.arglist = [POINTER(Context), c_char_p]
 __get_text_width__.restype = c_float
 
 
+__button_label_active__ = _nuklear.nkWrapper_button_label_active
+__button_label_active__.arglist = [POINTER(Context), c_char_p]
+__button_label_active__.restype     = c_int
+
+
 
 # because average programmers who are English speakers like Subject-Verb-Object
 # word ordering, create an object that holds the nuklear context.
@@ -1538,8 +1557,11 @@ class NuklearContext:
     def label_wrap(self, text):
         __label_wrap__(self.ctx,str.encode(text))
 
-    def button_label(self, title):
-        return __button_label__(self.ctx, str.encode(title))
+    def button_label(self, title, active=False):
+        if active:
+            return __button_label__(self.ctx, str.encode(title))
+        else:
+            return __button_label_active__(self.ctx, str.encode(title))
 
     def checkbox_label(self, text, active):
         a = ctypes.c_int(active)
@@ -1566,7 +1588,7 @@ class NuklearContext:
 
     def progress(self, cur, max, is_modifyable):
         v = ctypes.c_int(cur)
-        wasModified = __progress__(self.ctx, ctypes.byref(v), max, is_modifyable)
+        wasModified = __progress__(self.ctx, ctypes.byref(v), max, is_modifyable.value)
         return (wasModified, v.value)
 
     def property_int(self, name, minV, val, maxV, step, inc_per_pixel):
@@ -1581,7 +1603,7 @@ class NuklearContext:
         return v.value
 
     def chart_begin(self,chart_type,count,minV,maxV):
-        return __chart_begin__(self.ctx,chart_type,count,c_float(minV),c_float(maxV))
+        return __chart_begin__(self.ctx,chart_type.value,count,c_float(minV),c_float(maxV))
 
     def chart_push(self,value):
         return __chart_push__(self.ctx,c_float(value))
@@ -1619,7 +1641,7 @@ class NuklearContext:
                              c_float(inc_per_pixel))
 
     def popup_begin(self, theType, title, flags, rect):
-        return __popup_begin__(self.ctx, theType, str.encode(title), flags, rect)
+        return __popup_begin__(self.ctx, theType.value, str.encode(title), flags, rect)
 
     def menu_begin_label(self,text,align,size):
         return __menu_begin_label__(self.ctx,str.encode(text),align,size)
@@ -1636,7 +1658,7 @@ class NuklearContext:
         return __combo_begin_color__(self.ctx, color, size)
 
     def color_picker(self, color, format):
-        return __color_picker__(self.ctx, color, format)
+        return __color_picker__(self.ctx, color, format.value)
 
     def combo_end(self):
         __combo_end__(self.ctx)
@@ -1666,8 +1688,8 @@ class NuklearContext:
         arr = (ctypes.c_float * len(ctypesList))(*ctypesList)
         __layout_row__(self.ctx, layout_format, ctypes.c_float(height), columns, arr)
 
-    def layout_row_begin(self, fmt, row_height, columns):
-        __layout_row_begin__(self.ctx,ctypes.c_int(fmt), ctypes.c_float(row_height), ctypes.c_int(columns))
+    def layout_row_begin(self, format, row_height, columns):
+        __layout_row_begin__(self.ctx,ctypes.c_int(format.value), ctypes.c_float(row_height), ctypes.c_int(columns))
 
     def layout_row_push(self, ratio_or_width):
         __layout_row_push__(self.ctx, ctypes.c_float(ratio_or_width))
@@ -1714,7 +1736,7 @@ class NuklearContext:
         return __combo__(self.ctx, arr, count, selected, item_height, size)
 
     def tree_push(self, theType, title, state):
-        return __tree_push__(self.ctx, theType, title, state)
+        return __tree_push__(self.ctx, theType.value, title, state.value)
 
     def tree_push_id(self, theType, title, state, id):
         return __tree_push_id__(self.ctx, theType, title, state, id)
@@ -1729,16 +1751,16 @@ class NuklearContext:
         return __widget_bounds__(self.ctx)
 
     def button_set_behavior(self, behavior):
-        __button_set_behavior__(self.ctx, behavior)
+        __button_set_behavior__(self.ctx, behavior.value)
 
     def button_color(self,color):
         return __button_color__(self.ctx,color)
 
     def button_symbol(self, symbol):
-        return __button_symbol__(self.ctx, symbol)
+        return __button_symbol__(self.ctx, symbol.value)
 
     def button_symbol_label(self,symbol,label,align):
-        return __button_symbol_label__(self.ctx, symbol, str.encode(label), align)
+        return __button_symbol_label__(self.ctx, symbol.value, str.encode(label), align)
 
     def set_style_window_header_align(self, header_align):
         __set_style_window_header_align__(self.ctx, header_align)

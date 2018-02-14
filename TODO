@@ -1,3 +1,5 @@
+- Finish creating enums for nuklear's constants
+- Clean up the VAO, VBO, and shader program upon cleanup
 - get a build working on windows
 - Most of pyNuklear's implementation has been driven by porting nuklear's overview.c
   to python, in the file demo/overview.py.  I need help in completing the bindings to

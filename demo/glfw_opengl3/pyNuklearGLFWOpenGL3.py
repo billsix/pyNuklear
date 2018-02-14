@@ -240,7 +240,7 @@ while not glfw.glfwWindowShouldClose(window):
             nuklear.layout_row_dynamic(height=120.0,
                                        columns=1)
             background = nuklear.color_picker(color=background,
-                                              format=nk.RGBA)
+                                              format=nk.ColorFormat.RGBA)
 
             nuklear.layout_row_dynamic(height=25.0,
                                        columns=1)
