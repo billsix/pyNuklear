@@ -44,6 +44,20 @@ from demo.overview import *
 if __name__ != '__main__':
     sys.exit(1)
 
+# For Development purposes, always run the tests before running the program
+RUN_TESTS=True
+
+if RUN_TESTS:
+    import doctest
+    modules = [ms]
+    for m in modules:
+        try:
+            doctest.testmod(m, raise_on_error=True)
+        except Exception:
+            print(doctest.testmod(m))
+            sys.exit(1)
+
+
 
 
 # Initialize the library
