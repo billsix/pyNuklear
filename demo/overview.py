@@ -549,10 +549,8 @@ def overview(nuklear):
             if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
                                  title="Chart",
                                  state=nk.CollapseStates.MINIMIZED) :
-                #TODO
                 nuklear.layout_row_dynamic(height=100.0,
                                            columns=1)
-                # TODO - why is this in the regular nuklear demo?  it is unused
                 bounds = nuklear.widget_bounds()
                 if nuklear.chart_begin(chart_type=nk.ChartType.CHART_LINES,
                                        count=32,
@@ -569,6 +567,30 @@ def overview(nuklear):
 
                     if hoveredIndex != -1:
                         nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+
+                # column demo
+                nuklear.layout_row_dynamic(height=100.0,
+                                           columns=1)
+                bounds = nuklear.widget_bounds()
+                if nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
+                                       count=32,
+                                       minV=0.0,
+                                       maxV=1.0):
+                    numberOfPoints = 32
+                    hoveredIndex = -1
+                    for x in range(32) :
+                        res = nuklear.chart_push(math.fabs(math.sin( x * (2*3.141592654) / numberOfPoints )))
+                        if res & nk.ChartEvent.CHART_HOVERING.value:
+                            hoveredIndex = x
+
+                    nuklear.chart_end()
+
+                    if hoveredIndex != -1:
+                        nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+
+                # TODO - mixed chart
+                # TODO - mixed colored chart
+
 
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
