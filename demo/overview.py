@@ -342,10 +342,9 @@ def overview(nuklear):
 
 
                     #TODO -- figure out why this code isn't working quite correctly
-                    # nuklear.layout_row(layout_format=nk.STATIC,
-                    #                    height=30.0,
-                    #                    columns=2,
-                    #                    ratio=[120.0,150.0])
+                    #nuklear.layout_row(layout_format=nk.LayoutFormat.STATIC,
+                    #                   height=30.0,
+                    #                   ratio=[120.0,150.0])
                     # once I figure that out, delete the subsequent 3 lines
                     nuklear.layout_row_static(height=30.0,
                                               item_width=100,
@@ -519,7 +518,7 @@ def overview(nuklear):
                 nuklear.layout_row_dynamic(height=100.0,
                                            columns=1)
                 # TODO - why is this in the regular nuklear demo?  it is unused
-                #bounds = nuklear.widget_bounds()
+                bounds = nuklear.widget_bounds()
                 if nuklear.chart_begin(chart_type=nk.ChartType.CHART_LINES,
                                        count=32,
                                        minV=-1.0,
@@ -585,8 +584,6 @@ def overview(nuklear):
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Notebook",
                                      state=nk.CollapseStates.MINIMIZED) :
-                    #TODO
-
                     nuklear.style_push_window_spacing(vec2=nk.Vec2(x=0.0,
                                                                    y=0.0))
                     nuklear.style_push_button_rounding(f=0.0)
@@ -601,20 +598,44 @@ def overview(nuklear):
                     except Exception:
                         currentTab = 0
 
-                    
+
                     for i in range(len(names)):
                         nuklear.layout_row_push(ratio_or_width=nuklear.get_text_width(names[i]))
-
                         if nuklear.button_label(title=names[i],
                                                 active=currentTab != i):
                             currentTab = i
 
-
                     nuklear.style_pop_float()
 
-                    # TODO -- this should not be here
-                    nuklear.style_pop_vec2()
+                    nuklear.layout_row_dynamic(height=140.0,
+                                               columns=1)
+                    if(nuklear.group_begin("Notebook", nk.WINDOW_BORDER)):
+                        nuklear.style_pop_vec2()
+                        if currentTab == 0:
+                            # TODO, draw the charts instead of buttons
+                            nuklear.layout_row_dynamic(height=100.0,
+                                                       columns=1)
+                            bounds = nuklear.widget_bounds()
+                            if nuklear.button_label(title="Button 1"):
+                                print("Button 1 pressed!")
 
+                        elif currentTab == 1:
+                            nuklear.layout_row_dynamic(height=100.0,
+                                                       columns=1)
+                            bounds = nuklear.widget_bounds()
+                            if nuklear.button_label(title="Button 2"):
+                                print("Button 2 pressed!")
+
+                        elif currentTab == 2:
+                            nuklear.layout_row_dynamic(height=100.0,
+                                                       columns=1)
+                            bounds = nuklear.widget_bounds()
+                            if nuklear.button_label(title="Button 3"):
+                                print("Button 3 pressed!")
+
+                        nuklear.group_end()
+                    else:
+                        nuklear.style_pop_vec2()
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Simple",

@@ -536,11 +536,18 @@ __layout_space_rect_to_local__.restype = Rect
 
 
 # Group
-# int nk_group_begin(struct nk_context*, const char *title, nk_flags);
+
+__group_begin__ = _nuklear.nk_group_begin
+__group_begin__.arglist = [POINTER(Context), c_char_p, c_int]
+__group_begin__.restype = c_int
+
 # int nk_group_scrolled_offset_begin(struct nk_context*, nk_uint *x_offset, nk_uint *y_offset, const char*, nk_flags);
 # int nk_group_scrolled_begin(struct nk_context*, struct nk_scroll*, const char *title, nk_flags);
 # void nk_group_scrolled_end(struct nk_context*);
-# void nk_group_end(struct nk_context*);
+
+__group_end__ = _nuklear.nk_group_end
+__group_end__.arglist = [POINTER(Context)]
+
 
 
 # List View
@@ -1545,6 +1552,12 @@ class NuklearContext:
     def layout_row_static(self,height,item_width,columns):
         __layout_row_static__(self.ctx,ctypes.c_float(height), item_width,columns)
 
+    def group_begin(self, title, flags):
+        return __group_begin__(self.ctx, str.encode(title), flags)
+
+    def group_end(self):
+        return __group_end__(self.ctx)
+
     def text(self, text, length, alignment):
         __text__(self.ctx,str.encode(text),length, alignment)
 
@@ -1681,12 +1694,12 @@ class NuklearContext:
     def menubar_begin(self):
         __menubar_begin__(self.ctx)
 
-    def layout_row(self, layout_format, height, columns, ratio):
+    def layout_row(self, layout_format, height, ratio):
         ctypesList = []
         for x in range(len(ratio)):
             ctypesList.append(ctypes.c_float(ratio[x]))
-        arr = (ctypes.c_float * len(ctypesList))(*ctypesList)
-        __layout_row__(self.ctx, layout_format, ctypes.c_float(height), columns, arr)
+        arr = (ctypes.c_float * len(ratio))(*ctypesList)
+        __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(ctypesList)), arr)
 
     def layout_row_begin(self, format, row_height, columns):
         __layout_row_begin__(self.ctx,ctypes.c_int(format.value), ctypes.c_float(row_height), ctypes.c_int(columns))
