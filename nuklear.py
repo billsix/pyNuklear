@@ -756,7 +756,13 @@ __selectable_label__.restype = c_int
 
 # Slider
 # float nk_slide_float(struct nk_context*, float min, float val, float max, float step);
-# int nk_slide_int(struct nk_context*, int min, int val, int max, int step);
+
+
+__slide_int__ = _nuklear.nk_slide_int
+__slide_int__.arglist = [POINTER(Context), c_int, c_int, c_int, c_int]
+__slide_int__.restype = c_int
+
+
 
 __slider_float__ = _nuklear.nk_slider_float
 __slider_float__.arglist = [POINTER(Context), c_float, POINTER(c_float), c_float, c_float]
@@ -1588,6 +1594,9 @@ class NuklearContext:
         a = ctypes.c_int(value)
         wasModified = __selectable_label__(self.ctx, str.encode(label), align, ctypes.byref(a))
         return (wasModified, a.value)
+
+    def slide_int(self, minV, val, maxV, step):
+        return __slide_int__(self.ctx, c_int(minV), c_int(val), c_int(maxV), c_int(step))
 
     def slider_float(self, minV, value, maxV, step):
         v = ctypes.c_float(value)

@@ -496,13 +496,48 @@ def overview(nuklear):
                                                    item_height=25,
                                                    size=nk.Vec2(200,200))
 
+
+                    nuklear.layout_row_static(height=25.0,
+                                              item_width=200,
+                                              columns=1)
+                    global comboColor
+                    try:
+                        comboColor
+                    except Exception:
+                        comboColor = nk.Color(130,50,50,255)
+
+                    if nuklear.combo_begin_color(comboColor,
+                                                 nk.Vec2(200,200)):
+                        nuklear.layout_row_dynamic(height=30.0,
+                                                   columns=2)
+                        nuklear.label(text="R:",
+                                      alignment=nk.TEXT_LEFT)
+                        comboColor.r = nuklear.slide_int(0, comboColor.r, 255, 5)
+                        nuklear.label(text="G:",
+                                      alignment=nk.TEXT_LEFT)
+                        comboColor.g = nuklear.slide_int(0, comboColor.g, 255, 5)
+                        nuklear.label(text="B:",
+                                      alignment=nk.TEXT_LEFT)
+                        comboColor.b = nuklear.slide_int(0, comboColor.b, 255, 5)
+                        nuklear.label(text="A:",
+                                      alignment=nk.TEXT_LEFT)
+                        comboColor.a = nuklear.slide_int(0, comboColor.a, 255, 5)
+
+                        nuklear.combo_end()
                     # TODO
-                    #                 /* slider color combobox */
                     #                /* complex color combobox */
-                    # etc
-
-
-
+                    # TODO
+                    #                /* progressbar combobox */
+                    # TODO
+                    #                /* checkbox combobox */
+                    # TODO
+                    #                /* complex text combobox */
+                    # TODO
+                    #                /* chart combobox */
+                    # TODO
+                    #                /* time combobox */
+                    # TODO
+                    #                /* date combobox */
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Input",
