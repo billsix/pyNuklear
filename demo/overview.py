@@ -371,8 +371,23 @@ def overview(nuklear):
                                                                   value=floatSlider,
                                                                   maxV=5.0,
                                                                   step=0.5)
+
+
+                    global progFloat
+                    try:
+                        progFloat
+                    except Exception:
+                        progFloat = 40
+
+                    
+                    nuklear.label(text="Progressbar: ",
+                                  alignment=nk.TextAlign.TEXT_LEFT);
+                    (modified,progFloat) = nuklear.progress(cur=progFloat,
+                                                            max=100,
+                                                            is_modifyable=nk.Modify.MODIFIABLE)
+
                     #TODO -- figure out why this code isn't working quite correctly
-                    # nuklear.layout_row(NK_STATIC, 25, 2, ratio);
+                    #nuklear.layout_row(nk.LayoutFormat.STATIC, 25, [120.0,150.0])
                     # once I figure that out, delete the subsequent 3 lines
                     nuklear.layout_row_static(height=25.0,
                                               item_width=150,
@@ -652,7 +667,29 @@ def overview(nuklear):
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Widget",
                                      state=nk.CollapseStates.MINIMIZED) :
-                    #TODO
+
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=1)
+                    nuklear.label(text="Dynamic fixed column layout with generated position and size:",
+                                  alignment=nk.TextAlign.TEXT_LEFT)
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=3)
+                    nuklear.button_label(title="button")
+                    nuklear.button_label(title="button")
+                    nuklear.button_label(title="button")
+
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=1)
+                    nuklear.label(text="static fixed column layout with generated position and size:",
+                                  alignment=nk.TextAlign.TEXT_LEFT)
+                    nuklear.layout_row_static(height=30.0,
+                                              item_width=100,
+                                              columns=3)
+                    nuklear.button_label(title="button")
+                    nuklear.button_label(title="button")
+                    nuklear.button_label(title="button")
+
+
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Group",
