@@ -341,7 +341,9 @@ def overview(nuklear):
                                             active= basicOption == C): basicOption = C
 
 
-                    #TODO -- figure out why this code isn't working quite correctly
+                    #TODO -- this is likely failing because the ratio is being garbage collected, yet
+                    # nuklear makes a copy of the pointer.  Figure out how to change nuklear so that
+                    # it makes a copy of the double array, and free it at the appropriate time.
                     #nuklear.layout_row(layout_format=nk.LayoutFormat.STATIC,
                     #                   height=30.0,
                     #                   ratio=[120.0,150.0])
