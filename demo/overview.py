@@ -351,7 +351,7 @@ def overview(nuklear):
                             basicSlider
                         except Exception:
                             basicSlider = 5
-                        nuklear.label(text="Slider Int",
+                        nuklear.label(text=str.format("Slider Int: {}", basicSlider),
                                       alignment=nk.TextAlign.TEXT_LEFT)
                         (modified,basicSlider) = nuklear.slider_int(minV=0,
                                                                     value=basicSlider,
@@ -362,7 +362,7 @@ def overview(nuklear):
                             floatSlider
                         except Exception:
                             floatSlider = 2.5
-                        nuklear.label(text="Slider Float",
+                        nuklear.label(text=str.format("Slider Float: {}", floatSlider),
                                       alignment=nk.TextAlign.TEXT_LEFT)
                         (modified,floatSlider) = nuklear.slider_float(minV=0.0,
                                                                       value=floatSlider,
@@ -683,6 +683,69 @@ def overview(nuklear):
                     nuklear.button_label(title="button")
                     nuklear.button_label(title="button")
                     nuklear.button_label(title="button")
+
+
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=1)
+                    nuklear.label(text="Dynamic array-based custom column layout with generated position and custom size:",
+                                  alignment=nk.TextAlign.TEXT_LEFT)
+                    # this class is necessary to prevent garbage collection of the array
+                    with nk.LayoutRow(ctx=nuklear.ctx,
+                                      layout_format=nk.LayoutFormat.DYNAMIC,
+                                      height=30.0,
+                                      ratio=[0.2,0.6,0.2]) as lr:
+
+                        nuklear.button_label(title="button")
+                        nuklear.button_label(title="button")
+                        nuklear.button_label(title="button")
+
+
+
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=1)
+                    nuklear.label(text="Static array-based custom column layout with generated position and custom size:",
+                                  alignment=nk.TextAlign.TEXT_LEFT)
+                    # this class is necessary to prevent garbage collection of the array
+                    with nk.LayoutRow(ctx=nuklear.ctx,
+                                      layout_format=nk.LayoutFormat.STATIC,
+                                      height=30.0,
+                                      ratio=[100.0,200.0,50.0]) as lr:
+
+                        nuklear.button_label(title="button")
+                        nuklear.button_label(title="button")
+                        nuklear.button_label(title="button")
+
+
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=1)
+                    nuklear.label(text="Dynamic immediate mode custom column layout with generated position and custom size:",
+                                  alignment=nk.TextAlign.TEXT_LEFT)
+                    nuklear.layout_row_begin(format=nk.LayoutFormat.DYNAMIC,
+                                             row_height=30.0,
+                                             columns=3)
+                    nuklear.layout_row_push(ratio_or_width=0.2)
+                    nuklear.button_label(title="button")
+                    nuklear.layout_row_push(ratio_or_width=0.6)
+                    nuklear.button_label(title="button")
+                    nuklear.layout_row_push(ratio_or_width=0.2)
+                    nuklear.button_label(title="button")
+
+                    nuklear.layout_row_dynamic(height=30.0,
+                                               columns=1)
+                    nuklear.label(text="Static immediate mode custom column layout with generated position and custom size:",
+                                  alignment=nk.TextAlign.TEXT_LEFT)
+                    nuklear.layout_row_begin(format=nk.LayoutFormat.STATIC,
+                                             row_height=30.0,
+                                             columns=3)
+                    nuklear.layout_row_push(ratio_or_width=100.0)
+                    nuklear.button_label(title="button")
+                    nuklear.layout_row_push(ratio_or_width=200.0)
+                    nuklear.button_label(title="button")
+                    nuklear.layout_row_push(ratio_or_width=50.0)
+                    nuklear.button_label(title="button")
+
+                    # TODO - two more layouts
+
 
 
                     nuklear.tree_pop()
