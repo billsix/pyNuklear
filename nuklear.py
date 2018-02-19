@@ -247,44 +247,46 @@ clear.arglist = [POINTER(Context)]
 # Input
 
 ## Keys
-KEY_NONE=0
-KEY_SHIFT=1
-KEY_CTRL=2
-KEY_DEL=3
-KEY_ENTER=4
-KEY_TAB=5
-KEY_BACKSPACE=6
-KEY_COPY=7
-KEY_CUT=8
-KEY_PASTE=9
-KEY_UP=10
-KEY_DOWN=11
-KEY_LEFT=12
-KEY_RIGHT=13
-KEY_TEXT_INSERT_MODE=14
-KEY_TEXT_REPLACE_MODE=15
-KEY_TEXT_RESET_MODE=16
-KEY_TEXT_LINE_START=17
-KEY_TEXT_LINE_END=18
-KEY_TEXT_START=19
-KEY_TEXT_END=20
-KEY_TEXT_UNDO=21
-KEY_TEXT_REDO=22
-KEY_TEXT_SELECT_ALL=23
-KEY_TEXT_WORD_LEFT=24
-KEY_TEXT_WORD_RIGHT=25
-KEY_SCROLL_START=26
-KEY_SCROLL_END=27
-KEY_SCROLL_DOWN=28
-KEY_SCROLL_UP=29
-KEY_MAX=30
+class Keys(Enum):
+    NONE=0
+    SHIFT=1
+    CTRL=2
+    DEL=3
+    ENTER=4
+    TAB=5
+    BACKSPACE=6
+    COPY=7
+    CUT=8
+    PASTE=9
+    UP=10
+    DOWN=11
+    LEFT=12
+    RIGHT=13
+    TEXT_INSERT_MODE=14
+    TEXT_REPLACE_MODE=15
+    TEXT_RESET_MODE=16
+    TEXT_LINE_START=17
+    TEXT_LINE_END=18
+    TEXT_START=19
+    TEXT_END=20
+    TEXT_UNDO=21
+    TEXT_REDO=22
+    TEXT_SELECT_ALL=23
+    TEXT_WORD_LEFT=24
+    TEXT_WORD_RIGHT=25
+    SCROLL_START=26
+    SCROLL_END=27
+    SCROLL_DOWN=28
+    SCROLL_UP=29
+    MAX=30
 
 ## Buttons
-BUTTON_LEFT=0
-BUTTON_MIDDLE=1
-BUTTON_RIGHT=2
-BUTTON_DOUBLE=3
-BUTTON_MAX=4
+class Buttons(Enum):
+    LEFT=0
+    MIDDLE=1
+    RIGHT=2
+    DOUBLE=3
+    MAX=4
 
 input_begin = _nuklear.nk_input_begin
 input_begin.arglist = [POINTER(Context)]
@@ -315,14 +317,16 @@ input_end = _nuklear.nk_input_end
 input_end.arglist = [POINTER(Context)]
 
 # Drawing
-ANTI_ALIASING_OFF=0
-ANTI_ALIASING_ON=1
+class AntiAliasing(Enum):
+    OFF=0
+    ON=1
 
-CONVERT_SUCCESS = 0
-CONVERT_INVALID_PARAM = 1
-CONVERT_COMMAND_BUFFER_FULL = 1 << 0
-CONVERT_VERTEX_BUFFER_FULL = 1 << 1
-CONVERT_ELEMENT_BUFFER_FULL = 1 << 2
+class ConvertResult(Enum):
+    SUCCESS = 0
+    INVALID_PARAM = 1
+    COMMAND_BUFFER_FULL = 1 << 0
+    VERTEX_BUFFER_FULL = 1 << 1
+    ELEMENT_BUFFER_FULL = 1 << 2
 
 
 # const struct nk_command* nk__begin(struct nk_context*);
@@ -335,17 +339,18 @@ CONVERT_ELEMENT_BUFFER_FULL = 1 << 2
 
 # Window
 
-WINDOW_BORDER            = 1 << 0
-WINDOW_MOVABLE           = 1 << 1
-WINDOW_SCALABLE          = 1 << 2
-WINDOW_CLOSABLE          = 1 << 3
-WINDOW_MINIMIZABLE       = 1 << 4
-WINDOW_NO_SCROLLBAR      = 1 << 5
-WINDOW_TITLE             = 1 << 6
-WINDOW_SCROLL_AUTO_HIDE  = 1 << 7
-WINDOW_BACKGROUND        = 1 << 8
-WINDOW_SCALE_LEFT        = 1 << 9
-WINDOW_NO_INPUT          = 1 << 10
+class PanelFlags(Enum):
+    WINDOW_BORDER            = 1 << 0
+    WINDOW_MOVABLE           = 1 << 1
+    WINDOW_SCALABLE          = 1 << 2
+    WINDOW_CLOSABLE          = 1 << 3
+    WINDOW_MINIMIZABLE       = 1 << 4
+    WINDOW_NO_SCROLLBAR      = 1 << 5
+    WINDOW_TITLE             = 1 << 6
+    WINDOW_SCROLL_AUTO_HIDE  = 1 << 7
+    WINDOW_BACKGROUND        = 1 << 8
+    WINDOW_SCALE_LEFT        = 1 << 9
+    WINDOW_NO_INPUT          = 1 << 10
 
 __begin__ = _nuklear.nk_begin
 __begin__.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
@@ -582,19 +587,21 @@ __tree_pop__.arglist = [POINTER(Context)]
 
 # Widget
 
-WIDGET_INVALID=0
-WIDGET_VALID=1
-WIDGET_ROM=2
+class WidgetLayoutStates(Enum):
+    INVALID=0
+    VALID=1
+    ROM=2
 
 
-WIDGET_STATE_MODIFIED    = 1 << 0
-WIDGET_STATE_INACTIVE    = 1 << 1
-WIDGET_STATE_ENTERED     = 1 << 2
-WIDGET_STATE_HOVER       = 1 << 3
-WIDGET_STATE_ACTIVED     = 1 << 4
-WIDGET_STATE_LEFT        = 1 << 5
-WIDGET_STATE_HOVERED     = WIDGET_STATE_HOVER|WIDGET_STATE_MODIFIED
-WIDGET_STATE_ACTIVE      = WIDGET_STATE_ACTIVED|WIDGET_STATE_MODIFIED
+class WidgetStates(Enum):
+    MODIFIED    = 1 << 0
+    INACTIVE    = 1 << 1
+    ENTERED     = 1 << 2
+    HOVER       = 1 << 3
+    ACTIVED     = 1 << 4
+    LEFT        = 1 << 5
+    HOVERED     = HOVER|MODIFIED
+    ACTIVE      = ACTIVED|MODIFIED
 
 
 # enum nk_widget_layout_states nk_widget(struct nk_rect*, const struct nk_context*);
@@ -619,16 +626,17 @@ __widget_height__.restype = c_float
 
 # Text
 
-TEXT_ALIGN_LEFT        = 0x01
-TEXT_ALIGN_CENTERED    = 0x02
-TEXT_ALIGN_RIGHT       = 0x04
-TEXT_ALIGN_TOP         = 0x08
-TEXT_ALIGN_MIDDLE      = 0x10
-TEXT_ALIGN_BOTTOM      = 0x20
+class TextAlign(Enum):
+    LEFT        = 0x01
+    CENTERED    = 0x02
+    RIGHT       = 0x04
+    TOP         = 0x08
+    MIDDLE      = 0x10
+    BOTTOM      = 0x20
 
-TEXT_LEFT        = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_LEFT
-TEXT_CENTERED    = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_CENTERED
-TEXT_RIGHT       = TEXT_ALIGN_MIDDLE|TEXT_ALIGN_RIGHT
+    TEXT_LEFT        = MIDDLE|LEFT
+    TEXT_CENTERED    = MIDDLE|CENTERED
+    TEXT_RIGHT       = MIDDLE|RIGHT
 
 
 __text__ = _nuklear.nk_text
@@ -813,33 +821,35 @@ __propertyf__.restype = c_float
 
 
 # TextEdit
-
-EDIT_DEFAULT                 = 0,
-EDIT_READ_ONLY               = 1 << 0
-EDIT_AUTO_SELECT             = 1 << 1
-EDIT_SIG_ENTER               = 1 << 2
-EDIT_ALLOW_TAB               = 1 << 3
-EDIT_NO_CURSOR               = 1 << 4
-EDIT_SELECTABLE              = 1 << 5
-EDIT_CLIPBOARD               = 1 << 6
-EDIT_CTRL_ENTER_NEWLINE      = 1 << 7
-EDIT_NO_HORIZONTAL_SCROLL    = 1 << 8
-EDIT_ALWAYS_INSERT_MODE      = 1 << 9
-EDIT_MULTILINE               = 1 << 10
-EDIT_GOTO_END_ON_ACTIVATE    = 1 << 11
-
-
-EDIT_SIMPLE  = EDIT_ALWAYS_INSERT_MODE
-EDIT_FIELD   = EDIT_SIMPLE|EDIT_SELECTABLE|EDIT_CLIPBOARD
-EDIT_BOX     = EDIT_ALWAYS_INSERT_MODE| EDIT_SELECTABLE| EDIT_MULTILINE|EDIT_ALLOW_TAB|EDIT_CLIPBOARD
-EDIT_EDITOR  = EDIT_SELECTABLE|EDIT_MULTILINE|EDIT_ALLOW_TAB| EDIT_CLIPBOARD
+class EditFlags(Enum):
+    DEFAULT                 = 0,
+    READ_ONLY               = 1 << 0
+    AUTO_SELECT             = 1 << 1
+    SIG_ENTER               = 1 << 2
+    ALLOW_TAB               = 1 << 3
+    NO_CURSOR               = 1 << 4
+    SELECTABLE              = 1 << 5
+    CLIPBOARD               = 1 << 6
+    CTRL_ENTER_NEWLINE      = 1 << 7
+    NO_HORIZONTAL_SCROLL    = 1 << 8
+    ALWAYS_INSERT_MODE      = 1 << 9
+    MULTILINE               = 1 << 10
+    GOTO_END_ON_ACTIVATE    = 1 << 11
 
 
-EDIT_ACTIVE      = 1 << 0
-EDIT_INACTIVE    = 1 << 1
-EDIT_ACTIVATED   = 1 << 2
-EDIT_DEACTIVATED = 1 << 3
-EDIT_COMMITED    = 1 << 4
+class EditTypes(Enum):
+    SIMPLE  = EditFlags.ALWAYS_INSERT_MODE
+    FIELD   = SIMPLE.value|EditFlags.SELECTABLE.value|EditFlags.CLIPBOARD.value
+    BOX     = EditFlags.ALWAYS_INSERT_MODE.value| EditFlags.SELECTABLE.value| EditFlags.MULTILINE.value|EditFlags.ALLOW_TAB.value|EditFlags.CLIPBOARD.value
+    EDITOR  = EditFlags.SELECTABLE.value|EditFlags.MULTILINE.value|EditFlags.ALLOW_TAB.value| EditFlags.CLIPBOARD.value
+
+
+class EditEvents(Enum):
+    ACTIVE      = 1 << 0
+    INACTIVE    = 1 << 1
+    ACTIVATED   = 1 << 2
+    DEACTIVATED = 1 << 3
+    COMMITED    = 1 << 4
 
 
 # nk_flags nk_edit_string(struct nk_context*, nk_flags, char *buffer, int *len, int max, nk_plugin_filter);
@@ -991,45 +1001,47 @@ __menu_end__.arglist = [POINTER(Context)]
 
 # Style
 
-COLOR_TEXT=0
-COLOR_WINDOW=1
-COLOR_HEADER=2
-COLOR_BORDER=3
-COLOR_BUTTON=4
-COLOR_BUTTON_HOVER=5
-COLOR_BUTTON_ACTIVE=6
-COLOR_TOGGLE=7
-COLOR_TOGGLE_HOVER=8
-COLOR_TOGGLE_CURSOR=9
-COLOR_SELECT=10
-COLOR_SELECT_ACTIVE=11
-COLOR_SLIDER=12
-COLOR_SLIDER_CURSOR=13
-COLOR_SLIDER_CURSOR_HOVER=14
-COLOR_SLIDER_CURSOR_ACTIVE=15
-COLOR_PROPERTY=16
-COLOR_EDIT=17
-COLOR_EDIT_CURSOR=18
-COLOR_COMBO=19
-COLOR_CHART=20
-COLOR_CHART_COLOR=21
-COLOR_CHART_COLOR_HIGHLIGHT=22
-COLOR_SCROLLBAR=23
-COLOR_SCROLLBAR_CURSOR=24
-COLOR_SCROLLBAR_CURSOR_HOVER=25
-COLOR_SCROLLBAR_CURSOR_ACTIVE=26
-COLOR_TAB_HEADER=27
-COLOR_COUNT=28
+class StyleColors(Enum):
+    TEXT=0
+    WINDOW=1
+    HEADER=2
+    BORDER=3
+    BUTTON=4
+    BUTTON_HOVER=5
+    BUTTON_ACTIVE=6
+    TOGGLE=7
+    TOGGLE_HOVER=8
+    TOGGLE_CURSOR=9
+    SELECT=10
+    SELECT_ACTIVE=11
+    SLIDER=12
+    SLIDER_CURSOR=13
+    SLIDER_CURSOR_HOVER=14
+    SLIDER_CURSOR_ACTIVE=15
+    PROPERTY=16
+    EDIT=17
+    EDIT_CURSOR=18
+    COMBO=19
+    CHART=20
+    CHART_COLOR=21
+    CHART_COLOR_HIGHLIGHT=22
+    SCROLLBAR=23
+    SCROLLBAR_CURSOR=24
+    SCROLLBAR_CURSOR_HOVER=25
+    SCROLLBAR_CURSOR_ACTIVE=26
+    TAB_HEADER=27
+    COUNT=28
 
 
-CURSOR_ARROW=0
-CURSOR_TEXT=1
-CURSOR_MOVE=2
-CURSOR_RESIZE_VERTICAL=3
-CURSOR_RESIZE_HORIZONTAL=4
-CURSOR_RESIZE_TOP_LEFT_DOWN_RIGHT=5
-CURSOR_RESIZE_TOP_RIGHT_DOWN_LEFT=6
-CURSOR_COUN=7
+class StyleCursor(Enum):
+    ARROW=0
+    TEXT=1
+    MOVE=2
+    RESIZE_VERTICAL=3
+    RESIZE_HORIZONTAL=4
+    RESIZE_TOP_LEFT_DOWN_RIGHT=5
+    RESIZE_TOP_RIGHT_DOWN_LEFT=6
+    COUN=7
 
 
 # void nk_style_default(struct nk_context*);
@@ -1180,13 +1192,15 @@ __rgb_cf__.restype = Color
 # Font
 
 
-COORD_UV=0
-COORD_PIXEL=1
+class FontCoordType(Enum):
+    UV=0
+    PIXEL=1
 
 
 
-FONT_ATLAS_ALPHA8=0
-FONT_ATLAS_RGBA32=1
+class FontAtlasFormat(Enum):
+    ALPHA8=0
+    RGBA32=1
 
 
 # const nk_rune *nk_font_default_glyph_ranges(void);
@@ -1214,12 +1228,14 @@ FONT_ATLAS_RGBA32=1
 # Memory Buffer
 
 
-BUFFER_FIXED=0
-BUFFER_DYNAMIC=1
+class AllocationType(Enum):
+    FIXED=0
+    DYNAMIC=1
 
-BUFFER_FRONT=0
-BUFFER_BACK=1
-BUFFER_MAX=2
+class BufferAllocationType(Enum):
+    FRONT=0
+    BACK=1
+    MAX=2
 
 # void nk_buffer_init_default(struct nk_buffer*);
 # void nk_buffer_init(struct nk_buffer*, const struct nk_allocator*, nk_size size);
@@ -1272,12 +1288,14 @@ BUFFER_MAX=2
 # Text Editor
 
 
-TEXT_EDIT_SINGLE_LINE=0
-TEXT_EDIT_MULTI_LINE=1
+class TextEditType(Enum):
+    SINGLE_LINE=0
+    MULTI_LINE=1
 
-TEXT_EDIT_MODE_VIEW=0
-TEXT_EDIT_MODE_INSERT=1
-TEXT_EDIT_MODE_REPLACE=2
+class TextEditMode(Enum):
+    VIEW=0
+    INSERT=1
+    REPLACE=2
 
 
 # int nk_filter_default(const struct nk_text_edit*, nk_rune unicode);
@@ -1301,29 +1319,30 @@ TEXT_EDIT_MODE_REPLACE=2
 # void nk_textedit_redo(struct nk_text_edit*);
 
 # Drawing
-COMMAND_NOP=0
-COMMAND_SCISSOR=1
-COMMAND_LINE=2
-COMMAND_CURVE=3
-COMMAND_RECT=4
-COMMAND_RECT_FILLED=5
-COMMAND_RECT_MULTI_COLOR=6
-COMMAND_CIRCLE=7
-COMMAND_CIRCLE_FILLED=8
-COMMAND_ARC=9
-COMMAND_ARC_FILLED=10
-COMMAND_TRIANGLE=11
-COMMAND_TRIANGLE_FILLED=12
-COMMAND_POLYGON=13
-COMMAND_POLYGON_FILLED=14
-COMMAND_POLYLINE=15
-COMMAND_TEXT=16
-COMMAND_IMAGE=17
-COMMAND_CUSTOM=18
+class CommandType(Enum):
+    NOP=0
+    SCISSOR=1
+    LINE=2
+    CURVE=3
+    RECT=4
+    RECT_FILLED=5
+    RECT_MULTI_COLOR=6
+    CIRCLE=7
+    CIRCLE_FILLED=8
+    ARC=9
+    ARC_FILLED=10
+    TRIANGLE=11
+    TRIANGLE_FILLED=12
+    POLYGON=13
+    POLYGON_FILLED=14
+    POLYLINE=15
+    TEXT=16
+    IMAGE=17
+    CUSTOM=18
 
-
-CLIPPING_OFF = 0
-CLIPPING_ON = 1
+class CommandScissor(Enum):
+    OFF = 0
+    ON = 1
 
 
 
@@ -1398,14 +1417,16 @@ CLIPPING_ON = 1
 # Draw List
 
 # typedef nk_ushort nk_draw_index;
-STROKE_OPEN=0
-STROKE_CLOSED=1
+class DrawListStroke(Enum):
+    STROKE_OPEN=0
+    STROKE_CLOSED=1
 
 
-VERTEX_POSITION=0
-VERTEX_COLOR=1
-VERTEX_TEXCOORD=2
-VERTEX_ATTRIBUTE_COUNT=3
+class DrawVertexLayoutAttribute(Enum):
+    POSITION=0
+    COLOR=1
+    TEXCOORD=2
+    ATTRIBUTE_COUNT=3
 
 
 
@@ -1441,8 +1462,9 @@ VERTEX_ATTRIBUTE_COUNT=3
 
 # GUI
 
-STYLE_ITEM_COLOR=0
-STYLE_ITEM_IMAGE=1
+class StyleItemType(Enum):
+    COLOR=0
+    IMAGE=1
 
 # union nk_style_item_data {
 #     struct nk_image image;
@@ -1450,33 +1472,37 @@ STYLE_ITEM_IMAGE=1
 # };
 
 
-HEADER_LEFT=0
-HEADER_RIGHT=1
+class StyleHeaderAlign(Enum):
+    LEFT=0
+    RIGHT=1
 
 
-PANEL_WINDOW     = 1 << 0
-PANEL_GROUP      = 1 << 1
-PANEL_POPUP      = 1 << 2
-PANEL_CONTEXTUAL = 1 << 4
-PANEL_COMBO      = 1 << 5
-PANEL_MENU       = 1 << 6
-PANEL_TOOLTIP    = 1 << 7
+class PanelType(Enum):
+    WINDOW     = 1 << 0
+    GROUP      = 1 << 1
+    POPUP      = 1 << 2
+    CONTEXTUAL = 1 << 4
+    COMBO      = 1 << 5
+    MENU       = 1 << 6
+    TOOLTIP    = 1 << 7
 
-PANEL_SET_NONBLOCK = PANEL_CONTEXTUAL|PANEL_COMBO|PANEL_MENU|PANEL_TOOLTIP
-PANEL_SET_POPUP = PANEL_SET_NONBLOCK|PANEL_POPUP
-PANEL_SET_SUB = PANEL_SET_POPUP|PANEL_GROUP
+class PanelSet(Enum):
+    NONBLOCK = PanelType.CONTEXTUAL.value|PanelType.COMBO.value|PanelType.MENU.value|PanelType.TOOLTIP.value
+    POPUP = NONBLOCK|PanelType.POPUP.value
+    SUB = POPUP|PanelType.GROUP.value
 
 
-NK_LAYOUT_DYNAMIC_FIXED = 0
-NK_LAYOUT_DYNAMIC_ROW=1
-NK_LAYOUT_DYNAMIC_FREE=2
-NK_LAYOUT_DYNAMIC=3
-NK_LAYOUT_STATIC_FIXED=4
-NK_LAYOUT_STATIC_ROW=5
-NK_LAYOUT_STATIC_FREE=6
-NK_LAYOUT_STATIC=7
-NK_LAYOUT_TEMPLATE=8
-NK_LAYOUT_COUNT=9
+class PanelRowLayoutType(Enum):
+    DYNAMIC_FIXED = 0
+    DYNAMIC_ROW=1
+    DYNAMIC_FREE=2
+    DYNAMIC=3
+    STATIC_FIXED=4
+    STATIC_ROW=5
+    STATIC_FREE=6
+    STATIC=7
+    TEMPLATE=8
+    COUNT=9
 
 
 
@@ -1487,7 +1513,7 @@ NK_LAYOUT_COUNT=9
 WINDOW_PRIVATE       = 1 << 11
 WINDOW_DYNAMIC       = WINDOW_PRIVATE
 WINDOW_ROM           = 1 << 12
-WINDOW_NOT_INTERACTIVE = WINDOW_ROM|WINDOW_NO_INPUT
+WINDOW_NOT_INTERACTIVE = WINDOW_ROM|PanelFlags.WINDOW_NO_INPUT.value
 WINDOW_HIDDEN        = 1 << 13
 WINDOW_CLOSED        = 1 << 14
 WINDOW_MINIMIZED     = 1 << 15
@@ -1565,19 +1591,19 @@ class NuklearContext:
         __layout_row_static__(self.ctx,ctypes.c_float(height), item_width,columns)
 
     def group_begin(self, title, flags):
-        return __group_begin__(self.ctx, str.encode(title), flags)
+        return __group_begin__(self.ctx, str.encode(title), flags.value)
 
     def group_end(self):
         return __group_end__(self.ctx)
 
     def text(self, text, length, alignment):
-        __text__(self.ctx,str.encode(text),length, alignment)
+        __text__(self.ctx,str.encode(text),length, alignment.value)
 
     def label(self, text, alignment):
-        __label__(self.ctx, str.encode(text), alignment)
+        __label__(self.ctx, str.encode(text), alignment.value)
 
     def label_colored(self, text, align, color):
-        __label_colored__(self.ctx,str.encode(text),align,color)
+        __label_colored__(self.ctx,str.encode(text),align.value,color)
 
     def label_wrap(self, text):
         __label_wrap__(self.ctx,str.encode(text))
@@ -1598,7 +1624,7 @@ class NuklearContext:
 
     def selectable_label(self, label, align, value):
         a = ctypes.c_int(value)
-        wasModified = __selectable_label__(self.ctx, str.encode(label), align, ctypes.byref(a))
+        wasModified = __selectable_label__(self.ctx, str.encode(label), align.value, ctypes.byref(a))
         return (wasModified, a.value)
 
     def slide_int(self, minV, val, maxV, step):
@@ -1675,13 +1701,13 @@ class NuklearContext:
                              c_float(inc_per_pixel))
 
     def popup_begin(self, theType, title, flags, rect):
-        return __popup_begin__(self.ctx, theType.value, str.encode(title), flags, rect)
+        return __popup_begin__(self.ctx, theType.value, str.encode(title), flags.value, rect)
 
     def menu_begin_label(self,text,align,size):
-        return __menu_begin_label__(self.ctx,str.encode(text),align,size)
+        return __menu_begin_label__(self.ctx,str.encode(text),align.value,size)
 
     def menu_item_label(self, label, align):
-        return __menu_item_label__(self.ctx,str.encode(label), align)
+        return __menu_item_label__(self.ctx,str.encode(label), align.value)
 
 
     def item_is_any_active(self):
@@ -1701,7 +1727,7 @@ class NuklearContext:
         return __contextual_begin__(self.ctx,flags, size, triggerBounds)
 
     def contextual_item_label(self, text, align):
-        return __contextual_item_label__(self.ctx, str.encode(text), align)
+        return __contextual_item_label__(self.ctx, str.encode(text), align.value)
 
     def contextual_end(self):
         __contextual_end__(self.ctx)
@@ -1794,10 +1820,10 @@ class NuklearContext:
         return __button_symbol__(self.ctx, symbol.value)
 
     def button_symbol_label(self,symbol,label,align):
-        return __button_symbol_label__(self.ctx, symbol.value, str.encode(label), align)
+        return __button_symbol_label__(self.ctx, symbol.value, str.encode(label), align.value)
 
     def set_style_window_header_align(self, header_align):
-        __set_style_window_header_align__(self.ctx, header_align)
+        __set_style_window_header_align__(self.ctx, header_align.value)
 
     def input_is_mouse_hovering_rect(self, bounds):
         return __input_is_mouse_hovering_rect__(self.ctx, bounds)

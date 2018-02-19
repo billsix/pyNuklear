@@ -32,7 +32,7 @@ def overview(nuklear):
     # show overview
     window_flags = 0
 
-    nuklear.set_style_window_header_align(nk.HEADER_RIGHT)
+    nuklear.set_style_window_header_align(nk.StyleHeaderAlign.RIGHT)
 
     global border
     try:
@@ -40,7 +40,7 @@ def overview(nuklear):
     except Exception:
         border = True
 
-    if(border) : window_flags |= nk.WINDOW_BORDER
+    if(border) : window_flags |= nk.PanelFlags.WINDOW_BORDER.value
 
     global resize
     try:
@@ -48,7 +48,7 @@ def overview(nuklear):
     except Exception:
         resize = True
 
-    if(resize) : window_flags |= nk.WINDOW_SCALABLE
+    if(resize) : window_flags |= nk.PanelFlags.WINDOW_SCALABLE.value
 
     global movable
     try:
@@ -56,7 +56,7 @@ def overview(nuklear):
     except Exception:
         movable = True
 
-    if(movable) : window_flags |= nk.WINDOW_MOVABLE
+    if(movable) : window_flags |= nk.PanelFlags.WINDOW_MOVABLE.value
 
     global no_scrollbar
     try:
@@ -64,7 +64,7 @@ def overview(nuklear):
     except Exception:
         no_scrollbar = False
 
-    if(no_scrollbar) : window_flags |= nk.WINDOW_NO_SCROLLBAR
+    if(no_scrollbar) : window_flags |= nk.PanelFlags.WINDOW_NO_SCROLLBAR.value
 
     global scale_left
     try:
@@ -72,7 +72,7 @@ def overview(nuklear):
     except Exception:
         scale_left = False
 
-    if(scale_left) : window_flags |= nk.WINDOW_SCALE_LEFT
+    if(scale_left) : window_flags |= nk.PanelFlags.WINDOW_SCALE_LEFT.value
 
     global minimizable
     try:
@@ -80,7 +80,7 @@ def overview(nuklear):
     except Exception:
         minimizable = True
 
-    if(minimizable) : window_flags |= nk.WINDOW_MINIMIZABLE
+    if(minimizable) : window_flags |= nk.PanelFlags.WINDOW_MINIMIZABLE.value
 
 
     if nuklear.begin(title="Overview",
@@ -121,15 +121,15 @@ def overview(nuklear):
                                      columns=5)
             nuklear.layout_row_push(ratio_or_width=45.0)
             if nuklear.menu_begin_label(text="MENU",
-                                        align=nk.TEXT_LEFT,
+                                        align=nk.TextAlign.TEXT_LEFT,
                                         size=nk.Vec2(120.0,200.0)):
                 nuklear.layout_row_dynamic(height=25.0,
                                            columns=1)
                 if nuklear.menu_item_label(label="Hide",
-                                           align=nk.TEXT_LEFT):
+                                           align=nk.TextAlign.TEXT_LEFT):
                     show_menu = False
                 if nuklear.menu_item_label(label="About",
-                                           align=nk.TEXT_LEFT):
+                                           align=nk.TextAlign.TEXT_LEFT):
                     show_app_about = True
                 (modified,mprog) = nuklear.progress(cur=mprog,
                                                     max=100,
@@ -144,7 +144,7 @@ def overview(nuklear):
                 nuklear.menu_end()
             nuklear.layout_row_push(ratio_or_width=60.0)
             if nuklear.menu_begin_label(text="Advanced",
-                                        align=nk.TEXT_LEFT,
+                                        align=nk.TextAlign.TEXT_LEFT,
                                         size=nk.Vec2(200,600)):
                 # TODO -- do the advanced menu
 
@@ -171,17 +171,17 @@ def overview(nuklear):
                     nuklear.layout_row_dynamic(height=20.0,
                                                columns=1)
                     nuklear.label(text="pyNuklear",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="By William Emerison Six",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="pyNuklear is MIT-licensed.",
-                             alignment=nk.TEXT_LEFT)
+                             alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="based on Nuklear",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="By Micha Mettke",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="nuklear is licensed under the public domain License.",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
 
                     nuklear.popup_end()
                 else:
@@ -247,20 +247,20 @@ def overview(nuklear):
                     nuklear.layout_row_dynamic(height=20.0 ,
                                                columns=1)
                     nuklear.label(text="Label aligned left",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="Label aligned centered",
-                                  alignment=nk.TEXT_CENTERED)
+                                  alignment=nk.TextAlign.TEXT_CENTERED)
                     nuklear.label(text="Label aligned right",
-                                  alignment=nk.TEXT_RIGHT)
+                                  alignment=nk.TextAlign.TEXT_RIGHT)
                     nuklear.label_colored(text="Blue text",
-                                          align=nk.TEXT_LEFT,
+                                          align=nk.TextAlign.TEXT_LEFT,
                                           color=nk.Color(0,0,255,255))
                     nuklear.label_colored(text="Yellow text",
-                                          align=nk.TEXT_LEFT,
+                                          align=nk.TextAlign.TEXT_LEFT,
                                           color=nk.Color(255,255,0,255))
                     nuklear.text(text="Text without /0",
                                  length=15,
-                                 alignment=nk.TEXT_ALIGN_RIGHT)
+                                 alignment=nk.TextAlign.RIGHT)
                     nuklear.layout_row_static(height=100.0,
                                               item_width=200,
                                               columns=1)
@@ -301,10 +301,10 @@ def overview(nuklear):
                                               columns=2)
                     nuklear.button_symbol_label(symbol=nk.SymbolType.SYMBOL_TRIANGLE_LEFT,
                                                 label="prev",
-                                                align=nk.TEXT_RIGHT)
+                                                align=nk.TextAlign.TEXT_RIGHT)
                     nuklear.button_symbol_label(symbol=nk.SymbolType.SYMBOL_TRIANGLE_RIGHT,
                                                 label="next",
-                                                align=nk.TEXT_LEFT)
+                                                align=nk.TextAlign.TEXT_LEFT)
                     nuklear.tree_pop()
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Basic",
@@ -355,7 +355,7 @@ def overview(nuklear):
                     except Exception:
                         basicSlider = 5
                     nuklear.label(text="Slider Int",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     (modified,basicSlider) = nuklear.slider_int(minV=0,
                                                                 value=basicSlider,
                                                                 maxV=10,
@@ -366,7 +366,7 @@ def overview(nuklear):
                     except Exception:
                         floatSlider = 2.5
                     nuklear.label(text="Slider Float",
-                                  alignment=nk.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     (modified,floatSlider) = nuklear.slider_float(minV=0.0,
                                                                   value=floatSlider,
                                                                   maxV=5.0,
@@ -384,7 +384,7 @@ def overview(nuklear):
                         basicFloat = 2.0
 
                     nuklear.label(text="Property float:",
-                                  alignment=nk.TEXT_LEFT);
+                                  alignment=nk.TextAlign.TEXT_LEFT);
                     basicFloat = nuklear.property_float(name="Float:",
                                                         minV=0.0,
                                                         val=basicFloat,
@@ -397,7 +397,7 @@ def overview(nuklear):
                     except Exception:
                         basicInt = 10
                     nuklear.label(text="Property int:",
-                                  alignment=nk.TEXT_LEFT);
+                                  alignment=nk.TextAlign.TEXT_LEFT);
                     basicInt = nuklear.property_int(name="Int:",
                                                     minV=0,
                                                     val=basicInt,
@@ -406,14 +406,14 @@ def overview(nuklear):
                                                     inc_per_pixel=1);
                     # TODO -- I don't think I need to port this
                     # nuklear.label(text="Property neg:",
-                    #               alignment= nk.TEXT_LEFT);
+                    #               alignment= nk.TextAlign.TEXT_LEFT);
                     # nuklear.property_int("Neg:", -10, &property_neg, 10, 1, 1);
 
 
 
                     # TODO - do this later
                     # nk_layout_row_dynamic(height=ctx, 25, 1);
-                    # nk_label(ctx, "Range:", NK_TEXT_LEFT);
+                    # nk_label(ctx, "Range:", NK_TextAlign.TEXT_LEFT);
                     # nk_layout_row_dynamic(ctx, 25, 3);
                     # nk_property_float(ctx, "#min:", 0, &range_float_min, range_float_max, 1.0f, 0.2f);
                     # nk_property_float(ctx, "#float:", range_float_min, &range_float_value, range_float_max, 1.0f, 0.2f);
@@ -442,18 +442,18 @@ def overview(nuklear):
                             selected = [0,0,0,0]
 
                         (wasModified, selected[0]) = nuklear.selectable_label(label="Selectable",
-                                                                              align=nk.TEXT_LEFT,
+                                                                              align=nk.TextAlign.TEXT_LEFT,
                                                                               value=selected[0])
                         (wasModified, selected[1]) = nuklear.selectable_label(label="Selectable",
-                                                                              align=nk.TEXT_LEFT,
+                                                                              align=nk.TextAlign.TEXT_LEFT,
                                                                               value=selected[1])
                         nuklear.label(text="Not Selectable",
-                                      alignment=nk.TEXT_LEFT)
+                                      alignment=nk.TextAlign.TEXT_LEFT)
                         (wasModified, selected[2]) = nuklear.selectable_label(label="Selectable",
-                                                                              align=nk.TEXT_LEFT,
+                                                                              align=nk.TextAlign.TEXT_LEFT,
                                                                               value=selected[2])
                         (wasModified, selected[3]) = nuklear.selectable_label(label="Selectable",
-                                                                              align=nk.TEXT_LEFT,
+                                                                              align=nk.TextAlign.TEXT_LEFT,
                                                                               value=selected[3])
                         nuklear.tree_pop()
 
@@ -465,7 +465,7 @@ def overview(nuklear):
                         # static int selected[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
                         # nk_layout_row_static(ctx, 50, 50, 4);
                         # for (i = 0; i < 16; ++i) {
-                        #         if (nk_selectable_label(ctx, "Z", NK_TEXT_CENTERED, &selected[i])) {
+                        #         if (nk_selectable_label(ctx, "Z", NK_TextAlign.TEXT_CENTERED, &selected[i])) {
                         #                 int x = (i % 4), y = i / 4;
                         #                 if (x > 0) selected[i - 1] ^= 1;
                         #                 if (x < 3) selected[i + 1] ^= 1;
@@ -511,16 +511,16 @@ def overview(nuklear):
                         nuklear.layout_row_dynamic(height=30.0,
                                                    columns=2)
                         nuklear.label(text="R:",
-                                      alignment=nk.TEXT_LEFT)
+                                      alignment=nk.TextAlign.TEXT_LEFT)
                         comboColor.r = nuklear.slide_int(0, comboColor.r, 255, 5)
                         nuklear.label(text="G:",
-                                      alignment=nk.TEXT_LEFT)
+                                      alignment=nk.TextAlign.TEXT_LEFT)
                         comboColor.g = nuklear.slide_int(0, comboColor.g, 255, 5)
                         nuklear.label(text="B:",
-                                      alignment=nk.TEXT_LEFT)
+                                      alignment=nk.TextAlign.TEXT_LEFT)
                         comboColor.b = nuklear.slide_int(0, comboColor.b, 255, 5)
                         nuklear.label(text="A:",
-                                      alignment=nk.TEXT_LEFT)
+                                      alignment=nk.TextAlign.TEXT_LEFT)
                         comboColor.a = nuklear.slide_int(0, comboColor.a, 255, 5)
 
                         nuklear.combo_end()
@@ -624,7 +624,7 @@ def overview(nuklear):
                                           columns=1)
                 bounds = nuklear.widget_bounds()
                 nuklear.label(text="Right click me for menu",
-                              alignment=nk.TEXT_LEFT)
+                              alignment=nk.TextAlign.TEXT_LEFT)
 
                 if nuklear.contextual_begin(flags=0,
                                             size=nk.Vec2(100,300),
@@ -641,7 +641,7 @@ def overview(nuklear):
                                                             maxV=16,
                                                             step=1)
                     if nuklear.contextual_item_label(text="About",
-                                                     align=nk.TEXT_CENTERED):
+                                                     align=nk.TextAlign.TEXT_CENTERED):
                         show_app_about = True
                     nuklear.contextual_end()
                 nuklear.tree_pop()
@@ -688,7 +688,7 @@ def overview(nuklear):
 
                     nuklear.layout_row_dynamic(height=140.0,
                                                columns=1)
-                    if(nuklear.group_begin("Notebook", nk.WINDOW_BORDER)):
+                    if(nuklear.group_begin("Notebook", nk.PanelFlags.WINDOW_BORDER)):
                         nuklear.style_pop_vec2()
                         if currentTab == 0:
                             # TODO, draw the charts instead of buttons

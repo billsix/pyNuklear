@@ -160,11 +160,11 @@ while not glfw.glfwWindowShouldClose(window):
 
     if(nuklear.begin(title="Demonstration",
                      bounds=nk.Rect(10.0,10.0,230.0,250.0),
-                     flags=nk.WINDOW_BORDER
-                       |nk.WINDOW_MOVABLE
-                       |nk.WINDOW_SCALABLE
-                       |nk.WINDOW_MINIMIZABLE
-                       |nk.WINDOW_TITLE)):
+                     flags=nk.PanelFlags.WINDOW_BORDER.value
+                       |nk.PanelFlags.WINDOW_MOVABLE.value
+                       |nk.PanelFlags.WINDOW_SCALABLE.value
+                       |nk.PanelFlags.WINDOW_MINIMIZABLE.value
+                       |nk.PanelFlags.WINDOW_TITLE.value)):
 
         nuklear.layout_row_static(height=30.0,
                                   item_width=80,
@@ -203,7 +203,7 @@ while not glfw.glfwWindowShouldClose(window):
         nuklear.layout_row_dynamic(height=20.0,
                                    columns=1)
         nuklear.label(text="background:",
-                      alignment=nk.TEXT_LEFT)
+                      alignment=nk.TextAlign.TEXT_LEFT)
 
         try:
             background
@@ -259,7 +259,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     overview(nuklear)
 
-    nkGLFW3.glfw3_render(nk.ANTI_ALIASING_ON)
+    nkGLFW3.glfw3_render(nk.AntiAliasing.ON.value)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
