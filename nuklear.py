@@ -854,14 +854,20 @@ __chart_begin__.arglist = [POINTER(Context), c_int, c_int, c_float, c_float]
 __chart_begin__.restype = c_int
 
 # int nk_chart_begin_colored(struct nk_context*, enum nk_chart_type, struct nk_color, struct nk_color active, int num, float min, float max);
-# void nk_chart_add_slot(struct nk_context *ctx, const enum nk_chart_type, int count, float min_value, float max_value);
+
+__chart_add_slot__ = _nuklear.nk_chart_add_slot
+__chart_add_slot__.arglist = [POINTER(Context), c_int, c_int, c_float, c_float]
+
 # void nk_chart_add_slot_colored(struct nk_context *ctx, const enum nk_chart_type, struct nk_color, struct nk_color active, int count, float min_value, float max_value);
 
 __chart_push__ = _nuklear.nk_chart_push
 __chart_push__.arglist = [POINTER(Context), float]
 __chart_push__.restype = c_int
 
-# nk_flags nk_chart_push_slot(struct nk_context*, float, int);
+__chart_push_slot__ = _nuklear.nk_chart_push_slot
+__chart_push_slot__.arglist = [POINTER(Context), c_float, c_int]
+__chart_push_slot__.restype = c_int
+
 
 __chart_end__ = _nuklear.nk_chart_end
 __chart_end__.arglist = [POINTER(Context)]
@@ -1627,8 +1633,14 @@ class NuklearContext:
     def chart_begin(self,chart_type,count,minV,maxV):
         return __chart_begin__(self.ctx,chart_type.value,count,c_float(minV),c_float(maxV))
 
+    def chart_add_slot(self, chart_type, count, minV, maxV):
+        __chart_add_slot__(self.ctx, c_int(chart_type.value), c_int(count), c_float(minV), c_float(maxV))
+
     def chart_push(self,value):
         return __chart_push__(self.ctx,c_float(value))
+
+    def chart_push_slot(self, val, slot):
+        return __chart_push_slot__(self.ctx, c_float(val), c_int(slot))
 
     def chart_end(self):
         __chart_end__(self.ctx)

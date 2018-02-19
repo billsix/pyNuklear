@@ -588,7 +588,29 @@ def overview(nuklear):
                     if hoveredIndex != -1:
                         nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
 
-                # TODO - mixed chart
+                # mixed chart
+                nuklear.layout_row_dynamic(height=100.0,
+                                           columns=1)
+                bounds = nuklear.widget_bounds()
+                numberOfPoints = 32
+                if nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
+                                       count=32,
+                                       minV=0.0,
+                                       maxV=1.0):
+                    nuklear.chart_add_slot(chart_type=nk.ChartType.CHART_LINES,
+                                           count=32,
+                                           minV=-1.0,
+                                           maxV=1.0)
+                    nuklear.chart_add_slot(chart_type=nk.ChartType.CHART_LINES,
+                                           count=32,
+                                           minV=-1.0,
+                                           maxV=1.0)
+                    for x in range(32):
+                        nuklear.chart_push_slot(math.fabs(math.sin(x * (2*3.141592654) / numberOfPoints )),0)
+                        nuklear.chart_push_slot(math.cos(x * (2*3.141592654) / numberOfPoints ),1)
+                        nuklear.chart_push_slot(math.sin(x * (2*3.141592654) / numberOfPoints ),2)
+                nuklear.chart_end()
+
                 # TODO - mixed colored chart
 
 
