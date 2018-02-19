@@ -1839,8 +1839,8 @@ class LayoutRow():
         for x in range(len(ratio)):
             self.ctypesList.append(ctypes.c_float(ratio[x]))
         # protect self.arr from garbage collection until exit           
-            self.arr = (ctypes.c_float * len(ratio))(*self.ctypesList)
-            __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(self.ctypesList)), self.arr)
+        self.arr = (ctypes.c_float * len(ratio))(*self.ctypesList)
+        __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(self.ctypesList)), self.arr)
 
     def __enter__(self):
         pass
