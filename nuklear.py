@@ -1741,13 +1741,6 @@ class NuklearContext:
     def menubar_begin(self):
         __menubar_begin__(self.ctx)
 
-    def layout_row(self, layout_format, height, ratio):
-        ctypesList = []
-        for x in range(len(ratio)):
-            ctypesList.append(ctypes.c_float(ratio[x]))
-        arr = (ctypes.c_float * len(ratio))(*ctypesList)
-        __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(ctypesList)), arr)
-
     def layout_row_begin(self, format, row_height, columns):
         __layout_row_begin__(self.ctx,ctypes.c_int(format.value), ctypes.c_float(row_height), ctypes.c_int(columns))
 
@@ -1836,3 +1829,24 @@ class NuklearContext:
 
     def get_text_width(self, s):
         return __get_text_width__(self.ctx, str.encode(s))
+
+
+# class to protect the ratio array from garbage collection
+class LayoutRow():
+    def __init__(self, ctx, layout_format, height, ratio):
+        self.ctx = ctx
+        self.ctypesList = []
+        for x in range(len(ratio)):
+            self.ctypesList.append(ctypes.c_float(ratio[x]))
+        # protect self.arr from garbage collection until exit           
+            self.arr = (ctypes.c_float * len(ratio))(*self.ctypesList)
+            __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(self.ctypesList)), self.arr)
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, type, value, traceback):
+        # now self.arr can be garbage collected
+        pass
+
+

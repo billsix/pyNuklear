@@ -341,86 +341,79 @@ def overview(nuklear):
                                             active= basicOption == C): basicOption = C
 
 
-                    #TODO -- this is likely failing because the ratio is being garbage collected, yet
-                    # nuklear makes a copy of the pointer.  Figure out how to change nuklear so that
-                    # it makes a copy of the double array, and free it at the appropriate time.
-                    #nuklear.layout_row(layout_format=nk.LayoutFormat.STATIC,
-                    #                   height=30.0,
-                    #                   ratio=[120.0,150.0])
-                    # once I figure that out, delete the subsequent 3 lines
-                    nuklear.layout_row_static(height=30.0,
-                                              item_width=100,
-                                              columns=2)
-                    global basicSlider
-                    try:
-                        basicSlider
-                    except Exception:
-                        basicSlider = 5
-                    nuklear.label(text="Slider Int",
-                                  alignment=nk.TextAlign.TEXT_LEFT)
-                    (modified,basicSlider) = nuklear.slider_int(minV=0,
-                                                                value=basicSlider,
-                                                                maxV=10,
-                                                                step=1)
-                    global floatSlider
-                    try:
-                        floatSlider
-                    except Exception:
-                        floatSlider = 2.5
-                    nuklear.label(text="Slider Float",
-                                  alignment=nk.TextAlign.TEXT_LEFT)
-                    (modified,floatSlider) = nuklear.slider_float(minV=0.0,
-                                                                  value=floatSlider,
-                                                                  maxV=5.0,
-                                                                  step=0.5)
+                    # this class is necessary to prevent garbage collection of the array
+                    with nk.LayoutRow(ctx=nuklear.ctx,
+                                      layout_format=nk.LayoutFormat.STATIC,
+                                      height=30.0,
+                                      ratio=[120.0,150.0]) as lr:
+                        global basicSlider
+                        try:
+                            basicSlider
+                        except Exception:
+                            basicSlider = 5
+                        nuklear.label(text="Slider Int",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (modified,basicSlider) = nuklear.slider_int(minV=0,
+                                                                    value=basicSlider,
+                                                                    maxV=10,
+                                                                    step=1)
+                        global floatSlider
+                        try:
+                            floatSlider
+                        except Exception:
+                            floatSlider = 2.5
+                        nuklear.label(text="Slider Float",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (modified,floatSlider) = nuklear.slider_float(minV=0.0,
+                                                                      value=floatSlider,
+                                                                      maxV=5.0,
+                                                                      step=0.5)
 
 
-                    global progFloat
-                    try:
-                        progFloat
-                    except Exception:
-                        progFloat = 40
+                        global progFloat
+                        try:
+                            progFloat
+                        except Exception:
+                            progFloat = 40
 
-                    
-                    nuklear.label(text="Progressbar: ",
-                                  alignment=nk.TextAlign.TEXT_LEFT);
-                    (modified,progFloat) = nuklear.progress(cur=progFloat,
-                                                            max=100,
-                                                            is_modifyable=nk.Modify.MODIFIABLE)
+                                    
+                        nuklear.label(text="Progressbar: ",
+                                      alignment=nk.TextAlign.TEXT_LEFT);
+                        (modified,progFloat) = nuklear.progress(cur=progFloat,
+                                                                max=100,
+                                                                is_modifyable=nk.Modify.MODIFIABLE)
 
-                    #TODO -- figure out why this code isn't working quite correctly
-                    #nuklear.layout_row(nk.LayoutFormat.STATIC, 25, [120.0,150.0])
-                    # once I figure that out, delete the subsequent 3 lines
-                    nuklear.layout_row_static(height=25.0,
-                                              item_width=150,
-                                              columns=2)
-                    global basicFloat
-                    try:
-                        basicFloat
-                    except Exception:
-                        basicFloat = 2.0
+                    with nk.LayoutRow(ctx=nuklear.ctx,
+                                      layout_format=nk.LayoutFormat.STATIC,
+                                      height=25.0,
+                                      ratio=[120.0,150.0]) as lr:
+                        global basicFloat
+                        try:
+                            basicFloat
+                        except Exception:
+                            basicFloat = 2.0
 
-                    nuklear.label(text="Property float:",
-                                  alignment=nk.TextAlign.TEXT_LEFT);
-                    basicFloat = nuklear.property_float(name="Float:",
-                                                        minV=0.0,
-                                                        val=basicFloat,
-                                                        maxV=64.0,
-                                                        step=0.1,
-                                                        inc_per_pixel=0.2)
-                    global basicInt
-                    try:
-                        basicInt
-                    except Exception:
-                        basicInt = 10
-                    nuklear.label(text="Property int:",
-                                  alignment=nk.TextAlign.TEXT_LEFT);
-                    basicInt = nuklear.property_int(name="Int:",
-                                                    minV=0,
-                                                    val=basicInt,
-                                                    maxV=100,
-                                                    step=1,
-                                                    inc_per_pixel=1);
+                        nuklear.label(text="Property float:",
+                                      alignment=nk.TextAlign.TEXT_LEFT);
+                        basicFloat = nuklear.property_float(name="Float:",
+                                                            minV=0.0,
+                                                            val=basicFloat,
+                                                            maxV=64.0,
+                                                            step=0.1,
+                                                            inc_per_pixel=0.2)
+                        global basicInt
+                        try:
+                            basicInt
+                        except Exception:
+                            basicInt = 10
+                        nuklear.label(text="Property int:",
+                                      alignment=nk.TextAlign.TEXT_LEFT);
+                        basicInt = nuklear.property_int(name="Int:",
+                                                        minV=0,
+                                                        val=basicInt,
+                                                        maxV=100,
+                                                        step=1,
+                                                        inc_per_pixel=1);
                     # TODO -- I don't think I need to port this
                     # nuklear.label(text="Property neg:",
                     #               alignment= nk.TextAlign.TEXT_LEFT);
