@@ -881,27 +881,62 @@ def overview(nuklear):
                                                columns=1)
                     if(nuklear.group_begin("Notebook", nk.PanelFlags.WINDOW_BORDER)):
                         nuklear.style_pop_vec2()
+                        nuklear.layout_row_dynamic(height=100.0,
+                                                   columns=1)
+                        bounds = nuklear.widget_bounds()
                         if currentTab == 0:
-                            # TODO, draw the charts instead of buttons
-                            nuklear.layout_row_dynamic(height=100.0,
-                                                       columns=1)
-                            bounds = nuklear.widget_bounds()
-                            if nuklear.button_label(title="Button 1"):
-                                print("Button 1 pressed!")
+                            if nuklear.chart_begin(chart_type=nk.ChartType.CHART_LINES,
+                                                   count=32,
+                                                   minV=-1.0,
+                                                   maxV=1.0):
+                                numberOfPoints = 32
+                                hoveredIndex = -1
+                                for x in range(32) :
+                                    res = nuklear.chart_push(math.cos( x * (2*3.141592654) / numberOfPoints ))
+                                    if res & nk.ChartEvent.CHART_HOVERING.value:
+                                        hoveredIndex = x
+
+                            nuklear.chart_end()
+
+                            if hoveredIndex != -1:
+                                nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
 
                         elif currentTab == 1:
-                            nuklear.layout_row_dynamic(height=100.0,
-                                                       columns=1)
-                            bounds = nuklear.widget_bounds()
-                            if nuklear.button_label(title="Button 2"):
-                                print("Button 2 pressed!")
+                            if nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
+                                                   count=32,
+                                                   minV=0.0,
+                                                   maxV=1.0):
+                                numberOfPoints = 32
+                                hoveredIndex = -1
+                                for x in range(32) :
+                                    res = nuklear.chart_push(math.fabs(math.sin( x * (2*3.141592654) / numberOfPoints )))
+                                    if res & nk.ChartEvent.CHART_HOVERING.value:
+                                        hoveredIndex = x
+
+                            nuklear.chart_end()
+
+                            if hoveredIndex != -1:
+                                nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
 
                         elif currentTab == 2:
-                            nuklear.layout_row_dynamic(height=100.0,
-                                                       columns=1)
-                            bounds = nuklear.widget_bounds()
-                            if nuklear.button_label(title="Button 3"):
-                                print("Button 3 pressed!")
+                            numberOfPoints = 32
+                            if nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
+                                                   count=32,
+                                                   minV=0.0,
+                                                   maxV=1.0):
+                                nuklear.chart_add_slot(chart_type=nk.ChartType.CHART_LINES,
+                                                       count=32,
+                                                       minV=-1.0,
+                                                       maxV=1.0)
+                                nuklear.chart_add_slot(chart_type=nk.ChartType.CHART_LINES,
+                                                       count=32,
+                                                       minV=-1.0,
+                                                       maxV=1.0)
+                                for x in range(32):
+                                    nuklear.chart_push_slot(math.fabs(math.sin(x * (2*3.141592654) / numberOfPoints )),0)
+                                    nuklear.chart_push_slot(math.cos(x * (2*3.141592654) / numberOfPoints ),1)
+                                    nuklear.chart_push_slot(math.sin(x * (2*3.141592654) / numberOfPoints ),2)
+                            nuklear.chart_end()
 
                         nuklear.group_end()
                     else:
