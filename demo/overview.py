@@ -20,6 +20,7 @@
 
 import os
 import sys
+import ctypes
 
 if __name__ == '__main__':
     print("overview.py is a library, not a program.  Look at README.md for use of pyNuklear")
@@ -376,7 +377,7 @@ def overview(nuklear):
                         except Exception:
                             progFloat = 40
 
-                                    
+
                         nuklear.label(text="Progressbar: ",
                                       alignment=nk.TextAlign.TEXT_LEFT);
                         (modified,progFloat) = nuklear.progress(cur=progFloat,
@@ -449,7 +450,7 @@ def overview(nuklear):
                         try:
                             selected
                         except Exception:
-                            selected = [0,0,0,0]
+                            selected = [False,False,False,False]
 
                         (wasModified, selected[0]) = nuklear.selectable_label(label="Selectable",
                                                                               align=nk.TextAlign.TEXT_LEFT,
@@ -470,19 +471,28 @@ def overview(nuklear):
                     if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                          title="Grid",
                                          state=nk.CollapseStates.MINIMIZED) :
-                        # TODO later
-                        # int i;
-                        # static int selected[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
-                        # nk_layout_row_static(ctx, 50, 50, 4);
-                        # for (i = 0; i < 16; ++i) {
-                        #         if (nk_selectable_label(ctx, "Z", NK_TextAlign.TEXT_CENTERED, &selected[i])) {
-                        #                 int x = (i % 4), y = i / 4;
-                        #                 if (x > 0) selected[i - 1] ^= 1;
-                        #                 if (x < 3) selected[i + 1] ^= 1;
-                        #                 if (y > 0) selected[i - 4] ^= 1;
-                        #                 if (y < 3) selected[i + 4] ^= 1;
-                        #         }
-                        # }
+
+                        global gridSelected
+                        try:
+                            gridSelected
+                        except Exception:
+                            gridSelected = [True,False,False,False,
+                                            False,True,False,False,
+                                            False,False,True,False,
+                                            False,False,False,True]
+                        nuklear.layout_row_static(height=50,
+                                                  item_width=50,
+                                                  columns=4)
+                        for i in range(16):
+                            (wasModified, gridSelected[i]) = nuklear.selectable_label(label="Z",
+                                                                                      align=nk.TextAlign.TEXT_LEFT,
+                                                                                      value=gridSelected[i])
+                            if wasModified:
+                                (y,x) = divmod(i, 4)
+                                if x > 0: gridSelected[i-1] = not gridSelected[i-1]
+                                if x < 3: gridSelected[i+1] = not gridSelected[i+1]
+                                if y > 0: gridSelected[i-4] = not gridSelected[i-4]
+                                if y < 3: gridSelected[i+4] = not gridSelected[i+4]
                         nuklear.tree_pop()
 
                     nuklear.tree_pop()
@@ -552,6 +562,29 @@ def overview(nuklear):
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Input",
                                      state=nk.CollapseStates.MINIMIZED) :
+                    with nk.LayoutRow(ctx=nuklear.ctx,
+                                      layout_format=nk.LayoutFormat.STATIC,
+                                      height=25.0,
+                                      ratio=[120.0,150.0]) as lr:
+
+                        nuklear.label(text="Default",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        # create a c string
+
+                        global text
+                        global textL
+                        try:
+                            text
+                            textL
+                        except Exception:
+                            text = (ctypes.c_char * 64)()
+                            textL = 0
+
+                        (eSFlags, textL) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                               memory=text,
+                                                               length=textL,
+                                                               maxV=64,
+                                                               filterF=nk.filter_default)
                     #TODO
                     nuklear.tree_pop()
 

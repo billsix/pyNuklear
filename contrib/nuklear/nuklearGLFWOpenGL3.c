@@ -28,4 +28,4 @@
 #define NK_GLFW_GL3_IMPLEMENTATION
 #include "nuklear.h"
 #include "nuklear_glfw_gl3.h"
-#include "nuklearWrappers.c"
+#include "nuklearWrappers.h"

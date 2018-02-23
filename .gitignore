@@ -1,1 +1,8 @@
 src/__pycache__/*
+*#
+*~
+__pycache__/*
+contrib/nuklear/nuklearGLFWOpenGL2.so
+contrib/nuklear/nuklearGLFWOpenGL3.so
+demo/__pycache__/*
+glfw/__pycache__/*

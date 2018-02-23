@@ -852,7 +852,19 @@ class EditEvents(Enum):
     COMMITED    = 1 << 4
 
 
-# nk_flags nk_edit_string(struct nk_context*, nk_flags, char *buffer, int *len, int max, nk_plugin_filter);
+filter_default = _nuklear.nk_filter_default
+filter_ascii = _nuklear.nk_filter_ascii
+filter_float = _nuklear.nk_filter_float
+filter_decimal = _nuklear.nk_filter_decimal
+filter_hex = _nuklear.nk_filter_hex
+filter_oct = _nuklear.nk_filter_oct
+filter_binary = _nuklear.nk_filter_binary
+
+
+__edit_string__ = _nuklear.nk_edit_string
+__edit_string__.arglist = [POINTER(Context), c_int, c_char_p, POINTER(c_int), c_int, ctypes.c_void_p]
+__edit_string__.restype = c_int
+
 # nk_flags nk_edit_string_zero_terminated(struct nk_context*, nk_flags, char *buffer, int max, nk_plugin_filter);
 # nk_flags nk_edit_buffer(struct nk_context*, nk_flags, struct nk_text_edit*, nk_plugin_filter);
 # void nk_edit_focus(struct nk_context*, nk_flags flags);
@@ -1648,13 +1660,23 @@ class NuklearContext:
     def property_int(self, name, minV, val, maxV, step, inc_per_pixel):
         v = ctypes.c_int(val)
         __property_int__(self.ctx,
-                                 str.encode(name),
-                                 minV,
-                                 ctypes.byref(v),
-                                 maxV,
-                                 step,
-                                 c_float(inc_per_pixel))
+                         str.encode(name),
+                         minV,
+                         ctypes.byref(v),
+                         maxV,
+                         step,
+                         c_float(inc_per_pixel))
         return v.value
+
+    def edit_string(self, flags, memory, length, maxV, filterF):
+        l = ctypes.c_int(length)
+        return (__edit_string__(self.ctx,
+                                c_int(flags.value.value),
+                                memory,
+                                ctypes.byref(l),
+                                c_int(maxV),
+                                filterF),
+                l.value)
 
     def chart_begin(self,chart_type,count,minV,maxV):
         return __chart_begin__(self.ctx,chart_type.value,count,c_float(minV),c_float(maxV))
@@ -1838,7 +1860,7 @@ class LayoutRow():
         self.ctypesList = []
         for x in range(len(ratio)):
             self.ctypesList.append(ctypes.c_float(ratio[x]))
-        # protect self.arr from garbage collection until exit           
+        # protect self.arr from garbage collection until exit
         self.arr = (ctypes.c_float * len(ratio))(*self.ctypesList)
         __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(self.ctypesList)), self.arr)
 
@@ -1848,5 +1870,3 @@ class LayoutRow():
     def __exit__(self, type, value, traceback):
         # now self.arr can be garbage collected
         pass
-
-
