@@ -581,7 +581,11 @@ def __tree_push_id__(ctx, theType, title, state, id):
 __tree_pop__ = _nuklear.nk_tree_pop
 __tree_pop__.arglist = [POINTER(Context)]
 
-# int nk_tree_state_push(struct nk_context*, enum nk_tree_type, const char *title, enum nk_collapse_states *state);
+__tree_state_push__ = _nuklear.nk_tree_state_push
+__tree_state_push__.arglist = [POINTER(Context), c_int, c_char_p, POINTER(c_int)]
+__tree_state_push__.restype = c_int
+
+
 # int nk_tree_state_image_push(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states *state);
 # void nk_tree_state_pop(struct nk_context*);
 
@@ -1815,6 +1819,16 @@ class NuklearContext:
 
     def tree_push_id(self, theType, title, state, id):
         return __tree_push_id__(self.ctx, theType, title, state, id)
+
+    def tree_state_push(self, tree_type, title, state):
+        v = ctypes.c_int(state.value)
+
+        return (__tree_state_push__(self.ctx,
+                                    tree_type.value,
+                                    str.encode(title),
+                                    ctypes.byref(v)),
+                v.value)
+
 
     def tree_pop(self):
         __tree_pop__(self.ctx)

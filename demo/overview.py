@@ -147,8 +147,71 @@ def overview(nuklear):
             if nuklear.menu_begin_label(text="Advanced",
                                         align=nk.TextAlign.TEXT_LEFT,
                                         size=nk.Vec2(200,600)):
-                # TODO -- do the advanced menu
+                MENU_NONE,MENU_FILE, MENU_EDIT,MENU_VIEW,MENU_CHART = (0,1,2,3,4)
 
+                global menu_state
+                try:
+                    menu_state
+                except Exception:
+                    menu_state = MENU_NONE
+
+                state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_FILE else nk.CollapseStates.MINIMIZED
+                (fileSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "FILE", state)
+                if fileSelected:
+                    menu_state = MENU_FILE
+                    nuklear.menu_item_label(label="New",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Open",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Save",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Close",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Exit",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.tree_pop()
+
+                state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_EDIT else nk.CollapseStates.MINIMIZED
+                (editSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "EDIT", state)
+                if editSelected:
+                    menu_state = MENU_EDIT
+                    nuklear.menu_item_label(label="Copy",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Delete",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Cut",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Paste",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.tree_pop()
+
+                state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_VIEW else nk.CollapseStates.MINIMIZED
+                (viewSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "VIEW", state)
+                if viewSelected:
+                    menu_state = MENU_VIEW
+                    nuklear.menu_item_label(label="About",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Options",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.menu_item_label(label="Customize",
+                                            align=nk.TextAlign.TEXT_LEFT)
+                    nuklear.tree_pop()
+
+                state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_CHART else nk.CollapseStates.MINIMIZED
+                (chartSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "CHART", state)
+                if chartSelected:
+                    menu_state = MENU_CHART
+                    values = [26.0,13.0,30.0,15.0,25.0,10.0,20.0,40.0,12.0,8.0,22.0,28.0]
+                    nuklear.layout_row_dynamic(height=150.0,
+                                               columns=1)
+                    nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
+                                        count=len(values),
+                                        minV=0.0,
+                                        maxV=50.0)
+                    for x in range(len(values)):
+                        nuklear.chart_push(values[x])
+                    nuklear.chart_end()
+                    nuklear.tree_pop()
                 nuklear.menu_end()
 
             nuklear.layout_row_push(70.0)
