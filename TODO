@@ -6,3 +6,4 @@
   implement all of overview.c.
   Afterwards, or concurrently, make the python bindings necessary to implement
   calculator.c, node_editor.c, and style.c
+- Protect the OpenGL2 state just like is done for opengl3+
