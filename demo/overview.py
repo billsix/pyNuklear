@@ -630,24 +630,61 @@ def overview(nuklear):
                                       height=25.0,
                                       ratio=[120.0,150.0]) as lr:
 
-                        nuklear.label(text="Default",
-                                      alignment=nk.TextAlign.TEXT_LEFT)
                         # create a c string
-
                         global text
                         global textL
                         try:
                             text
                             textL
                         except Exception:
-                            text = (ctypes.c_char * 64)()
-                            textL = 0
+                            text = []
+                            textL = []
+                            for x in range(9):
+                                text.append((ctypes.c_char * 64)())
+                                textL.append(0)
 
-                        (eSFlags, textL) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
-                                                               memory=text,
-                                                               length=textL,
-                                                               maxV=64,
-                                                               filterF=nk.filter_default)
+                        nuklear.label(text="Default:",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (eSFlags, textL[0]) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                                  memory=text[0],
+                                                                  length=textL[0],
+                                                                  maxV=64,
+                                                                  filterF=nk.filter_default)
+                        nuklear.label(text="Int:",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (eSFlags, textL[1]) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                                  memory=text[1],
+                                                                  length=textL[1],
+                                                                  maxV=64,
+                                                                  filterF=nk.filter_decimal)
+                        nuklear.label(text="Float:",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (eSFlags, textL[2]) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                                  memory=text[2],
+                                                                  length=textL[2],
+                                                                  maxV=64,
+                                                                  filterF=nk.filter_float)
+                        nuklear.label(text="Hex:",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (eSFlags, textL[4]) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                                  memory=text[4],
+                                                                  length=textL[4],
+                                                                  maxV=64,
+                                                                  filterF=nk.filter_hex)
+                        nuklear.label(text="Octal:",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (eSFlags, textL[5]) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                                  memory=text[5],
+                                                                  length=textL[5],
+                                                                  maxV=64,
+                                                                  filterF=nk.filter_oct)
+                        nuklear.label(text="Binary:",
+                                      alignment=nk.TextAlign.TEXT_LEFT)
+                        (eSFlags, textL[6]) = nuklear.edit_string(flags=nk.EditTypes.SIMPLE,
+                                                                  memory=text[6],
+                                                                  length=textL[6],
+                                                                  maxV=64,
+                                                                  filterF=nk.filter_binary)
                     #TODO
                     nuklear.tree_pop()
 
