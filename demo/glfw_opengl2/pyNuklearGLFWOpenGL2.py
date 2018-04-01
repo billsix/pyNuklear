@@ -259,7 +259,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     overview(nuklear)
 
-    nkGLFW3.glfw3_render(nk.AntiAliasing.ON.value)
+    nkGLFW3.glfw3_render_gl2(nk.AntiAliasing.ON.value)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
