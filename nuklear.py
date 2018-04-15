@@ -662,6 +662,7 @@ __label_wrap__.arglist = [POINTER(Context), c_char_p]
 
 # void nk_label_colored_wrap(struct nk_context*, const char*, struct nk_color);
 # void nk_image(struct nk_context*, struct nk_image);
+# void nk_image_color(struct nk_context*, struct nk_image, struct nk_color);
 
 # NO NEED TO BIND LABELF, python already has formatting abilities
 #__labelf__ = _nuklear.nk_labelf
@@ -670,6 +671,11 @@ __label_wrap__.arglist = [POINTER(Context), c_char_p]
 # void nk_labelf_colored(struct nk_context*, nk_flags align, struct nk_color, const char*,...);
 # void nk_labelf_wrap(struct nk_context*, const char*,...);
 # void nk_labelf_colored_wrap(struct nk_context*, struct nk_color, const char*,...);
+# void nk_labelfv(struct nk_context*, nk_flags, NK_PRINTF_FORMAT_STRING const char*, va_list) NK_PRINTF_VALIST_FUNC(3);
+
+# void nk_labelfv_colored(struct nk_context*, nk_flags, struct nk_color, NK_PRINTF_FORMAT_STRING const char*, va_list) NK_PRINTF_VALIST_FUNC(4);
+# void nk_labelfv_wrap(struct nk_context*, NK_PRINTF_FORMAT_STRING const char*, va_list) NK_PRINTF_VALIST_FUNC(2);
+#void nk_labelfv_colored_wrap(struct nk_context*, struct nk_color, NK_PRINTF_FORMAT_STRING const char*, va_list) NK_PRINTF_VALIST_FUNC(3);
 # void nk_value_bool(struct nk_context*, const char *prefix, int);
 # void nk_value_int(struct nk_context*, const char *prefix, int);
 # void nk_value_uint(struct nk_context*, const char *prefix, unsigned int);
@@ -760,11 +766,14 @@ __selectable_label__.restype = c_int
 # int nk_selectable_text(struct nk_context*, const char*, int, nk_flags align, int *value);
 # int nk_selectable_image_label(struct nk_context*,struct nk_image,  const char*, nk_flags align, int *value);
 # int nk_selectable_image_text(struct nk_context*,struct nk_image, const char*, int, nk_flags align, int *value);
+# int nk_selectable_symbol_label(struct nk_context*,enum nk_symbol_type,  const char*, nk_flags align, int *value);
+# int nk_selectable_symbol_text(struct nk_context*,enum nk_symbol_type, const char*, int, nk_flags align, int *value);
 # int nk_select_label(struct nk_context*, const char*, nk_flags align, int value);
 # int nk_select_text(struct nk_context*, const char*, int, nk_flags align, int value);
 # int nk_select_image_label(struct nk_context*, struct nk_image,const char*, nk_flags align, int value);
 # int nk_select_image_text(struct nk_context*, struct nk_image,const char*, int, nk_flags align, int value);
-
+# int nk_select_symbol_label(struct nk_context*,enum nk_symbol_type,  const char*, nk_flags align, int value);
+# int nk_select_symbol_text(struct nk_context*,enum nk_symbol_type, const char*, int, nk_flags align, int value);
 
 # Slider
 # float nk_slide_float(struct nk_context*, float min, float val, float max, float step);
@@ -975,6 +984,7 @@ __tooltip__ = _nuklear.nk_tooltip
 __tooltip__.arglist = [POINTER(Context), c_char_p]
 
 # void nk_tooltipf(struct nk_context*, const char*, ...);
+# void nk_tooltipfv(struct nk_context*, NK_PRINTF_FORMAT_STRING const char*, va_list) NK_PRINTF_VALIST_FUNC(2);
 # int nk_tooltip_begin(struct nk_context*, float width);
 # void nk_tooltip_end(struct nk_context*);
 
@@ -1448,7 +1458,6 @@ class DrawVertexLayoutAttribute(Enum):
 
 # void nk_draw_list_init(struct nk_draw_list*);
 # void nk_draw_list_setup(struct nk_draw_list*, const struct nk_convert_config*, struct nk_buffer *cmds, struct nk_buffer *vertices, struct nk_buffer *elements, enum nk_anti_aliasing line_aa,enum nk_anti_aliasing shape_aa);
-# void nk_draw_list_clear(struct nk_draw_list*);
 # const struct nk_draw_command* nk__draw_list_begin(const struct nk_draw_list*, const struct nk_buffer*);
 # const struct nk_draw_command* nk__draw_list_next(const struct nk_draw_command*, const struct nk_buffer*, const struct nk_draw_list*);
 # const struct nk_draw_command* nk__draw_list_end(const struct nk_draw_list*, const struct nk_buffer*);
