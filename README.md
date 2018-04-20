@@ -19,5 +19,5 @@ Run Demo
 
 1. Add the directory which contains this file to your PYTHONPATH
 2. To build nuklear as a shared library,  cd into contrib/nuklear/.  On Linux, "make".  On macOS, "make -f Makefile.osx"
-3. To run on a system with OpenGL 2, execute "./demo/glfw_opengl2/pyNuklearGLFWOpenGL2.py"
-4. To run on a system with OpenGL 3+, execute "./demo/glfw_opengl3/pyNuklearGLFWOpenGL3.py"
+3. To run on a system with OpenGL 2, execute "python3 demo/glfw_opengl2/pyNuklearGLFWOpenGL2.py"
+4. To run on a system with OpenGL 3+, execute "python3 demo/glfw_opengl3/pyNuklearGLFWOpenGL3.py"

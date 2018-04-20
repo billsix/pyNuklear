@@ -922,12 +922,12 @@ def overview(nuklear):
                                                    columns=1)
                         bounds = nuklear.widget_bounds()
                         if currentTab == 0:
+                            numberOfPoints = 32
+                            hoveredIndex = -1
                             if nuklear.chart_begin(chart_type=nk.ChartType.CHART_LINES,
                                                    count=32,
                                                    minV=-1.0,
                                                    maxV=1.0):
-                                numberOfPoints = 32
-                                hoveredIndex = -1
                                 for x in range(32) :
                                     res = nuklear.chart_push(math.cos( x * (2*3.141592654) / numberOfPoints ))
                                     if res & nk.ChartEvent.CHART_HOVERING.value:
@@ -939,12 +939,12 @@ def overview(nuklear):
                                 nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
 
                         elif currentTab == 1:
+                            numberOfPoints = 32
+                            hoveredIndex = -1
                             if nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
                                                    count=32,
                                                    minV=0.0,
                                                    maxV=1.0):
-                                numberOfPoints = 32
-                                hoveredIndex = -1
                                 for x in range(32) :
                                     res = nuklear.chart_push(math.fabs(math.sin( x * (2*3.141592654) / numberOfPoints )))
                                     if res & nk.ChartEvent.CHART_HOVERING.value:
