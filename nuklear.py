@@ -1597,6 +1597,9 @@ class NuklearContext:
                                 bounds,
                                 flags)
 
+    def window_show(self, name, show_state):
+        __window_show__(self.ctx, name, show_state)
+
     def layout_widget_bounds(self):
         return __layout_widget_bounds__(self.ctx)
 
@@ -1865,6 +1868,8 @@ class NuklearContext:
 
     def get_text_width(self, s):
         return __get_text_width__(self.ctx, str.encode(s))
+
+
 
 
 # class to protect the ratio array from garbage collection
