@@ -306,7 +306,7 @@ def multiply(matrixStack, rhs):
     """ Matrix multiply
     """
     m = getCurrentMatrix(matrixStack)
-    m[0:4,0:4]  = m.copy() @ rhs
+    m[0:4,0:4]  = np.matmul(m.copy(), rhs)
 
 
 def ortho(left,right,back,top,near,far):
