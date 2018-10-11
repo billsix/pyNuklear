@@ -26,7 +26,7 @@ from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_sho
 import inspect
 import builtins
 import OpenGL.GL as gl
-import glfw.glfw as glfw
+import glfw
 import nuklear as nk
 
 
@@ -38,7 +38,7 @@ GLFW3_INSTALL_CALLBACKS=1
 
 glfw3_init             = nk._nuklear.nk_glfw3_init
 glfw3_init.restype     = POINTER(nk.Context)
-glfw3_init.arglist     = [POINTER(glfw.GLFWwindow), c_int]
+glfw3_init.arglist     = [POINTER(glfw._GLFWwindow), c_int]
 
 class FontAtlas(Structure): pass
 

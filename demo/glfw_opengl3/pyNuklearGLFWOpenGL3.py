@@ -25,7 +25,7 @@ import os
 import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
 import numpy as np
-import glfw.glfw as glfw
+import glfw
 import pyMatrixStack as ms
 import ctypes
 import math
@@ -61,24 +61,24 @@ if RUN_TESTS:
 
 
 # Initialize the library
-if not glfw.glfwInit():
+if not glfw.init():
     sys.exit()
 
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,3)
-glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,3)
-glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,glfw.GLFW_OPENGL_CORE_PROFILE)
+glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR,3)
+glfw.window_hint(glfw.CONTEXT_VERSION_MINOR,3)
+glfw.window_hint(glfw.OPENGL_PROFILE,glfw.OPENGL_CORE_PROFILE)
 #for osx
-glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
+glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.glfwCreateWindow(1000, 1000, str.encode("pyNuklear demo - GLFW OpenGL3"), None, None)
+window = glfw.create_window(1000, 1000, "pyNuklear demo - GLFW OpenGL3", None, None)
 if not window:
-    glfw.glfwTerminate()
+    glfw.terminate()
     sys.exit()
 
 # Make the window's context current
-glfw.glfwMakeContextCurrent(window)
+glfw.make_context_current(window)
 
 ctx = nkGLFW3.glfw3_init(window, nkGLFW3.GLFW3_INSTALL_CALLBACKS)
 nuklear = nk.NuklearContext(ctx)
@@ -89,9 +89,9 @@ nkGLFW3.glfw3_font_stash_end()
 
 # Install a key handler
 def on_key(window, key, scancode, action, mods):
-    if key == glfw.GLFW_KEY_ESCAPE and action == glfw.GLFW_PRESS:
-        glfw.glfwSetWindowShouldClose(window,1)
-glfw.glfwSetKeyCallback(window, on_key)
+    if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
+        glfwSetWindowShouldClose(window,1)
+glfw.set_key_callback(window, on_key)
 
 
 gl.glClearColor(0.1,0.18,0.24,1.0)
@@ -120,14 +120,14 @@ triangle.prepareToRender()
 
 
 # Loop until the user closes the window
-while not glfw.glfwWindowShouldClose(window):
+while not glfw.window_should_close(window):
     # Render here
 
     # Poll for and process events
-    glfw.glfwPollEvents()
+    glfw.poll_events()
     nkGLFW3.glfw3_new_frame()
 
-    width, height = glfw.glfwGetFramebufferSize(window)
+    width, height = glfw.get_framebuffer_size(window)
     gl.glViewport(0, 0, width, height)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
@@ -144,17 +144,17 @@ while not glfw.glfwWindowShouldClose(window):
     # get input from keyboard for camera movement
     if not nuklear.item_is_any_active():
         # set up Camera
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_RIGHT) == glfw.GLFW_PRESS:
+        if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
             camera.rotationY -= 0.03
 
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_LEFT) == glfw.GLFW_PRESS:
+        if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
             camera.rotationY += 0.03
 
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_UP) == glfw.GLFW_PRESS:
+        if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
             camera.x -= math.sin(camera.rotationY)
             camera.z -= math.cos(camera.rotationY)
 
-        if glfw.glfwGetKey(window, glfw.GLFW_KEY_DOWN) == glfw.GLFW_PRESS:
+        if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
             camera.x += math.sin(camera.rotationY)
             camera.z += math.cos(camera.rotationY)
 
@@ -283,7 +283,7 @@ while not glfw.glfwWindowShouldClose(window):
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
-    glfw.glfwSwapBuffers(window)
+    glfw.swap_buffers(window)
 
 
-glfw.glfwTerminate()
+glfw.terminate()

@@ -230,7 +230,7 @@ def overview(nuklear):
             if show_app_about:
                 if nuklear.popup_begin(theType=nk.PopupType.POPUP_STATIC,
                                        title="About",
-                                       flags=nk.WINDOW_CLOSABLE,
+                                       flags=nk.PanelFlags.WINDOW_CLOSABLE,
                                        rect=nk.Rect(20,100,400,200)):
                     nuklear.layout_row_dynamic(height=20.0,
                                                columns=1)

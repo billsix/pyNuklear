@@ -23,7 +23,7 @@ import os
 import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
 import numpy as np
-import glfw.glfw as glfw
+import glfw
 import pyMatrixStack as ms
 import ctypes
 import math
@@ -92,10 +92,10 @@ class Triangle:
         with ms.GLStackProtector(ms.MatrixStack.model):
             # rotate the triangle along the positive z axis
             ms.translate(ms.MatrixStack.model,
-                         math.sin(glfw.glfwGetTime()),
+                         math.sin(glfw.get_time()),
                          0,
                          0)
-            ms.rotateZ(ms.MatrixStack.model,glfw.glfwGetTime())
+            ms.rotateZ(ms.MatrixStack.model,glfw.get_time())
 
             gl.glUseProgram(self.shader)
             gl.glBindVertexArray(self.vao)
