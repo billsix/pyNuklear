@@ -6,3 +6,4 @@ contrib/nuklear/nuklearGLFWOpenGL2.so
 contrib/nuklear/nuklearGLFWOpenGL3.so
 demo/__pycache__/*
 glfw/__pycache__/*
+build

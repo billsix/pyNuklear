@@ -29,13 +29,6 @@ import builtins
 from enum import Enum
 
 
-# Load the nuklear shared library
-
-_nuklear = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    'contrib',
-                                    'nuklear',
-                                    'nuklearGLFWOpenGL3.so'))
-
 
 # nuklear needs to uniquely identify widgets, and one
 # way to do so is to inspect the function caller's frame info

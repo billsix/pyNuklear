@@ -27,12 +27,13 @@ import inspect
 import builtins
 import OpenGL.GL as gl
 import glfw
-import nuklear as nk
+import pynuklear as nk
 
 
 GLFW3_DEFAULT = 0
 GLFW3_INSTALL_CALLBACKS = 1
 
+print(nk._nuklear)
 
 glfw3_init = nk._nuklear.nk_glfw3_init
 glfw3_init.restype = POINTER(nk.Context)

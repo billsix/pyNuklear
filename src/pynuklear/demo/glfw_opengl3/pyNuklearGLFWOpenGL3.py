@@ -26,12 +26,12 @@ import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
 import numpy as np
 import glfw
-import pyMatrixStack as ms
 import ctypes
 import math
 
-import nuklear as nk
-import nuklearGLFW3 as nkGLFW3
+import pynuklear as nk
+import pynuklear.nuklearGLFW3 as nkGLFW3
+import pynuklear.pyMatrixStack as ms
 from demoTriangle import *
 from demo.overview import *
 
