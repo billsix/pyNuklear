@@ -1,22 +1,22 @@
-#Copyright (c) 2017-2018 William Emerison Six
+# Copyright (c) 2017-2018 William Emerison Six
 #
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import sys
 import os
@@ -36,6 +36,7 @@ glfloat_size = 4
 
 floatsPerVertex = 3
 
+
 class Triangle:
     def __init__(self):
         pass
@@ -48,23 +49,22 @@ class Triangle:
 
         self.numberOfVertices = np.size(vertices) // floatsPerVertex
 
-
         self.vao = gl.glGenVertexArrays(1)
         gl.glBindVertexArray(self.vao)
 
-        #initialize shaders
+        # initialize shaders
 
         with open(os.path.join(pwd, 'shaders', 'triangle.vert'), 'r') as f:
-            vs = shaders.compileShader(f.read() , gl.GL_VERTEX_SHADER)
+            vs = shaders.compileShader(f.read(), gl.GL_VERTEX_SHADER)
 
         with open(os.path.join(pwd, 'shaders', 'triangle.frag'), 'r') as f:
             fs = shaders.compileShader(f.read(), gl.GL_FRAGMENT_SHADER)
 
-        self.shader = shaders.compileProgram(vs,fs)
+        self.shader = shaders.compileProgram(vs, fs)
 
-        self.mvpMatrixLoc = gl.glGetUniformLocation(self.shader,"mvpMatrix")
+        self.mvpMatrixLoc = gl.glGetUniformLocation(self.shader, "mvpMatrix")
 
-        #send the modelspace data to the GPU
+        # send the modelspace data to the GPU
         vbo = gl.glGenBuffers(1)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
 
@@ -85,8 +85,7 @@ class Triangle:
 
         # reset VAO/VBO to default
         gl.glBindVertexArray(0)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,0)
-
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
 
     def render(self):
         with ms.GLStackProtector(ms.MatrixStack.model):
@@ -95,17 +94,17 @@ class Triangle:
                          math.sin(glfw.get_time()),
                          0,
                          0)
-            ms.rotateZ(ms.MatrixStack.model,glfw.get_time())
+            ms.rotateZ(ms.MatrixStack.model, glfw.get_time())
 
             gl.glUseProgram(self.shader)
             gl.glBindVertexArray(self.vao)
-
 
             gl.glUniformMatrix4fv(self.mvpMatrixLoc,
                                   1,
                                   gl.GL_TRUE,
                                   np.ascontiguousarray(
-                                      ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                                      ms.getCurrentMatrix(
+                                          ms.MatrixStack.modelviewprojection),
                                       dtype=np.float32))
             gl.glDrawArrays(gl.GL_TRIANGLES,
                             0,

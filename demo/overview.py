@@ -1,22 +1,22 @@
-#Copyright (c) 2017-2018 William Emerison Six
+# Copyright (c) 2017-2018 William Emerison Six
 #
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os
 import sys
@@ -28,6 +28,7 @@ if __name__ == '__main__':
 
 import nuklear as nk
 import math
+
 
 def overview(nuklear):
     # show overview
@@ -41,7 +42,8 @@ def overview(nuklear):
     except Exception:
         border = True
 
-    if(border) : window_flags |= nk.PanelFlags.WINDOW_BORDER.value
+    if(border):
+        window_flags |= nk.PanelFlags.WINDOW_BORDER.value
 
     global resize
     try:
@@ -49,7 +51,8 @@ def overview(nuklear):
     except Exception:
         resize = True
 
-    if(resize) : window_flags |= nk.PanelFlags.WINDOW_SCALABLE.value
+    if(resize):
+        window_flags |= nk.PanelFlags.WINDOW_SCALABLE.value
 
     global movable
     try:
@@ -57,7 +60,8 @@ def overview(nuklear):
     except Exception:
         movable = True
 
-    if(movable) : window_flags |= nk.PanelFlags.WINDOW_MOVABLE.value
+    if(movable):
+        window_flags |= nk.PanelFlags.WINDOW_MOVABLE.value
 
     global no_scrollbar
     try:
@@ -65,7 +69,8 @@ def overview(nuklear):
     except Exception:
         no_scrollbar = False
 
-    if(no_scrollbar) : window_flags |= nk.PanelFlags.WINDOW_NO_SCROLLBAR.value
+    if(no_scrollbar):
+        window_flags |= nk.PanelFlags.WINDOW_NO_SCROLLBAR.value
 
     global scale_left
     try:
@@ -73,7 +78,8 @@ def overview(nuklear):
     except Exception:
         scale_left = False
 
-    if(scale_left) : window_flags |= nk.PanelFlags.WINDOW_SCALE_LEFT.value
+    if(scale_left):
+        window_flags |= nk.PanelFlags.WINDOW_SCALE_LEFT.value
 
     global minimizable
     try:
@@ -81,11 +87,11 @@ def overview(nuklear):
     except Exception:
         minimizable = True
 
-    if(minimizable) : window_flags |= nk.PanelFlags.WINDOW_MINIMIZABLE.value
-
+    if(minimizable):
+        window_flags |= nk.PanelFlags.WINDOW_MINIMIZABLE.value
 
     if nuklear.begin(title="Overview",
-                     bounds=nk.Rect(10,300,400,600),
+                     bounds=nk.Rect(10, 300, 400, 600),
                      flags=window_flags):
         global show_menu
         try:
@@ -123,7 +129,7 @@ def overview(nuklear):
             nuklear.layout_row_push(ratio_or_width=45.0)
             if nuklear.menu_begin_label(text="MENU",
                                         align=nk.TextAlign.TEXT_LEFT,
-                                        size=nk.Vec2(120.0,200.0)):
+                                        size=nk.Vec2(120.0, 200.0)):
                 nuklear.layout_row_dynamic(height=25.0,
                                            columns=1)
                 if nuklear.menu_item_label(label="Hide",
@@ -132,22 +138,23 @@ def overview(nuklear):
                 if nuklear.menu_item_label(label="About",
                                            align=nk.TextAlign.TEXT_LEFT):
                     show_app_about = True
-                (modified,mprog) = nuklear.progress(cur=mprog,
-                                                    max=100,
-                                                    is_modifyable=nk.Modify.MODIFIABLE)
-                (modified,mslider) = nuklear.slider_int(minV=0,
-                                                        value=mslider,
-                                                        maxV=16,
-                                                        step=1)
-                (modified,mcheck) = nuklear.checkbox_label(text="check",
-                                                           active=mcheck)
+                (modified, mprog) = nuklear.progress(cur=mprog,
+                                                     max=100,
+                                                     is_modifyable=nk.Modify.MODIFIABLE)
+                (modified, mslider) = nuklear.slider_int(minV=0,
+                                                         value=mslider,
+                                                         maxV=16,
+                                                         step=1)
+                (modified, mcheck) = nuklear.checkbox_label(text="check",
+                                                            active=mcheck)
 
                 nuklear.menu_end()
             nuklear.layout_row_push(ratio_or_width=60.0)
             if nuklear.menu_begin_label(text="Advanced",
                                         align=nk.TextAlign.TEXT_LEFT,
-                                        size=nk.Vec2(200,600)):
-                MENU_NONE,MENU_FILE, MENU_EDIT,MENU_VIEW,MENU_CHART = (0,1,2,3,4)
+                                        size=nk.Vec2(200, 600)):
+                MENU_NONE, MENU_FILE, MENU_EDIT, MENU_VIEW, MENU_CHART = (
+                    0, 1, 2, 3, 4)
 
                 global menu_state
                 try:
@@ -156,7 +163,8 @@ def overview(nuklear):
                     menu_state = MENU_NONE
 
                 state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_FILE else nk.CollapseStates.MINIMIZED
-                (fileSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "FILE", state)
+                (fileSelected, state) = nuklear.tree_state_push(
+                    nk.TreeType.TREE_TAB, "FILE", state)
                 if fileSelected:
                     menu_state = MENU_FILE
                     nuklear.menu_item_label(label="New",
@@ -172,7 +180,8 @@ def overview(nuklear):
                     nuklear.tree_pop()
 
                 state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_EDIT else nk.CollapseStates.MINIMIZED
-                (editSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "EDIT", state)
+                (editSelected, state) = nuklear.tree_state_push(
+                    nk.TreeType.TREE_TAB, "EDIT", state)
                 if editSelected:
                     menu_state = MENU_EDIT
                     nuklear.menu_item_label(label="Copy",
@@ -186,7 +195,8 @@ def overview(nuklear):
                     nuklear.tree_pop()
 
                 state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_VIEW else nk.CollapseStates.MINIMIZED
-                (viewSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "VIEW", state)
+                (viewSelected, state) = nuklear.tree_state_push(
+                    nk.TreeType.TREE_TAB, "VIEW", state)
                 if viewSelected:
                     menu_state = MENU_VIEW
                     nuklear.menu_item_label(label="About",
@@ -198,10 +208,12 @@ def overview(nuklear):
                     nuklear.tree_pop()
 
                 state = nk.CollapseStates.MAXIMIZED if menu_state == MENU_CHART else nk.CollapseStates.MINIMIZED
-                (chartSelected, state) = nuklear.tree_state_push(nk.TreeType.TREE_TAB, "CHART", state)
+                (chartSelected, state) = nuklear.tree_state_push(
+                    nk.TreeType.TREE_TAB, "CHART", state)
                 if chartSelected:
                     menu_state = MENU_CHART
-                    values = [26.0,13.0,30.0,15.0,25.0,10.0,20.0,40.0,12.0,8.0,22.0,28.0]
+                    values = [26.0, 13.0, 30.0, 15.0, 25.0,
+                              10.0, 20.0, 40.0, 12.0, 8.0, 22.0, 28.0]
                     nuklear.layout_row_dynamic(height=150.0,
                                                columns=1)
                     nuklear.chart_begin(chart_type=nk.ChartType.CHART_COLUMN,
@@ -215,15 +227,15 @@ def overview(nuklear):
                 nuklear.menu_end()
 
             nuklear.layout_row_push(70.0)
-            (modified,mprog) = nuklear.progress(cur=mprog,
-                                                max=100,
-                                                is_modifyable=nk.Modify.MODIFIABLE)
-            (modified,mslider) = nuklear.slider_int(minV=0,
-                                                    value=mslider,
-                                                    maxV=16,
-                                                    step=1)
-            (modified,mcheck) = nuklear.checkbox_label(text="check",
-                                                       active=mcheck)
+            (modified, mprog) = nuklear.progress(cur=mprog,
+                                                 max=100,
+                                                 is_modifyable=nk.Modify.MODIFIABLE)
+            (modified, mslider) = nuklear.slider_int(minV=0,
+                                                     value=mslider,
+                                                     maxV=16,
+                                                     step=1)
+            (modified, mcheck) = nuklear.checkbox_label(text="check",
+                                                        active=mcheck)
 
             nuklear.menubar_end()
 
@@ -231,7 +243,7 @@ def overview(nuklear):
                 if nuklear.popup_begin(theType=nk.PopupType.POPUP_STATIC,
                                        title="About",
                                        flags=nk.PanelFlags.WINDOW_CLOSABLE,
-                                       rect=nk.Rect(20,100,400,200)):
+                                       rect=nk.Rect(20, 100, 400, 200)):
                     nuklear.layout_row_dynamic(height=20.0,
                                                columns=1)
                     nuklear.label(text="pyNuklear",
@@ -239,7 +251,7 @@ def overview(nuklear):
                     nuklear.label(text="By William Emerison Six",
                                   alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="pyNuklear is MIT-licensed.",
-                             alignment=nk.TextAlign.TEXT_LEFT)
+                                  alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="based on Nuklear",
                                   alignment=nk.TextAlign.TEXT_LEFT)
                     nuklear.label(text="By Micha Mettke",
@@ -273,42 +285,41 @@ def overview(nuklear):
 #                                         id=x) :
 #                     nuklear.tree_pop()
 
-
         if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
                              title="Window",
-                             state=nk.CollapseStates.MINIMIZED) :
+                             state=nk.CollapseStates.MINIMIZED):
             nuklear.layout_row_dynamic(height=30.0,
                                        columns=2)
             global titlebar
             try:
                 titlebar
             except Exception:
-                titlebar  = True
+                titlebar = True
 
-            (modified,titlebar) = nuklear.checkbox_label(text="Titlebar",
-                                                         active=titlebar)
-            (modified,show_menu) = nuklear.checkbox_label(text="Menu",
-                                                          active=show_menu)
-            (modified,border) = nuklear.checkbox_label(text="Border",
-                                                       active=border)
-            (modified,resize) = nuklear.checkbox_label(text="Resizable",
-                                                       active=resize)
-            (modified,movable) = nuklear.checkbox_label(text="Movable",
-                                                        active=movable)
-            (modified,no_scrollbar) = nuklear.checkbox_label(text="No Scrollbar",
-                                                             active=no_scrollbar)
-            (modified,minimizable) = nuklear.checkbox_label(text="Minimizable",
-                                                            active=minimizable)
-            (modified,scale_left) = nuklear.checkbox_label(text="Scale Left",
-                                                           active=scale_left)
+            (modified, titlebar) = nuklear.checkbox_label(text="Titlebar",
+                                                          active=titlebar)
+            (modified, show_menu) = nuklear.checkbox_label(text="Menu",
+                                                           active=show_menu)
+            (modified, border) = nuklear.checkbox_label(text="Border",
+                                                        active=border)
+            (modified, resize) = nuklear.checkbox_label(text="Resizable",
+                                                        active=resize)
+            (modified, movable) = nuklear.checkbox_label(text="Movable",
+                                                         active=movable)
+            (modified, no_scrollbar) = nuklear.checkbox_label(text="No Scrollbar",
+                                                              active=no_scrollbar)
+            (modified, minimizable) = nuklear.checkbox_label(text="Minimizable",
+                                                             active=minimizable)
+            (modified, scale_left) = nuklear.checkbox_label(text="Scale Left",
+                                                            active=scale_left)
             nuklear.tree_pop()
         if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
                              title="Widgets",
-                             state=nk.CollapseStates.MINIMIZED) :
+                             state=nk.CollapseStates.MINIMIZED):
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Text",
-                                 state=nk.CollapseStates.MINIMIZED) :
-                nuklear.layout_row_dynamic(height=20.0 ,
+                                 state=nk.CollapseStates.MINIMIZED):
+                nuklear.layout_row_dynamic(height=20.0,
                                            columns=1)
                 nuklear.label(text="Label aligned left",
                               alignment=nk.TextAlign.TEXT_LEFT)
@@ -318,25 +329,27 @@ def overview(nuklear):
                               alignment=nk.TextAlign.TEXT_RIGHT)
                 nuklear.label_colored(text="Blue text",
                                       align=nk.TextAlign.TEXT_LEFT,
-                                      color=nk.Color(0,0,255,255))
+                                      color=nk.Color(0, 0, 255, 255))
                 nuklear.label_colored(text="Yellow text",
                                       align=nk.TextAlign.TEXT_LEFT,
-                                      color=nk.Color(255,255,0,255))
+                                      color=nk.Color(255, 255, 0, 255))
                 nuklear.text(text="Text without /0",
                              length=15,
                              alignment=nk.TextAlign.RIGHT)
                 nuklear.layout_row_static(height=100.0,
                                           item_width=200,
                                           columns=1)
-                nuklear.label_wrap(text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
+                nuklear.label_wrap(
+                    text="This is a very long line to hopefully get this text to be wrapped into multiple lines to show line wrapping")
                 nuklear.layout_row_dynamic(height=100.0,
                                            columns=1)
-                nuklear.label_wrap(text="This is another long text to show dynamic window changes on multiline text")
+                nuklear.label_wrap(
+                    text="This is another long text to show dynamic window changes on multiline text")
 
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Button",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
                 nuklear.layout_row_static(height=30,
                                           item_width=100,
                                           columns=3)
@@ -346,7 +359,7 @@ def overview(nuklear):
                 if nuklear.button_label(title="Repeater"):
                     print("Repeater is being pressed!")
                 nuklear.button_set_behavior(nk.ButtonBehavior.BUTTON_DEFAULT)
-                if nuklear.button_color(nk.Color(0,0,255,255)):
+                if nuklear.button_color(nk.Color(0, 0, 255, 255)):
                     pass
                 nuklear.layout_row_static(height=25.0,
                                           item_width=25,
@@ -372,7 +385,7 @@ def overview(nuklear):
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Basic",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
                 nuklear.layout_row_static(height=30.0,
                                           item_width=100,
                                           columns=1)
@@ -381,8 +394,8 @@ def overview(nuklear):
                     basicCheckBox
                 except Exception:
                     basicCheckBox = False
-                (modified,basicCheckBox) = nuklear.checkbox_label(text="CheckBox",
-                                                                  active=basicCheckBox)
+                (modified, basicCheckBox) = nuklear.checkbox_label(text="CheckBox",
+                                                                   active=basicCheckBox)
 
                 nuklear.layout_row_static(height=30.0,
                                           item_width=80,
@@ -398,18 +411,20 @@ def overview(nuklear):
                     basicOption = A
 
                 if nuklear.option_label(label="optionA",
-                                        active= basicOption == A): basicOption = A
+                                        active=basicOption == A):
+                                            basicOption = A
                 if nuklear.option_label(label="optionB",
-                                        active= basicOption == B): basicOption = B
+                                        active=basicOption == B):
+                                            basicOption = B
                 if nuklear.option_label(label="optionC",
-                                        active= basicOption == C): basicOption = C
-
+                                        active=basicOption == C):
+                                            basicOption = C
 
                 # this class is necessary to prevent garbage collection of the array
                 with nk.LayoutRow(ctx=nuklear.ctx,
                                   layout_format=nk.LayoutFormat.STATIC,
                                   height=30.0,
-                                  ratio=[120.0,150.0]) as lr:
+                                  ratio=[120.0, 150.0]) as lr:
                     global basicSlider
                     try:
                         basicSlider
@@ -417,10 +432,10 @@ def overview(nuklear):
                         basicSlider = 5
                     nuklear.label(text=str.format("Slider Int: {}", basicSlider),
                                   alignment=nk.TextAlign.TEXT_LEFT)
-                    (modified,basicSlider) = nuklear.slider_int(minV=0,
-                                                                value=basicSlider,
-                                                                maxV=10,
-                                                                step=1)
+                    (modified, basicSlider) = nuklear.slider_int(minV=0,
+                                                                 value=basicSlider,
+                                                                 maxV=10,
+                                                                 step=1)
                     global floatSlider
                     try:
                         floatSlider
@@ -428,11 +443,10 @@ def overview(nuklear):
                         floatSlider = 2.5
                     nuklear.label(text=str.format("Slider Float: {}", floatSlider),
                                   alignment=nk.TextAlign.TEXT_LEFT)
-                    (modified,floatSlider) = nuklear.slider_float(minV=0.0,
-                                                                  value=floatSlider,
-                                                                  maxV=5.0,
-                                                                  step=0.5)
-
+                    (modified, floatSlider) = nuklear.slider_float(minV=0.0,
+                                                                   value=floatSlider,
+                                                                   maxV=5.0,
+                                                                   step=0.5)
 
                     global progFloat
                     try:
@@ -440,17 +454,16 @@ def overview(nuklear):
                     except Exception:
                         progFloat = 40
 
-
                     nuklear.label(text="Progressbar: ",
                                   alignment=nk.TextAlign.TEXT_LEFT);
-                    (modified,progFloat) = nuklear.progress(cur=progFloat,
-                                                            max=100,
-                                                            is_modifyable=nk.Modify.MODIFIABLE)
+                    (modified, progFloat) = nuklear.progress(cur=progFloat,
+                                                             max=100,
+                                                             is_modifyable=nk.Modify.MODIFIABLE)
 
                 with nk.LayoutRow(ctx=nuklear.ctx,
                                   layout_format=nk.LayoutFormat.STATIC,
                                   height=25.0,
-                                  ratio=[120.0,150.0]) as lr:
+                                  ratio=[120.0, 150.0]) as lr:
                     global basicFloat
                     try:
                         basicFloat
@@ -483,8 +496,6 @@ def overview(nuklear):
                 #               alignment= nk.TextAlign.TEXT_LEFT);
                 # nuklear.property_int("Neg:", -10, &property_neg, 10, 1, 1);
 
-
-
                 # TODO - do this later
                 # nk_layout_row_dynamic(height=ctx, 25, 1);
                 # nk_label(ctx, "Range:", NK_TextAlign.TEXT_LEFT);
@@ -497,14 +508,13 @@ def overview(nuklear):
                 # nk_property_int(ctx, "#neg:", range_int_min, &range_int_value, range_int_max, 1, 10);
                 # nk_property_int(ctx, "#max:", range_int_min, &range_int_max, INT_MAX, 1, 10);
 
-
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Selectable",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="List",
-                                     state=nk.CollapseStates.MINIMIZED) :
+                                     state=nk.CollapseStates.MINIMIZED):
                     nuklear.layout_row_static(height=18.0,
                                               item_width=100,
                                               columns=1)
@@ -513,7 +523,7 @@ def overview(nuklear):
                     try:
                         selected
                     except Exception:
-                        selected = [False,False,False,False]
+                        selected = [False, False, False, False]
 
                     (wasModified, selected[0]) = nuklear.selectable_label(label="Selectable",
                                                                           align=nk.TextAlign.TEXT_LEFT,
@@ -533,16 +543,16 @@ def overview(nuklear):
 
                 if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                      title="Grid",
-                                     state=nk.CollapseStates.MINIMIZED) :
+                                     state=nk.CollapseStates.MINIMIZED):
 
                     global gridSelected
                     try:
                         gridSelected
                     except Exception:
-                        gridSelected = [True,False,False,False,
-                                        False,True,False,False,
-                                        False,False,True,False,
-                                        False,False,False,True]
+                        gridSelected = [True, False, False, False,
+                                        False, True, False, False,
+                                        False, False, True, False,
+                                        False, False, False, True]
                     nuklear.layout_row_static(height=50,
                                               item_width=50,
                                               columns=4)
@@ -551,17 +561,21 @@ def overview(nuklear):
                                                                                   align=nk.TextAlign.TEXT_LEFT,
                                                                                   value=gridSelected[i])
                         if wasModified:
-                            (y,x) = divmod(i, 4)
-                            if x > 0: gridSelected[i-1] = not gridSelected[i-1]
-                            if x < 3: gridSelected[i+1] = not gridSelected[i+1]
-                            if y > 0: gridSelected[i-4] = not gridSelected[i-4]
-                            if y < 3: gridSelected[i+4] = not gridSelected[i+4]
+                            (y, x) = divmod(i, 4)
+                            if x > 0:
+                                gridSelected[i - 1] = not gridSelected[i - 1]
+                            if x < 3:
+                                gridSelected[i + 1] = not gridSelected[i + 1]
+                            if y > 0:
+                                gridSelected[i - 4] = not gridSelected[i - 4]
+                            if y < 3:
+                                gridSelected[i + 4] = not gridSelected[i + 4]
                     nuklear.tree_pop()
 
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Combo",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
                 global current_weapon
                 global weapons
                 try:
@@ -577,8 +591,7 @@ def overview(nuklear):
                 current_weapon = nuklear.combo(items=weapons,
                                                selected=current_weapon,
                                                item_height=25,
-                                               size=nk.Vec2(200,200))
-
+                                               size=nk.Vec2(200, 200))
 
                 nuklear.layout_row_static(height=25.0,
                                           item_width=200,
@@ -587,10 +600,10 @@ def overview(nuklear):
                 try:
                     comboColor
                 except Exception:
-                    comboColor = nk.Color(130,50,50,255)
+                    comboColor = nk.Color(130, 50, 50, 255)
 
                 if nuklear.combo_begin_color(comboColor,
-                                             nk.Vec2(200,200)):
+                                             nk.Vec2(200, 200)):
                     nuklear.layout_row_dynamic(height=30.0,
                                                columns=2)
                     nuklear.label(text="R:",
@@ -624,11 +637,11 @@ def overview(nuklear):
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Input",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
                 with nk.LayoutRow(ctx=nuklear.ctx,
                                   layout_format=nk.LayoutFormat.STATIC,
                                   height=25.0,
-                                  ratio=[120.0,150.0]) as lr:
+                                  ratio=[120.0, 150.0]) as lr:
 
                     # create a c string
                     global text
@@ -685,13 +698,13 @@ def overview(nuklear):
                                                               length=textL[6],
                                                               maxV=64,
                                                               filterF=nk.filter_binary)
-                #TODO
+                # TODO
                 nuklear.tree_pop()
 
             nuklear.tree_pop()
         if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
                              title="Chart",
-                             state=nk.CollapseStates.MINIMIZED) :
+                             state=nk.CollapseStates.MINIMIZED):
             nuklear.layout_row_dynamic(height=100.0,
                                        columns=1)
             bounds = nuklear.widget_bounds()
@@ -701,15 +714,17 @@ def overview(nuklear):
                                    maxV=1.0):
                 numberOfPoints = 32
                 hoveredIndex = -1
-                for x in range(32) :
-                    res = nuklear.chart_push(math.cos( x * (2*3.141592654) / numberOfPoints ))
+                for x in range(32):
+                    res = nuklear.chart_push(
+                        math.cos(x * (2 * 3.141592654) / numberOfPoints))
                     if res & nk.ChartEvent.CHART_HOVERING.value:
                         hoveredIndex = x
 
                 nuklear.chart_end()
 
                 if hoveredIndex != -1:
-                    nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+                    nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints,
+                                                math.cos(hoveredIndex * (2 * 3.141592654) / numberOfPoints)))
 
             # column demo
             nuklear.layout_row_dynamic(height=100.0,
@@ -721,15 +736,17 @@ def overview(nuklear):
                                    maxV=1.0):
                 numberOfPoints = 32
                 hoveredIndex = -1
-                for x in range(32) :
-                    res = nuklear.chart_push(math.fabs(math.sin( x * (2*3.141592654) / numberOfPoints )))
+                for x in range(32):
+                    res = nuklear.chart_push(
+                        math.fabs(math.sin(x * (2 * 3.141592654) / numberOfPoints)))
                     if res & nk.ChartEvent.CHART_HOVERING.value:
                         hoveredIndex = x
 
                 nuklear.chart_end()
 
                 if hoveredIndex != -1:
-                    nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+                    nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints,
+                                                math.cos(hoveredIndex * (2 * 3.141592654) / numberOfPoints)))
 
             # mixed chart
             nuklear.layout_row_dynamic(height=100.0,
@@ -749,19 +766,21 @@ def overview(nuklear):
                                        minV=-1.0,
                                        maxV=1.0)
                 for x in range(32):
-                    nuklear.chart_push_slot(math.fabs(math.sin(x * (2*3.141592654) / numberOfPoints )),0)
-                    nuklear.chart_push_slot(math.cos(x * (2*3.141592654) / numberOfPoints ),1)
-                    nuklear.chart_push_slot(math.sin(x * (2*3.141592654) / numberOfPoints ),2)
+                    nuklear.chart_push_slot(
+                        math.fabs(math.sin(x * (2 * 3.141592654) / numberOfPoints)), 0)
+                    nuklear.chart_push_slot(
+                        math.cos(x * (2 * 3.141592654) / numberOfPoints), 1)
+                    nuklear.chart_push_slot(
+                        math.sin(x * (2 * 3.141592654) / numberOfPoints), 2)
             nuklear.chart_end()
 
             # TODO - mixed colored chart
 
-
             nuklear.tree_pop()
         if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
                              title="Popup",
-                             state=nk.CollapseStates.MINIMIZED) :
-            #TODO
+                             state=nk.CollapseStates.MINIMIZED):
+            # TODO
             nuklear.layout_row_static(height=30.0,
                                       item_width=160,
                                       columns=1)
@@ -770,19 +789,19 @@ def overview(nuklear):
                           alignment=nk.TextAlign.TEXT_LEFT)
 
             if nuklear.contextual_begin(flags=0,
-                                        size=nk.Vec2(100,300),
+                                        size=nk.Vec2(100, 300),
                                         triggerBounds=bounds):
                 nuklear.layout_row_dynamic(height=25.0,
                                            columns=1)
-                (modified,show_menu) = nuklear.checkbox_label(text="Menu",
-                                                              active=show_menu)
-                (modified,mprog) = nuklear.progress(cur=mprog,
-                                                    max=100,
-                                                    is_modifyable=nk.Modify.MODIFIABLE)
-                (modified,mslider) = nuklear.slider_int(minV=0,
-                                                        value=mslider,
-                                                        maxV=16,
-                                                        step=1)
+                (modified, show_menu) = nuklear.checkbox_label(text="Menu",
+                                                               active=show_menu)
+                (modified, mprog) = nuklear.progress(cur=mprog,
+                                                     max=100,
+                                                     is_modifyable=nk.Modify.MODIFIABLE)
+                (modified, mslider) = nuklear.slider_int(minV=0,
+                                                         value=mslider,
+                                                         maxV=16,
+                                                         step=1)
                 if nuklear.contextual_item_label(text="About",
                                                  align=nk.TextAlign.TEXT_CENTERED):
                     show_app_about = True
@@ -790,11 +809,11 @@ def overview(nuklear):
             nuklear.tree_pop()
         if nuklear.tree_push(theType=nk.TreeType.TREE_TAB,
                              title="Layout",
-                             state=nk.CollapseStates.MINIMIZED) :
-            #TODO
+                             state=nk.CollapseStates.MINIMIZED):
+            # TODO
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Widget",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
 
                 nuklear.layout_row_dynamic(height=30.0,
                                            columns=1)
@@ -817,7 +836,6 @@ def overview(nuklear):
                 nuklear.button_label(title="button")
                 nuklear.button_label(title="button")
 
-
                 nuklear.layout_row_dynamic(height=30.0,
                                            columns=1)
                 nuklear.label(text="Dynamic array-based custom column layout with generated position and custom size:",
@@ -826,13 +844,11 @@ def overview(nuklear):
                 with nk.LayoutRow(ctx=nuklear.ctx,
                                   layout_format=nk.LayoutFormat.DYNAMIC,
                                   height=30.0,
-                                  ratio=[0.2,0.6,0.2]) as lr:
+                                  ratio=[0.2, 0.6, 0.2]) as lr:
 
                     nuklear.button_label(title="button")
                     nuklear.button_label(title="button")
                     nuklear.button_label(title="button")
-
-
 
                 nuklear.layout_row_dynamic(height=30.0,
                                            columns=1)
@@ -842,12 +858,11 @@ def overview(nuklear):
                 with nk.LayoutRow(ctx=nuklear.ctx,
                                   layout_format=nk.LayoutFormat.STATIC,
                                   height=30.0,
-                                  ratio=[100.0,200.0,50.0]) as lr:
+                                  ratio=[100.0, 200.0, 50.0]) as lr:
 
                     nuklear.button_label(title="button")
                     nuklear.button_label(title="button")
                     nuklear.button_label(title="button")
-
 
                 nuklear.layout_row_dynamic(height=30.0,
                                            columns=1)
@@ -879,18 +894,16 @@ def overview(nuklear):
 
                 # TODO - two more layouts
 
-
-
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Group",
-                                 state=nk.CollapseStates.MINIMIZED) :
-                #TODO
+                                 state=nk.CollapseStates.MINIMIZED):
+                # TODO
                 nuklear.tree_pop()
 
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Notebook",
-                                 state=nk.CollapseStates.MINIMIZED) :
+                                 state=nk.CollapseStates.MINIMIZED):
                 nuklear.style_push_window_spacing(vec2=nk.Vec2(x=0.0,
                                                                y=0.0))
                 nuklear.style_push_button_rounding(f=0.0)
@@ -905,9 +918,9 @@ def overview(nuklear):
                 except Exception:
                     currentTab = 0
 
-
                 for i in range(len(names)):
-                    nuklear.layout_row_push(ratio_or_width=nuklear.get_text_width(names[i]))
+                    nuklear.layout_row_push(
+                        ratio_or_width=nuklear.get_text_width(names[i]))
                     if nuklear.button_label(title=names[i],
                                             active=currentTab != i):
                         currentTab = i
@@ -928,15 +941,17 @@ def overview(nuklear):
                                                count=32,
                                                minV=-1.0,
                                                maxV=1.0):
-                            for x in range(32) :
-                                res = nuklear.chart_push(math.cos( x * (2*3.141592654) / numberOfPoints ))
+                            for x in range(32):
+                                res = nuklear.chart_push(
+                                    math.cos(x * (2 * 3.141592654) / numberOfPoints))
                                 if res & nk.ChartEvent.CHART_HOVERING.value:
                                     hoveredIndex = x
 
                         nuklear.chart_end()
 
                         if hoveredIndex != -1:
-                            nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+                            nuklear.tooltip("%f, %f" % (
+                                hoveredIndex / numberOfPoints, math.cos(hoveredIndex * (2 * 3.141592654) / numberOfPoints)))
 
                     elif currentTab == 1:
                         numberOfPoints = 32
@@ -945,15 +960,17 @@ def overview(nuklear):
                                                count=32,
                                                minV=0.0,
                                                maxV=1.0):
-                            for x in range(32) :
-                                res = nuklear.chart_push(math.fabs(math.sin( x * (2*3.141592654) / numberOfPoints )))
+                            for x in range(32):
+                                res = nuklear.chart_push(
+                                    math.fabs(math.sin(x * (2 * 3.141592654) / numberOfPoints)))
                                 if res & nk.ChartEvent.CHART_HOVERING.value:
                                     hoveredIndex = x
 
                         nuklear.chart_end()
 
                         if hoveredIndex != -1:
-                            nuklear.tooltip("%f, %f" % (hoveredIndex / numberOfPoints, math.cos( hoveredIndex  * (2*3.141592654) / numberOfPoints )))
+                            nuklear.tooltip("%f, %f" % (
+                                hoveredIndex / numberOfPoints, math.cos(hoveredIndex * (2 * 3.141592654) / numberOfPoints)))
 
                     elif currentTab == 2:
                         numberOfPoints = 32
@@ -970,9 +987,12 @@ def overview(nuklear):
                                                    minV=-1.0,
                                                    maxV=1.0)
                             for x in range(32):
-                                nuklear.chart_push_slot(math.fabs(math.sin(x * (2*3.141592654) / numberOfPoints )),0)
-                                nuklear.chart_push_slot(math.cos(x * (2*3.141592654) / numberOfPoints ),1)
-                                nuklear.chart_push_slot(math.sin(x * (2*3.141592654) / numberOfPoints ),2)
+                                nuklear.chart_push_slot(
+                                    math.fabs(math.sin(x * (2 * 3.141592654) / numberOfPoints)), 0)
+                                nuklear.chart_push_slot(
+                                    math.cos(x * (2 * 3.141592654) / numberOfPoints), 1)
+                                nuklear.chart_push_slot(
+                                    math.sin(x * (2 * 3.141592654) / numberOfPoints), 2)
                         nuklear.chart_end()
 
                     nuklear.group_end()
@@ -981,21 +1001,20 @@ def overview(nuklear):
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Simple",
-                                 state=nk.CollapseStates.MINIMIZED) :
-                #TODO
+                                 state=nk.CollapseStates.MINIMIZED):
+                # TODO
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Complex",
-                                 state=nk.CollapseStates.MINIMIZED) :
-                #TODO
+                                 state=nk.CollapseStates.MINIMIZED):
+                # TODO
                 nuklear.tree_pop()
             if nuklear.tree_push(theType=nk.TreeType.TREE_NODE,
                                  title="Splitter",
-                                 state=nk.CollapseStates.MINIMIZED) :
-                #TODO
+                                 state=nk.CollapseStates.MINIMIZED):
+                # TODO
                 nuklear.tree_pop()
 
             nuklear.tree_pop()
-
 
     nuklear.end()

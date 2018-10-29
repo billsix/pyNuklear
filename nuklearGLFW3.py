@@ -1,22 +1,22 @@
-#Copyright (c) 2017-2018 William Emerison Six
+# Copyright (c) 2017-2018 William Emerison Six
 #
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 
 import os
@@ -30,17 +30,18 @@ import glfw
 import nuklear as nk
 
 
+GLFW3_DEFAULT = 0
+GLFW3_INSTALL_CALLBACKS = 1
 
 
-GLFW3_DEFAULT=0
-GLFW3_INSTALL_CALLBACKS=1
+glfw3_init = nk._nuklear.nk_glfw3_init
+glfw3_init.restype = POINTER(nk.Context)
+glfw3_init.arglist = [POINTER(glfw._GLFWwindow), c_int]
 
 
-glfw3_init             = nk._nuklear.nk_glfw3_init
-glfw3_init.restype     = POINTER(nk.Context)
-glfw3_init.arglist     = [POINTER(glfw._GLFWwindow), c_int]
+class FontAtlas(Structure):
+    pass
 
-class FontAtlas(Structure): pass
 
 glfw3_font_stash_begin = nk._nuklear.nk_glfw3_font_stash_begin
 glfw3_font_stash_begin.arglist = [POINTER(POINTER(FontAtlas))]
@@ -70,7 +71,7 @@ def glfw3_render(antialiasing, vertex_buffer_size=512 * 1024, element_buffer=128
     last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
 
     # render nuklear
-    glfw3_render_prime (antialiasing, vertex_buffer_size, element_buffer)
+    glfw3_render_prime(antialiasing, vertex_buffer_size, element_buffer)
 
     # restore the opengl state
     gl.glBlendEquationSeparate(last_blend_equation_rgb,
@@ -81,17 +82,17 @@ def glfw3_render(antialiasing, vertex_buffer_size=512 * 1024, element_buffer=128
         gl.glEnable(gl.GL_BLEND)
     else:
         gl.glDisable(gl.GL_BLEND)
-    if last_enable_cull_face :
+    if last_enable_cull_face:
         gl.glEnable(gl.GL_CULL_FACE)
     else:
         gl.glDisable(gl.GL_CULL_FACE)
-    if last_enable_depth_test :
+    if last_enable_depth_test:
         gl.glEnable(gl.GL_DEPTH_TEST)
     else:
         gl.glDisable(gl.GL_DEPTH_TEST)
-    if last_enable_scissor_test :
+    if last_enable_scissor_test:
         gl.glEnable(gl.GL_SCISSOR_TEST)
-    else :
+    else:
         gl.glDisable(gl.GL_SCISSOR_TEST)
     gl.glViewport(last_viewport[0],
                   last_viewport[1],
@@ -110,7 +111,8 @@ def glfw3_render_gl2(antialiasing, vertex_buffer_size=512 * 1024, element_buffer
     last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
     last_active_texture = gl.glGetIntegerv(gl.GL_ACTIVE_TEXTURE)
     last_array_buffer = gl.glGetIntegerv(gl.GL_ARRAY_BUFFER_BINDING)
-    last_element_array_buffer = gl.glGetIntegerv(gl.GL_ELEMENT_ARRAY_BUFFER_BINDING)
+    last_element_array_buffer = gl.glGetIntegerv(
+        gl.GL_ELEMENT_ARRAY_BUFFER_BINDING)
     last_vertex_array = gl.glGetIntegerv(gl.GL_VERTEX_ARRAY_BINDING)
     last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
     last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
@@ -125,7 +127,7 @@ def glfw3_render_gl2(antialiasing, vertex_buffer_size=512 * 1024, element_buffer
     last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
 
     # render nuklear
-    glfw3_render_prime (antialiasing, vertex_buffer_size, element_buffer)
+    glfw3_render_prime(antialiasing, vertex_buffer_size, element_buffer)
 
     # restore the opengl state
     gl.glUseProgram(last_program)
@@ -145,17 +147,17 @@ def glfw3_render_gl2(antialiasing, vertex_buffer_size=512 * 1024, element_buffer
         gl.glEnable(gl.GL_BLEND)
     else:
         gl.glDisable(gl.GL_BLEND)
-    if last_enable_cull_face :
+    if last_enable_cull_face:
         gl.glEnable(gl.GL_CULL_FACE)
     else:
         gl.glDisable(gl.GL_CULL_FACE)
-    if last_enable_depth_test :
+    if last_enable_depth_test:
         gl.glEnable(gl.GL_DEPTH_TEST)
     else:
         gl.glDisable(gl.GL_DEPTH_TEST)
-    if last_enable_scissor_test :
+    if last_enable_scissor_test:
         gl.glEnable(gl.GL_SCISSOR_TEST)
-    else :
+    else:
         gl.glDisable(gl.GL_SCISSOR_TEST)
     gl.glViewport(last_viewport[0],
                   last_viewport[1],

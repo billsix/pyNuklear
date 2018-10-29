@@ -1,22 +1,22 @@
-#Copyright (c) 2017-2018 William Emerison Six
+# Copyright (c) 2017-2018 William Emerison Six
 #
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os
 import sys
@@ -42,8 +42,6 @@ else:
 _nuklear = NUKLEAR_PATH
 
 
-
-
 # nuklear needs to uniquely identify widgets, and one
 # way to do so is to inspect the function caller's frame info
 # such as filename and line number.
@@ -56,33 +54,38 @@ def callerFrameInfo():
     return inspect.getframeinfo(previous_frame)
 
 
+class Context(Structure):
+    pass
 
-class Context(Structure): pass
 
-class Command(Structure): pass
+class Command(Structure):
+    pass
 
-class DrawCommand(Structure): pass
+
+class DrawCommand(Structure):
+    pass
 
 
 class Color(Structure):
-    _fields_ = [ ('r',  c_ubyte),
-                 ('g',  c_ubyte),
-                 ('b',  c_ubyte),
-                 ('a',  c_ubyte)]
+    _fields_ = [('r',  c_ubyte),
+                ('g',  c_ubyte),
+                ('b',  c_ubyte),
+                ('a',  c_ubyte)]
 
-    def __init__(self,r,g,b,a):
+    def __init__(self, r, g, b, a):
         self.r = r
         self.g = g
         self.b = b
         self.a = a
 
-class ColorF(Structure):
-    _fields_ = [ ('r',  c_float),
-                 ('g',  c_float),
-                 ('b',  c_float),
-                 ('a',  c_float)]
 
-    def __init__(self,r,g,b,a):
+class ColorF(Structure):
+    _fields_ = [('r',  c_float),
+                ('g',  c_float),
+                ('b',  c_float),
+                ('a',  c_float)]
+
+    def __init__(self, r, g, b, a):
         self.r = r
         self.g = g
         self.b = b
@@ -90,43 +93,43 @@ class ColorF(Structure):
 
 
 class Vec2(Structure):
-    _fields_ = [ ('x',  c_float),
-                 ('y',  c_float)]
+    _fields_ = [('x',  c_float),
+                ('y',  c_float)]
 
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         self.x = ctypes.c_float(x)
         self.y = ctypes.c_float(y)
 
 
 class Vec2i(Structure):
-    _fields_ = [ ('x',  c_short),
-                 ('y',  c_short)]
+    _fields_ = [('x',  c_short),
+                ('y',  c_short)]
 
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
 
 
-
 class Rect(Structure):
-    _fields_ = [ ('x',  c_float),
-                 ('y',  c_float),
-                 ('w',  c_float),
-                 ('h',  c_float)]
+    _fields_ = [('x',  c_float),
+                ('y',  c_float),
+                ('w',  c_float),
+                ('h',  c_float)]
 
-    def __init__(self,x,y,w,h):
+    def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
 
-class Recti(Structure):
-    _fields_ = [ ('x',  c_short),
-                 ('y',  c_short),
-                 ('w',  c_short),
-                 ('h',  c_short)]
 
-    def __init__(self,x,y,w,h):
+class Recti(Structure):
+    _fields_ = [('x',  c_short),
+                ('y',  c_short),
+                ('w',  c_short),
+                ('h',  c_short)]
+
+    def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
         self.w = w
@@ -135,103 +138,118 @@ class Recti(Structure):
 
 Handle = POINTER(ctypes.c_void_p)
 
-class Image(Structure):
-    _fields_ = [ ('handle', Handle),
-                 ('w',  c_short),
-                 ('h',  c_short),
-                 ('region',  c_int)]
 
-    def __init__(self,handle,w,h,region):
+class Image(Structure):
+    _fields_ = [('handle', Handle),
+                ('w',  c_short),
+                ('h',  c_short),
+                ('region',  c_int)]
+
+    def __init__(self, handle, w, h, region):
         self.handle = handle
         self.w = w
         self.h = h
         self.region = region
 
-class Cursor(Structure):
-    _fields_ = [ ('img', Image),
-                 ('size',  Vec2),
-                 ('offset', Vec2)]
 
-    def __init__(self,image,size,offset):
+class Cursor(Structure):
+    _fields_ = [('img', Image),
+                ('size',  Vec2),
+                ('offset', Vec2)]
+
+    def __init__(self, image, size, offset):
         self.image = image
         self.size = size
         self.offset = offset
 
-class Scroll(Structure):
-    _fields_ = [ ('x', c_int),
-                 ('y',  c_int)]
 
-    def __init__(self,x,y):
+class Scroll(Structure):
+    _fields_ = [('x', c_int),
+                ('y',  c_int)]
+
+    def __init__(self, x, y):
         self.x = x
         self.y = y
 
+
 class Heading(Enum):
-    UP=0
-    RIGHT=1
-    DOWN=2
-    LEFT=3
+    UP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
+
 
 class ButtonBehavior(Enum):
-    BUTTON_DEFAULT=0
-    BUTTON_REPEATER=1
+    BUTTON_DEFAULT = 0
+    BUTTON_REPEATER = 1
+
 
 class Modify(Enum):
-    FIXED=0
-    MODIFIABLE=1
+    FIXED = 0
+    MODIFIABLE = 1
+
 
 class Orientation(Enum):
-    VERTICAL=0
-    HORIZONTAL=1
+    VERTICAL = 0
+    HORIZONTAL = 1
+
 
 class CollapseStates(Enum):
-    MINIMIZED=0
-    MAXIMIZED=1
+    MINIMIZED = 0
+    MAXIMIZED = 1
+
 
 class ShowStates(Enum):
-    HIDDEN=0
-    SHOWN=1
+    HIDDEN = 0
+    SHOWN = 1
+
 
 class ChartType(Enum):
-    CHART_LINES=0
-    CHART_COLUMN=1
-    CHART_MAX=2
+    CHART_LINES = 0
+    CHART_COLUMN = 1
+    CHART_MAX = 2
+
 
 class ChartEvent(Enum):
-    CHART_HOVERING=1
-    CHART_CLICKED=2
+    CHART_HOVERING = 1
+    CHART_CLICKED = 2
+
 
 class ColorFormat(Enum):
     RGB = 0
     RGBA = 1
 
+
 class PopupType(Enum):
-    POPUP_STATIC=0
-    POPUP_DYNAMIC=1
+    POPUP_STATIC = 0
+    POPUP_DYNAMIC = 1
+
 
 class LayoutFormat(Enum):
-    DYNAMIC=0
-    STATIC=1
+    DYNAMIC = 0
+    STATIC = 1
+
 
 class TreeType(Enum):
-    TREE_NODE=0
-    TREE_TAB=1
+    TREE_NODE = 0
+    TREE_TAB = 1
 
 
 class SymbolType(Enum):
-    SYMBOL_NONE=0
-    SYMBOL_X=1
-    SYMBOL_UNDERSCORE=2
-    SYMBOL_CIRCLE_SOLID=3
-    SYMBOL_CIRCLE_OUTLINE=4
-    SYMBOL_RECT_SOLID=5
-    SYMBOL_RECT_OUTLINE=6
-    SYMBOL_TRIANGLE_UP=7
-    SYMBOL_TRIANGLE_DOWN=8
-    SYMBOL_TRIANGLE_LEFT=9
-    SYMBOL_TRIANGLE_RIGHT=10
-    SYMBOL_PLUS=11
-    SYMBOL_MINUS=12
-    SYMBOL_MAX=13
+    SYMBOL_NONE = 0
+    SYMBOL_X = 1
+    SYMBOL_UNDERSCORE = 2
+    SYMBOL_CIRCLE_SOLID = 3
+    SYMBOL_CIRCLE_OUTLINE = 4
+    SYMBOL_RECT_SOLID = 5
+    SYMBOL_RECT_OUTLINE = 6
+    SYMBOL_TRIANGLE_UP = 7
+    SYMBOL_TRIANGLE_DOWN = 8
+    SYMBOL_TRIANGLE_LEFT = 9
+    SYMBOL_TRIANGLE_RIGHT = 10
+    SYMBOL_PLUS = 11
+    SYMBOL_MINUS = 12
+    SYMBOL_MAX = 13
 
 
 # Context
@@ -246,47 +264,52 @@ clear.arglist = [POINTER(Context)]
 
 # Input
 
-## Keys
-class Keys(Enum):
-    NONE=0
-    SHIFT=1
-    CTRL=2
-    DEL=3
-    ENTER=4
-    TAB=5
-    BACKSPACE=6
-    COPY=7
-    CUT=8
-    PASTE=9
-    UP=10
-    DOWN=11
-    LEFT=12
-    RIGHT=13
-    TEXT_INSERT_MODE=14
-    TEXT_REPLACE_MODE=15
-    TEXT_RESET_MODE=16
-    TEXT_LINE_START=17
-    TEXT_LINE_END=18
-    TEXT_START=19
-    TEXT_END=20
-    TEXT_UNDO=21
-    TEXT_REDO=22
-    TEXT_SELECT_ALL=23
-    TEXT_WORD_LEFT=24
-    TEXT_WORD_RIGHT=25
-    SCROLL_START=26
-    SCROLL_END=27
-    SCROLL_DOWN=28
-    SCROLL_UP=29
-    MAX=30
+# Keys
 
-## Buttons
+
+class Keys(Enum):
+    NONE = 0
+    SHIFT = 1
+    CTRL = 2
+    DEL = 3
+    ENTER = 4
+    TAB = 5
+    BACKSPACE = 6
+    COPY = 7
+    CUT = 8
+    PASTE = 9
+    UP = 10
+    DOWN = 11
+    LEFT = 12
+    RIGHT = 13
+    TEXT_INSERT_MODE = 14
+    TEXT_REPLACE_MODE = 15
+    TEXT_RESET_MODE = 16
+    TEXT_LINE_START = 17
+    TEXT_LINE_END = 18
+    TEXT_START = 19
+    TEXT_END = 20
+    TEXT_UNDO = 21
+    TEXT_REDO = 22
+    TEXT_SELECT_ALL = 23
+    TEXT_WORD_LEFT = 24
+    TEXT_WORD_RIGHT = 25
+    SCROLL_START = 26
+    SCROLL_END = 27
+    SCROLL_DOWN = 28
+    SCROLL_UP = 29
+    MAX = 30
+
+# Buttons
+
+
 class Buttons(Enum):
-    LEFT=0
-    MIDDLE=1
-    RIGHT=2
-    DOUBLE=3
-    MAX=4
+    LEFT = 0
+    MIDDLE = 1
+    RIGHT = 2
+    DOUBLE = 3
+    MAX = 4
+
 
 input_begin = _nuklear.nk_input_begin
 input_begin.arglist = [POINTER(Context)]
@@ -317,9 +340,12 @@ input_end = _nuklear.nk_input_end
 input_end.arglist = [POINTER(Context)]
 
 # Drawing
+
+
 class AntiAliasing(Enum):
-    OFF=0
-    ON=1
+    OFF = 0
+    ON = 1
+
 
 class ConvertResult(Enum):
     SUCCESS = 0
@@ -340,17 +366,18 @@ class ConvertResult(Enum):
 # Window
 
 class PanelFlags(Enum):
-    WINDOW_BORDER            = 1 << 0
-    WINDOW_MOVABLE           = 1 << 1
-    WINDOW_SCALABLE          = 1 << 2
-    WINDOW_CLOSABLE          = 1 << 3
-    WINDOW_MINIMIZABLE       = 1 << 4
-    WINDOW_NO_SCROLLBAR      = 1 << 5
-    WINDOW_TITLE             = 1 << 6
-    WINDOW_SCROLL_AUTO_HIDE  = 1 << 7
-    WINDOW_BACKGROUND        = 1 << 8
-    WINDOW_SCALE_LEFT        = 1 << 9
-    WINDOW_NO_INPUT          = 1 << 10
+    WINDOW_BORDER = 1 << 0
+    WINDOW_MOVABLE = 1 << 1
+    WINDOW_SCALABLE = 1 << 2
+    WINDOW_CLOSABLE = 1 << 3
+    WINDOW_MINIMIZABLE = 1 << 4
+    WINDOW_NO_SCROLLBAR = 1 << 5
+    WINDOW_TITLE = 1 << 6
+    WINDOW_SCROLL_AUTO_HIDE = 1 << 7
+    WINDOW_BACKGROUND = 1 << 8
+    WINDOW_SCALE_LEFT = 1 << 9
+    WINDOW_NO_INPUT = 1 << 10
+
 
 __begin__ = _nuklear.nk_begin
 __begin__.arglist = [POINTER(Context), c_char_p, Rect, c_uint]
@@ -361,8 +388,8 @@ __begin_titled__ = _nuklear.nk_begin_titled
 __begin_titled__.arglist = [POINTER(Context), c_char_p, c_char_p, Rect, c_int]
 __begin_titled__.restype = c_int
 
-__end__            = _nuklear.nk_end
-__end__.arglist    = [POINTER(Context)]
+__end__ = _nuklear.nk_end
+__end__.arglist = [POINTER(Context)]
 # struct nk_window *nk_window_find(POINTER(Context), c_char_p name);
 __window_get_bounds__ = _nuklear.nk_window_get_bounds
 __window_get_bounds__.arglist = [POINTER(Context)]
@@ -492,7 +519,8 @@ __layout_row_end__ = _nuklear.nk_layout_row_end
 __layout_row_end__.arglist = [POINTER(Context)]
 
 __layout_row__ = _nuklear.nk_layout_row
-__layout_row__.arglist = [POINTER(Context), c_int, c_float, c_int, POINTER(c_float)]
+__layout_row__.arglist = [
+    POINTER(Context), c_int, c_float, c_int, POINTER(c_float)]
 
 __layout_row_template_begin__ = _nuklear.nk_layout_row_template_begin
 __layout_row_template_begin__.arglist = [POINTER(Context), c_float]
@@ -501,7 +529,7 @@ __layout_row_template_push_dynamic__ = _nuklear.nk_layout_row_template_push_dyna
 __layout_row_template_push_dynamic__.arglist = [POINTER(Context)]
 
 __layout_row_template_push_variable__ = _nuklear.nk_layout_row_template_push_variable
-__layout_row_template_push_variable__.arglist = [POINTER(Context), c_float ]
+__layout_row_template_push_variable__.arglist = [POINTER(Context), c_float]
 
 __layout_row_template_push_static__ = _nuklear.nk_layout_row_template_push_static
 __layout_row_template_push_static__.arglist = [POINTER(Context), c_float]
@@ -539,7 +567,6 @@ __layout_space_rect_to_local__.arglist = [POINTER(Context), Rect]
 __layout_space_rect_to_local__.restype = Rect
 
 
-
 # Group
 
 __group_begin__ = _nuklear.nk_group_begin
@@ -554,7 +581,6 @@ __group_end__ = _nuklear.nk_group_end
 __group_end__.arglist = [POINTER(Context)]
 
 
-
 # List View
 
 # int nk_list_view_begin(struct nk_context*, struct nk_list_view *out, const char *id, nk_flags, int row_height, int row_count);
@@ -562,18 +588,21 @@ __group_end__.arglist = [POINTER(Context)]
 
 # Tree
 __tree_push_hashed__ = _nuklear.nk_tree_push_hashed
-__tree_push_hashed__.arglist = [POINTER(Context), c_int, c_char_p, c_int, c_char_p,c_int,c_int]
+__tree_push_hashed__.arglist = [
+    POINTER(Context), c_int, c_char_p, c_int, c_char_p, c_int, c_int]
 __tree_push_hashed__.restype = c_int
+
 
 def __tree_push__(ctx, theType, title, state):
     (filename, line_number,
      function_name, lines, index) = callerFrameInfo()
-    return __tree_push_hashed__(ctx, theType, str.encode(title), state, filename, len(filename),line_number)
+    return __tree_push_hashed__(ctx, theType, str.encode(title), state, filename, len(filename), line_number)
+
 
 def __tree_push_id__(ctx, theType, title, state, id):
     (filename, line_number,
      function_name, lines, index) = callerFrameInfo()
-    return __tree_push_hashed__(ctx, theType, str.encode(title), state, filename, len(filename),id)
+    return __tree_push_hashed__(ctx, theType, str.encode(title), state, filename, len(filename), id)
 
 
 # int nk_tree_image_push_hashed(struct nk_context*, enum nk_tree_type, struct nk_image, const char *title, enum nk_collapse_states initial_state, const char *hash, int len,int seed);
@@ -582,7 +611,8 @@ __tree_pop__ = _nuklear.nk_tree_pop
 __tree_pop__.arglist = [POINTER(Context)]
 
 __tree_state_push__ = _nuklear.nk_tree_state_push
-__tree_state_push__.arglist = [POINTER(Context), c_int, c_char_p, POINTER(c_int)]
+__tree_state_push__.arglist = [
+    POINTER(Context), c_int, c_char_p, POINTER(c_int)]
 __tree_state_push__.restype = c_int
 
 
@@ -592,20 +622,20 @@ __tree_state_push__.restype = c_int
 # Widget
 
 class WidgetLayoutStates(Enum):
-    INVALID=0
-    VALID=1
-    ROM=2
+    INVALID = 0
+    VALID = 1
+    ROM = 2
 
 
 class WidgetStates(Enum):
-    MODIFIED    = 1 << 0
-    INACTIVE    = 1 << 1
-    ENTERED     = 1 << 2
-    HOVER       = 1 << 3
-    ACTIVED     = 1 << 4
-    LEFT        = 1 << 5
-    HOVERED     = HOVER|MODIFIED
-    ACTIVE      = ACTIVED|MODIFIED
+    MODIFIED = 1 << 0
+    INACTIVE = 1 << 1
+    ENTERED = 1 << 2
+    HOVER = 1 << 3
+    ACTIVED = 1 << 4
+    LEFT = 1 << 5
+    HOVERED = HOVER | MODIFIED
+    ACTIVE = ACTIVED | MODIFIED
 
 
 # enum nk_widget_layout_states nk_widget(struct nk_rect*, const struct nk_context*);
@@ -631,16 +661,16 @@ __widget_height__.restype = c_float
 # Text
 
 class TextAlign(Enum):
-    LEFT        = 0x01
-    CENTERED    = 0x02
-    RIGHT       = 0x04
-    TOP         = 0x08
-    MIDDLE      = 0x10
-    BOTTOM      = 0x20
+    LEFT = 0x01
+    CENTERED = 0x02
+    RIGHT = 0x04
+    TOP = 0x08
+    MIDDLE = 0x10
+    BOTTOM = 0x20
 
-    TEXT_LEFT        = MIDDLE|LEFT
-    TEXT_CENTERED    = MIDDLE|CENTERED
-    TEXT_RIGHT       = MIDDLE|RIGHT
+    TEXT_LEFT = MIDDLE | LEFT
+    TEXT_CENTERED = MIDDLE | CENTERED
+    TEXT_RIGHT = MIDDLE | RIGHT
 
 
 __text__ = _nuklear.nk_text
@@ -685,7 +715,7 @@ __label_wrap__.arglist = [POINTER(Context), c_char_p]
 # int nk_button_text(struct nk_context*, const char *title, int len);
 __button_label__ = _nuklear.nk_button_label
 __button_label__.arglist = [POINTER(Context), c_char_p]
-__button_label__.restype     = c_int
+__button_label__.restype = c_int
 
 
 __button_color__ = _nuklear.nk_button_color
@@ -733,7 +763,6 @@ __checkbox_label__.arglist = [POINTER(Context), c_char_p, POINTER(c_int)]
 __checkbox_label__.restype = c_int
 
 
-
 # int nk_checkbox_text(struct nk_context*, const char*, int, int *active);
 # int nk_checkbox_flags_label(struct nk_context*, const char*, unsigned int *flags, unsigned int value);
 # int nk_checkbox_flags_text(struct nk_context*, const char*, int, unsigned int *flags, unsigned int value);
@@ -752,7 +781,8 @@ __option_label__.restype = c_int
 # int nk_option_text(struct nk_context*, const char*, int, int active);
 
 __selectable_label__ = _nuklear.nk_selectable_label
-__selectable_label__.arglist = [POINTER(Context), c_char_p, c_int, POINTER(c_int)]
+__selectable_label__.arglist = [
+    POINTER(Context), c_char_p, c_int, POINTER(c_int)]
 __selectable_label__.restype = c_int
 
 
@@ -776,16 +806,16 @@ __slide_int__.arglist = [POINTER(Context), c_int, c_int, c_int, c_int]
 __slide_int__.restype = c_int
 
 
-
 __slider_float__ = _nuklear.nk_slider_float
-__slider_float__.arglist = [POINTER(Context), c_float, POINTER(c_float), c_float, c_float]
+__slider_float__.arglist = [
+    POINTER(Context), c_float, POINTER(c_float), c_float, c_float]
 __slider_float__.restype = c_int
 
 
 __slider_int__ = _nuklear.nk_slider_int
-__slider_int__.arglist = [POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
+__slider_int__.arglist = [
+    POINTER(Context), c_int, POINTER(c_int), c_int, c_int]
 __slider_int__.restype = c_int
-
 
 
 __progress__ = _nuklear.nk_progress
@@ -807,54 +837,58 @@ __color_picker__.restype = ColorF
 # Properties
 
 __property_int__ = _nuklear.nk_property_int
-__property_int__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+__property_int__.arglist = [
+    POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
 
 
 __property_float__ = _nuklear.nk_property_float
-__property_float__.arglist = [POINTER(Context), c_char_p, c_float, POINTER(c_float), c_float, c_float, c_float]
+__property_float__.arglist = [POINTER(Context), c_char_p, c_float, POINTER(
+    c_float), c_float, c_float, c_float]
 # void nk_property_double(struct nk_context*, const char *name, double min, double *val, double max, double step, float inc_per_pixel);
 
 __propertyi__ = _nuklear.nk_propertyi
-__propertyi__.arglist = [POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
+__propertyi__.arglist = [
+    POINTER(Context), c_char_p, c_int, c_int, c_int, c_int, c_float]
 __propertyi__.restype = c_int
 
 
 __propertyf__ = _nuklear.nk_propertyf
-__propertyf__.arglist = [POINTER(Context), c_char_p, c_float, c_float, c_float, c_float, c_float]
+__propertyf__.arglist = [
+    POINTER(Context), c_char_p, c_float, c_float, c_float, c_float, c_float]
 __propertyf__.restype = c_float
 # double nk_propertyd(struct nk_context*, const char *name, double min, double val, double max, double step, float inc_per_pixel);
 
 
 # TextEdit
 class EditFlags(Enum):
-    DEFAULT                 = 0,
-    READ_ONLY               = 1 << 0
-    AUTO_SELECT             = 1 << 1
-    SIG_ENTER               = 1 << 2
-    ALLOW_TAB               = 1 << 3
-    NO_CURSOR               = 1 << 4
-    SELECTABLE              = 1 << 5
-    CLIPBOARD               = 1 << 6
-    CTRL_ENTER_NEWLINE      = 1 << 7
-    NO_HORIZONTAL_SCROLL    = 1 << 8
-    ALWAYS_INSERT_MODE      = 1 << 9
-    MULTILINE               = 1 << 10
-    GOTO_END_ON_ACTIVATE    = 1 << 11
+    DEFAULT = 0,
+    READ_ONLY = 1 << 0
+    AUTO_SELECT = 1 << 1
+    SIG_ENTER = 1 << 2
+    ALLOW_TAB = 1 << 3
+    NO_CURSOR = 1 << 4
+    SELECTABLE = 1 << 5
+    CLIPBOARD = 1 << 6
+    CTRL_ENTER_NEWLINE = 1 << 7
+    NO_HORIZONTAL_SCROLL = 1 << 8
+    ALWAYS_INSERT_MODE = 1 << 9
+    MULTILINE = 1 << 10
+    GOTO_END_ON_ACTIVATE = 1 << 11
 
 
 class EditTypes(Enum):
-    SIMPLE  = EditFlags.ALWAYS_INSERT_MODE
-    FIELD   = SIMPLE.value|EditFlags.SELECTABLE.value|EditFlags.CLIPBOARD.value
-    BOX     = EditFlags.ALWAYS_INSERT_MODE.value| EditFlags.SELECTABLE.value| EditFlags.MULTILINE.value|EditFlags.ALLOW_TAB.value|EditFlags.CLIPBOARD.value
-    EDITOR  = EditFlags.SELECTABLE.value|EditFlags.MULTILINE.value|EditFlags.ALLOW_TAB.value| EditFlags.CLIPBOARD.value
+    SIMPLE = EditFlags.ALWAYS_INSERT_MODE
+    FIELD = SIMPLE.value | EditFlags.SELECTABLE.value | EditFlags.CLIPBOARD.value
+    BOX = EditFlags.ALWAYS_INSERT_MODE.value | EditFlags.SELECTABLE.value | EditFlags.MULTILINE.value | EditFlags.ALLOW_TAB.value | EditFlags.CLIPBOARD.value
+    EDITOR = EditFlags.SELECTABLE.value | EditFlags.MULTILINE.value | EditFlags.ALLOW_TAB.value | EditFlags.CLIPBOARD.value
 
 
 class EditEvents(Enum):
-    ACTIVE      = 1 << 0
-    INACTIVE    = 1 << 1
-    ACTIVATED   = 1 << 2
+    ACTIVE = 1 << 0
+    INACTIVE = 1 << 1
+    ACTIVATED = 1 << 2
     DEACTIVATED = 1 << 3
-    COMMITED    = 1 << 4
+    COMMITED = 1 << 4
 
 
 filter_default = _nuklear.nk_filter_default
@@ -867,7 +901,8 @@ filter_binary = _nuklear.nk_filter_binary
 
 
 __edit_string__ = _nuklear.nk_edit_string
-__edit_string__.arglist = [POINTER(Context), c_int, c_char_p, POINTER(c_int), c_int, ctypes.c_void_p]
+__edit_string__.arglist = [
+    POINTER(Context), c_int, c_char_p, POINTER(c_int), c_int, ctypes.c_void_p]
 __edit_string__.restype = c_int
 
 # nk_flags nk_edit_string_zero_terminated(struct nk_context*, nk_flags, char *buffer, int max, nk_plugin_filter);
@@ -906,14 +941,14 @@ __chart_end__.arglist = [POINTER(Context)]
 # Popup
 
 __popup_begin__ = _nuklear.nk_popup_begin
-__popup_begin__.arglist= [POINTER(Context), c_int, c_char_p, c_int,Rect]
+__popup_begin__.arglist = [POINTER(Context), c_int, c_char_p, c_int, Rect]
 __popup_begin__.restype = c_int
 
 
 # void nk_popup_close(struct nk_context*);
 
 __popup_end__ = _nuklear.nk_popup_end
-__popup_end__.arglist= [POINTER(Context)]
+__popup_end__.arglist = [POINTER(Context)]
 
 
 # void nk_popup_end(struct nk_context*);
@@ -921,7 +956,8 @@ __popup_end__.arglist= [POINTER(Context)]
 
 # ComboBox
 __combo__ = _nuklear.nk_combo
-__combo__.arglist = [POINTER(Context), POINTER(POINTER(c_char_p)), c_int, c_int, c_int, Vec2]
+__combo__.arglist = [POINTER(Context), POINTER(
+    POINTER(c_char_p)), c_int, c_int, c_int, Vec2]
 __combo__.restype = c_int
 
 # int nk_combo_separator(struct nk_context*, const char *items_separated_by_separator, int separator, int selected, int count, int item_height, struct nk_vec2 size);
@@ -956,7 +992,7 @@ __combo_end__ = _nuklear.nk_combo_end
 __combo_end__.arglist = [POINTER(Context)]
 
 # Contextual
-__contextual_begin__  = _nuklear.nk_contextual_begin
+__contextual_begin__ = _nuklear.nk_contextual_begin
 __contextual_begin__.arglist = [POINTER(Context), c_int, Vec2, Rect]
 __contextual_begin__.restype = c_int
 # int nk_contextual_item_text(struct nk_context*, const char*, int,nk_flags align);
@@ -1018,46 +1054,46 @@ __menu_end__.arglist = [POINTER(Context)]
 # Style
 
 class StyleColors(Enum):
-    TEXT=0
-    WINDOW=1
-    HEADER=2
-    BORDER=3
-    BUTTON=4
-    BUTTON_HOVER=5
-    BUTTON_ACTIVE=6
-    TOGGLE=7
-    TOGGLE_HOVER=8
-    TOGGLE_CURSOR=9
-    SELECT=10
-    SELECT_ACTIVE=11
-    SLIDER=12
-    SLIDER_CURSOR=13
-    SLIDER_CURSOR_HOVER=14
-    SLIDER_CURSOR_ACTIVE=15
-    PROPERTY=16
-    EDIT=17
-    EDIT_CURSOR=18
-    COMBO=19
-    CHART=20
-    CHART_COLOR=21
-    CHART_COLOR_HIGHLIGHT=22
-    SCROLLBAR=23
-    SCROLLBAR_CURSOR=24
-    SCROLLBAR_CURSOR_HOVER=25
-    SCROLLBAR_CURSOR_ACTIVE=26
-    TAB_HEADER=27
-    COUNT=28
+    TEXT = 0
+    WINDOW = 1
+    HEADER = 2
+    BORDER = 3
+    BUTTON = 4
+    BUTTON_HOVER = 5
+    BUTTON_ACTIVE = 6
+    TOGGLE = 7
+    TOGGLE_HOVER = 8
+    TOGGLE_CURSOR = 9
+    SELECT = 10
+    SELECT_ACTIVE = 11
+    SLIDER = 12
+    SLIDER_CURSOR = 13
+    SLIDER_CURSOR_HOVER = 14
+    SLIDER_CURSOR_ACTIVE = 15
+    PROPERTY = 16
+    EDIT = 17
+    EDIT_CURSOR = 18
+    COMBO = 19
+    CHART = 20
+    CHART_COLOR = 21
+    CHART_COLOR_HIGHLIGHT = 22
+    SCROLLBAR = 23
+    SCROLLBAR_CURSOR = 24
+    SCROLLBAR_CURSOR_HOVER = 25
+    SCROLLBAR_CURSOR_ACTIVE = 26
+    TAB_HEADER = 27
+    COUNT = 28
 
 
 class StyleCursor(Enum):
-    ARROW=0
-    TEXT=1
-    MOVE=2
-    RESIZE_VERTICAL=3
-    RESIZE_HORIZONTAL=4
-    RESIZE_TOP_LEFT_DOWN_RIGHT=5
-    RESIZE_TOP_RIGHT_DOWN_LEFT=6
-    COUN=7
+    ARROW = 0
+    TEXT = 1
+    MOVE = 2
+    RESIZE_VERTICAL = 3
+    RESIZE_HORIZONTAL = 4
+    RESIZE_TOP_LEFT_DOWN_RIGHT = 5
+    RESIZE_TOP_RIGHT_DOWN_LEFT = 6
+    COUN = 7
 
 
 # void nk_style_default(struct nk_context*);
@@ -1099,7 +1135,6 @@ __style_pop_flags__.restype = c_int
 __style_pop_color__ = _nuklear.nk_style_pop_color
 __style_pop_color__.arglist = [POINTER(Context)]
 __style_pop_color__.restype = c_int
-
 
 
 # struct nk_color nk_rgb(int r, int g, int b);
@@ -1209,14 +1244,13 @@ __rgb_cf__.restype = Color
 
 
 class FontCoordType(Enum):
-    UV=0
-    PIXEL=1
-
+    UV = 0
+    PIXEL = 1
 
 
 class FontAtlasFormat(Enum):
-    ALPHA8=0
-    RGBA32=1
+    ALPHA8 = 0
+    RGBA32 = 1
 
 
 # const nk_rune *nk_font_default_glyph_ranges(void);
@@ -1245,13 +1279,14 @@ class FontAtlasFormat(Enum):
 
 
 class AllocationType(Enum):
-    FIXED=0
-    DYNAMIC=1
+    FIXED = 0
+    DYNAMIC = 1
+
 
 class BufferAllocationType(Enum):
-    FRONT=0
-    BACK=1
-    MAX=2
+    FRONT = 0
+    BACK = 1
+    MAX = 2
 
 # void nk_buffer_init_default(struct nk_buffer*);
 # void nk_buffer_init(struct nk_buffer*, const struct nk_allocator*, nk_size size);
@@ -1305,13 +1340,14 @@ class BufferAllocationType(Enum):
 
 
 class TextEditType(Enum):
-    SINGLE_LINE=0
-    MULTI_LINE=1
+    SINGLE_LINE = 0
+    MULTI_LINE = 1
+
 
 class TextEditMode(Enum):
-    VIEW=0
-    INSERT=1
-    REPLACE=2
+    VIEW = 0
+    INSERT = 1
+    REPLACE = 2
 
 
 # int nk_filter_default(const struct nk_text_edit*, nk_rune unicode);
@@ -1336,30 +1372,30 @@ class TextEditMode(Enum):
 
 # Drawing
 class CommandType(Enum):
-    NOP=0
-    SCISSOR=1
-    LINE=2
-    CURVE=3
-    RECT=4
-    RECT_FILLED=5
-    RECT_MULTI_COLOR=6
-    CIRCLE=7
-    CIRCLE_FILLED=8
-    ARC=9
-    ARC_FILLED=10
-    TRIANGLE=11
-    TRIANGLE_FILLED=12
-    POLYGON=13
-    POLYGON_FILLED=14
-    POLYLINE=15
-    TEXT=16
-    IMAGE=17
-    CUSTOM=18
+    NOP = 0
+    SCISSOR = 1
+    LINE = 2
+    CURVE = 3
+    RECT = 4
+    RECT_FILLED = 5
+    RECT_MULTI_COLOR = 6
+    CIRCLE = 7
+    CIRCLE_FILLED = 8
+    ARC = 9
+    ARC_FILLED = 10
+    TRIANGLE = 11
+    TRIANGLE_FILLED = 12
+    POLYGON = 13
+    POLYGON_FILLED = 14
+    POLYLINE = 15
+    TEXT = 16
+    IMAGE = 17
+    CUSTOM = 18
+
 
 class CommandScissor(Enum):
     OFF = 0
     ON = 1
-
 
 
 # void nk_stroke_line(struct nk_command_buffer *b, float x0, float y0, float x1, float y1, float line_thickness, struct nk_color);
@@ -1434,16 +1470,15 @@ class CommandScissor(Enum):
 
 # typedef nk_ushort nk_draw_index;
 class DrawListStroke(Enum):
-    STROKE_OPEN=0
-    STROKE_CLOSED=1
+    STROKE_OPEN = 0
+    STROKE_CLOSED = 1
 
 
 class DrawVertexLayoutAttribute(Enum):
-    POSITION=0
-    COLOR=1
-    TEXCOORD=2
-    ATTRIBUTE_COUNT=3
-
+    POSITION = 0
+    COLOR = 1
+    TEXCOORD = 2
+    ATTRIBUTE_COUNT = 3
 
 
 # void nk_draw_list_init(struct nk_draw_list*);
@@ -1479,8 +1514,8 @@ class DrawVertexLayoutAttribute(Enum):
 # GUI
 
 class StyleItemType(Enum):
-    COLOR=0
-    IMAGE=1
+    COLOR = 0
+    IMAGE = 1
 
 # union nk_style_item_data {
 #     struct nk_image image;
@@ -1489,51 +1524,52 @@ class StyleItemType(Enum):
 
 
 class StyleHeaderAlign(Enum):
-    LEFT=0
-    RIGHT=1
+    LEFT = 0
+    RIGHT = 1
 
 
 class PanelType(Enum):
-    WINDOW     = 1 << 0
-    GROUP      = 1 << 1
-    POPUP      = 1 << 2
+    WINDOW = 1 << 0
+    GROUP = 1 << 1
+    POPUP = 1 << 2
     CONTEXTUAL = 1 << 4
-    COMBO      = 1 << 5
-    MENU       = 1 << 6
-    TOOLTIP    = 1 << 7
+    COMBO = 1 << 5
+    MENU = 1 << 6
+    TOOLTIP = 1 << 7
+
 
 class PanelSet(Enum):
-    NONBLOCK = PanelType.CONTEXTUAL.value|PanelType.COMBO.value|PanelType.MENU.value|PanelType.TOOLTIP.value
-    POPUP = NONBLOCK|PanelType.POPUP.value
-    SUB = POPUP|PanelType.GROUP.value
+    NONBLOCK = PanelType.CONTEXTUAL.value | PanelType.COMBO.value | PanelType.MENU.value | PanelType.TOOLTIP.value
+    POPUP = NONBLOCK | PanelType.POPUP.value
+    SUB = POPUP | PanelType.GROUP.value
 
 
 class PanelRowLayoutType(Enum):
     DYNAMIC_FIXED = 0
-    DYNAMIC_ROW=1
-    DYNAMIC_FREE=2
-    DYNAMIC=3
-    STATIC_FIXED=4
-    STATIC_ROW=5
-    STATIC_FREE=6
-    STATIC=7
-    TEMPLATE=8
-    COUNT=9
-
+    DYNAMIC_ROW = 1
+    DYNAMIC_FREE = 2
+    DYNAMIC = 3
+    STATIC_FIXED = 4
+    STATIC_ROW = 5
+    STATIC_FREE = 6
+    STATIC = 7
+    TEMPLATE = 8
+    COUNT = 9
 
 
 #==============================================================
 #                          WINDOW
 # =============================================================
 
-WINDOW_PRIVATE       = 1 << 11
-WINDOW_DYNAMIC       = WINDOW_PRIVATE
-WINDOW_ROM           = 1 << 12
-WINDOW_NOT_INTERACTIVE = WINDOW_ROM|PanelFlags.WINDOW_NO_INPUT.value
-WINDOW_HIDDEN        = 1 << 13
-WINDOW_CLOSED        = 1 << 14
-WINDOW_MINIMIZED     = 1 << 15
-WINDOW_REMOVE_ROM    = 1 << 16
+
+WINDOW_PRIVATE = 1 << 11
+WINDOW_DYNAMIC = WINDOW_PRIVATE
+WINDOW_ROM = 1 << 12
+WINDOW_NOT_INTERACTIVE = WINDOW_ROM | PanelFlags.WINDOW_NO_INPUT.value
+WINDOW_HIDDEN = 1 << 13
+WINDOW_CLOSED = 1 << 14
+WINDOW_MINIMIZED = 1 << 15
+WINDOW_REMOVE_ROM = 1 << 16
 
 
 # /*==============================================================
@@ -1545,7 +1581,6 @@ WINDOW_REMOVE_ROM    = 1 << 16
 #     struct nk_panel pan;
 #     struct nk_window win;
 # };
-
 
 
 # because I don't want to recreate all of the nuklear data structures,
@@ -1575,14 +1610,13 @@ __get_text_width__.restype = c_float
 
 __button_label_active__ = _nuklear.nkWrapper_button_label_active
 __button_label_active__.arglist = [POINTER(Context), c_char_p]
-__button_label_active__.restype     = c_int
-
+__button_label_active__.restype = c_int
 
 
 # because average programmers who are English speakers like Subject-Verb-Object
 # word ordering, create an object that holds the nuklear context.
 class NuklearContext:
-    def __init__(self,ctx):
+    def __init__(self, ctx):
         self.ctx = ctx
 
     def begin(self, title, bounds, flags):
@@ -1603,11 +1637,12 @@ class NuklearContext:
     def layout_widget_bounds(self):
         return __layout_widget_bounds__(self.ctx)
 
-    def layout_row_dynamic(self,height,columns):
-        __layout_row_dynamic__(self.ctx,ctypes.c_float(height), columns)
+    def layout_row_dynamic(self, height, columns):
+        __layout_row_dynamic__(self.ctx, ctypes.c_float(height), columns)
 
-    def layout_row_static(self,height,item_width,columns):
-        __layout_row_static__(self.ctx,ctypes.c_float(height), item_width,columns)
+    def layout_row_static(self, height, item_width, columns):
+        __layout_row_static__(self.ctx, ctypes.c_float(
+            height), item_width, columns)
 
     def group_begin(self, title, flags):
         return __group_begin__(self.ctx, str.encode(title), flags.value)
@@ -1616,16 +1651,16 @@ class NuklearContext:
         return __group_end__(self.ctx)
 
     def text(self, text, length, alignment):
-        __text__(self.ctx,str.encode(text),length, alignment.value)
+        __text__(self.ctx, str.encode(text), length, alignment.value)
 
     def label(self, text, alignment):
         __label__(self.ctx, str.encode(text), alignment.value)
 
     def label_colored(self, text, align, color):
-        __label_colored__(self.ctx,str.encode(text),align.value,color)
+        __label_colored__(self.ctx, str.encode(text), align.value, color)
 
     def label_wrap(self, text):
-        __label_wrap__(self.ctx,str.encode(text))
+        __label_wrap__(self.ctx, str.encode(text))
 
     def button_label(self, title, active=False):
         if active:
@@ -1635,7 +1670,8 @@ class NuklearContext:
 
     def checkbox_label(self, text, active):
         a = ctypes.c_int(active)
-        wasModified = __checkbox_label__(self.ctx,str.encode(text),ctypes.byref(a))
+        wasModified = __checkbox_label__(
+            self.ctx, str.encode(text), ctypes.byref(a))
         return (wasModified, a.value)
 
     def option_label(self, label, active):
@@ -1643,7 +1679,8 @@ class NuklearContext:
 
     def selectable_label(self, label, align, value):
         a = ctypes.c_int(value)
-        wasModified = __selectable_label__(self.ctx, str.encode(label), align.value, ctypes.byref(a))
+        wasModified = __selectable_label__(
+            self.ctx, str.encode(label), align.value, ctypes.byref(a))
         return (wasModified, a.value)
 
     def slide_int(self, minV, val, maxV, step):
@@ -1651,17 +1688,20 @@ class NuklearContext:
 
     def slider_float(self, minV, value, maxV, step):
         v = ctypes.c_float(value)
-        wasModified = __slider_float__(self.ctx, c_float(minV), ctypes.byref(v), c_float(maxV), c_float(step))
-        return (wasModified,v.value)
+        wasModified = __slider_float__(self.ctx, c_float(
+            minV), ctypes.byref(v), c_float(maxV), c_float(step))
+        return (wasModified, v.value)
 
     def slider_int(self, minV, value, maxV, step):
         v = ctypes.c_int(value)
-        wasModified = __slider_int__(self.ctx, minV, ctypes.byref(v), maxV, step)
-        return (wasModified,v.value)
+        wasModified = __slider_int__(
+            self.ctx, minV, ctypes.byref(v), maxV, step)
+        return (wasModified, v.value)
 
     def progress(self, cur, max, is_modifyable):
         v = ctypes.c_int(cur)
-        wasModified = __progress__(self.ctx, ctypes.byref(v), max, is_modifyable.value)
+        wasModified = __progress__(
+            self.ctx, ctypes.byref(v), max, is_modifyable.value)
         return (wasModified, v.value)
 
     def property_int(self, name, minV, val, maxV, step, inc_per_pixel):
@@ -1685,14 +1725,15 @@ class NuklearContext:
                                 filterF),
                 l.value)
 
-    def chart_begin(self,chart_type,count,minV,maxV):
-        return __chart_begin__(self.ctx,chart_type.value,count,c_float(minV),c_float(maxV))
+    def chart_begin(self, chart_type, count, minV, maxV):
+        return __chart_begin__(self.ctx, chart_type.value, count, c_float(minV), c_float(maxV))
 
     def chart_add_slot(self, chart_type, count, minV, maxV):
-        __chart_add_slot__(self.ctx, c_int(chart_type.value), c_int(count), c_float(minV), c_float(maxV))
+        __chart_add_slot__(self.ctx, c_int(chart_type.value),
+                           c_int(count), c_float(minV), c_float(maxV))
 
-    def chart_push(self,value):
-        return __chart_push__(self.ctx,c_float(value))
+    def chart_push(self, value):
+        return __chart_push__(self.ctx, c_float(value))
 
     def chart_push_slot(self, val, slot):
         return __chart_push_slot__(self.ctx, c_float(val), c_int(slot))
@@ -1732,12 +1773,11 @@ class NuklearContext:
     def popup_begin(self, theType, title, flags, rect):
         return __popup_begin__(self.ctx, theType.value, str.encode(title), flags.value, rect)
 
-    def menu_begin_label(self,text,align,size):
-        return __menu_begin_label__(self.ctx,str.encode(text),align.value,size)
+    def menu_begin_label(self, text, align, size):
+        return __menu_begin_label__(self.ctx, str.encode(text), align.value, size)
 
     def menu_item_label(self, label, align):
-        return __menu_item_label__(self.ctx,str.encode(label), align.value)
-
+        return __menu_item_label__(self.ctx, str.encode(label), align.value)
 
     def item_is_any_active(self):
         '''returns if any window or widgets is currently hovered or active'''
@@ -1752,8 +1792,8 @@ class NuklearContext:
     def combo_end(self):
         __combo_end__(self.ctx)
 
-    def contextual_begin(self,flags, size, triggerBounds):
-        return __contextual_begin__(self.ctx,flags, size, triggerBounds)
+    def contextual_begin(self, flags, size, triggerBounds):
+        return __contextual_begin__(self.ctx, flags, size, triggerBounds)
 
     def contextual_item_label(self, text, align):
         return __contextual_item_label__(self.ctx, str.encode(text), align.value)
@@ -1771,7 +1811,8 @@ class NuklearContext:
         __menubar_begin__(self.ctx)
 
     def layout_row_begin(self, format, row_height, columns):
-        __layout_row_begin__(self.ctx,ctypes.c_int(format.value), ctypes.c_float(row_height), ctypes.c_int(columns))
+        __layout_row_begin__(self.ctx, ctypes.c_int(
+            format.value), ctypes.c_float(row_height), ctypes.c_int(columns))
 
     def layout_row_push(self, ratio_or_width):
         __layout_row_push__(self.ctx, ctypes.c_float(ratio_or_width))
@@ -1797,8 +1838,7 @@ class NuklearContext:
     def style_pop_color(self):
         return __style_pop_color__(self.ctx)
 
-
-    def rgb_cf(self,colorf):
+    def rgb_cf(self, colorf):
         return __rgb_cf__(self.ctx, colorf)
 
     def menubar_end(self):
@@ -1813,7 +1853,7 @@ class NuklearContext:
         ctypesList = []
         for x in range(count):
             ctypesList.append(str.encode(items[x]))
-        arr = (ctypes.c_char_p * len(ctypesList)) (*ctypesList)
+        arr = (ctypes.c_char_p * len(ctypesList))(*ctypesList)
 
         return __combo__(self.ctx, arr, count, selected, item_height, size)
 
@@ -1832,7 +1872,6 @@ class NuklearContext:
                                     ctypes.byref(v)),
                 v.value)
 
-
     def tree_pop(self):
         __tree_pop__(self.ctx)
 
@@ -1845,13 +1884,13 @@ class NuklearContext:
     def button_set_behavior(self, behavior):
         __button_set_behavior__(self.ctx, behavior.value)
 
-    def button_color(self,color):
-        return __button_color__(self.ctx,color)
+    def button_color(self, color):
+        return __button_color__(self.ctx, color)
 
     def button_symbol(self, symbol):
         return __button_symbol__(self.ctx, symbol.value)
 
-    def button_symbol_label(self,symbol,label,align):
+    def button_symbol_label(self, symbol, label, align):
         return __button_symbol_label__(self.ctx, symbol.value, str.encode(label), align.value)
 
     def set_style_window_header_align(self, header_align):
@@ -1864,12 +1903,10 @@ class NuklearContext:
         return __style_push_window_spacing__(self.ctx, vec2)
 
     def style_push_button_rounding(self, f):
-        return __style_push_button_rounding__(self.ctx,ctypes.c_float(f))
+        return __style_push_button_rounding__(self.ctx, ctypes.c_float(f))
 
     def get_text_width(self, s):
         return __get_text_width__(self.ctx, str.encode(s))
-
-
 
 
 # class to protect the ratio array from garbage collection
@@ -1881,7 +1918,8 @@ class LayoutRow():
             self.ctypesList.append(ctypes.c_float(ratio[x]))
         # protect self.arr from garbage collection until exit
         self.arr = (ctypes.c_float * len(ratio))(*self.ctypesList)
-        __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(height), c_int(len(self.ctypesList)), self.arr)
+        __layout_row__(self.ctx, c_int(layout_format.value), ctypes.c_float(
+            height), c_int(len(self.ctypesList)), self.arr)
 
     def __enter__(self):
         pass

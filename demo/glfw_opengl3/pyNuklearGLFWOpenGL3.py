@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-#Copyright (c) 2017-2018 William Emerison Six
+# Copyright (c) 2017-2018 William Emerison Six
 #
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 
 import sys
@@ -40,12 +40,11 @@ from demoTriangle import *
 from demo.overview import *
 
 
-
 if __name__ != '__main__':
     sys.exit(1)
 
 # For Development purposes, always run the tests before running the program
-RUN_TESTS=True
+RUN_TESTS = True
 
 if RUN_TESTS:
     import doctest
@@ -58,21 +57,20 @@ if RUN_TESTS:
             sys.exit(1)
 
 
-
-
 # Initialize the library
 if not glfw.init():
     sys.exit()
 
-glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR,3)
-glfw.window_hint(glfw.CONTEXT_VERSION_MINOR,3)
-glfw.window_hint(glfw.OPENGL_PROFILE,glfw.OPENGL_CORE_PROFILE)
-#for osx
+glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+# for osx
 glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
 
 # Create a windowed mode window and its OpenGL context
-window = glfw.create_window(1000, 1000, "pyNuklear demo - GLFW OpenGL3", None, None)
+window = glfw.create_window(
+    1000, 1000, "pyNuklear demo - GLFW OpenGL3", None, None)
 if not window:
     glfw.terminate()
     sys.exit()
@@ -88,17 +86,20 @@ nkGLFW3.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
 nkGLFW3.glfw3_font_stash_end()
 
 # Install a key handler
+
+
 def on_key(window, key, scancode, action, mods):
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
-        glfwSetWindowShouldClose(window,1)
+        glfwSetWindowShouldClose(window, 1)
+
+
 glfw.set_key_callback(window, on_key)
 
 
-gl.glClearColor(0.1,0.18,0.24,1.0)
+gl.glClearColor(0.1, 0.18, 0.24, 1.0)
 gl.glEnable(gl.GL_DEPTH_TEST)
 gl.glClearDepth(1.0)
 gl.glDepthFunc(gl.GL_LEQUAL)
-
 
 
 class Camera:
@@ -109,6 +110,7 @@ class Camera:
 
         self.rotationX = 0.0
         self.rotationY = 0.0
+
 
 camera = Camera()
 
@@ -136,10 +138,10 @@ while not glfw.window_should_close(window):
     ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
     # set the projection matrix to be perspective
-    ms.perspective(fov= 45.0,
-                   aspectRatio= width / height,
-                   nearZ= 0.1,
-                   farZ= 10000.0)
+    ms.perspective(fov=45.0,
+                   aspectRatio=width / height,
+                   nearZ=0.1,
+                   farZ=10000.0)
 
     # get input from keyboard for camera movement
     if not nuklear.item_is_any_active():
@@ -176,14 +178,13 @@ while not glfw.window_should_close(window):
     MAX_VERTEX_BUFFER = 512 * 1024
     MAX_ELEMENT_BUFFER = 128 * 1024
 
-
     if(nuklear.begin(title="Demonstration",
-                     bounds=nk.Rect(10.0,10.0,230.0,250.0),
+                     bounds=nk.Rect(10.0, 10.0, 230.0, 250.0),
                      flags=nk.PanelFlags.WINDOW_BORDER.value
-                       |nk.PanelFlags.WINDOW_MOVABLE.value
-                       |nk.PanelFlags.WINDOW_SCALABLE.value
-                       |nk.PanelFlags.WINDOW_MINIMIZABLE.value
-                       |nk.PanelFlags.WINDOW_TITLE.value)):
+                     | nk.PanelFlags.WINDOW_MOVABLE.value
+                     | nk.PanelFlags.WINDOW_SCALABLE.value
+                     | nk.PanelFlags.WINDOW_MINIMIZABLE.value
+                     | nk.PanelFlags.WINDOW_TITLE.value)):
 
         nuklear.layout_row_static(height=30.0,
                                   item_width=80,
@@ -200,9 +201,11 @@ while not glfw.window_should_close(window):
             op = 0
 
         if nuklear.option_label(label="easy",
-                                active= op == 0): op = 0
+                                active=op == 0):
+                                    op = 0
         if nuklear.option_label(label="hard",
-                                active= op == 1): op = 1
+                                active=op == 1):
+                                    op = 1
 
         nuklear.layout_row_dynamic(height=25.0,
                                    columns=1)
@@ -269,17 +272,17 @@ while not glfw.window_should_close(window):
                                              step=0.01,
                                              inc_per_pixel=0.005)
 
-
-            gl.glClearColor(background.r,background.g,background.b,background.a)
+            gl.glClearColor(background.r, background.g,
+                            background.b, background.a)
 
             nuklear.combo_end()
 
     nuklear.end()
 
-
     overview(nuklear)
 
-    nkGLFW3.glfw3_render(nk.AntiAliasing.ON.value, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
+    nkGLFW3.glfw3_render(nk.AntiAliasing.ON.value,
+                         MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
