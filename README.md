@@ -3,21 +3,21 @@ PyNuklear
 Python bindings to the nuklear immediate-mode GUI library
 https://github.com/vurtun/nuklear
 
+Currently works on Linux and MacOS, with Python 3
 
 
-Dependencies
-============
+Run Demos
+=========
 
-1. Python3
-2. GLFW
-3. Python3 OpenGL
-4. Python3 NumPy
+1. You may want to use a virtualenv.  Then "pip install -r requirements.txt".
+2. "make"
+3. Run Python.
 
+For the OpenGL2 demo:
 
-Run Demo
-========
+>>> import pynuklear.demo.glfw_opengl2.pyNuklearGLFWOpenGL2 as gl2Demo
+>>> gl2Demo.demo()
 
-1. Add the directory which contains this file to your PYTHONPATH
-2. To build nuklear as a shared library,  cd into contrib/nuklear/.  On Linux, "make".  On macOS, "make -f Makefile.osx"
-3. To run on a system with OpenGL 2, execute "python3 demo/glfw_opengl2/pyNuklearGLFWOpenGL2.py"
-4. To run on a system with OpenGL 3+, execute "python3 demo/glfw_opengl3/pyNuklearGLFWOpenGL3.py"
+For the OpenGL3 demo:
+
+>>> import pynuklear.demo.glfw_opengl3.pyNuklearGLFWOpenGL3 as gl3Demo
