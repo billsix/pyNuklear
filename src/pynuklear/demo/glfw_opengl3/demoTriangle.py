@@ -24,10 +24,10 @@ import OpenGL.GL as gl
 import OpenGL.GL.shaders as shaders
 import numpy as np
 import glfw
-import pyMatrixStack as ms
+import pynuklear.pyMatrixStack as ms
 import ctypes
 import math
-import nuklear as nk
+import pynuklear as nk
 
 
 pwd = os.path.dirname(os.path.abspath(__file__))
@@ -54,10 +54,10 @@ class Triangle:
 
         # initialize shaders
 
-        with open(os.path.join(pwd, 'shaders', 'triangle.vert'), 'r') as f:
+        with open(os.path.join(pwd, 'triangle.vert'), 'r') as f:
             vs = shaders.compileShader(f.read(), gl.GL_VERTEX_SHADER)
 
-        with open(os.path.join(pwd, 'shaders', 'triangle.frag'), 'r') as f:
+        with open(os.path.join(pwd, 'triangle.frag'), 'r') as f:
             fs = shaders.compileShader(f.read(), gl.GL_FRAGMENT_SHADER)
 
         self.shader = shaders.compileProgram(vs, fs)

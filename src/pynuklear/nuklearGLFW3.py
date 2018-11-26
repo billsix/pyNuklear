@@ -27,7 +27,7 @@ import inspect
 import builtins
 import OpenGL.GL as gl
 import glfw
-import nuklear as nk
+import pynuklear.nuklear as nk
 
 
 GLFW3_DEFAULT = 0
