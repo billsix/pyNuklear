@@ -15,9 +15,14 @@ Run Demos
 
 For the OpenGL2 demo:
 
->>> import pynuklear.demo.glfw_opengl2.pyNuklearGLFWOpenGL2 as gl2Demo
->>> gl2Demo.demo()
+```python
+import pynuklear.demo.glfw_opengl2.pyNuklearGLFWOpenGL2 as gl2Demo
+gl2Demo.demo()
+```
 
 For the OpenGL3 demo:
 
->>> import pynuklear.demo.glfw_opengl3.pyNuklearGLFWOpenGL3 as gl3Demo
+```python
+import pynuklear.demo.glfw_opengl3.pyNuklearGLFWOpenGL3 as gl3Demo
+gl3Demo.demo()
+```
