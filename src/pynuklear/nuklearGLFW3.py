@@ -24,7 +24,6 @@ import ctypes.util
 from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_short,
                     c_uint, c_double, c_float, c_ushort, c_byte, c_ubyte)
 import inspect
-import builtins
 import OpenGL.GL as gl
 import glfw
 import pynuklear.nuklear as nk
