@@ -88,7 +88,7 @@ class Triangle:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
 
     def render(self):
-        with ms.GLStackProtector(ms.MatrixStack.model):
+        with ms.push_matrix(ms.MatrixStack.model):
             # rotate the triangle along the positive z axis
             ms.translate(ms.MatrixStack.model,
                          math.sin(glfw.get_time()),
