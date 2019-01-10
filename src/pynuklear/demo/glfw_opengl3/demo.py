@@ -29,16 +29,9 @@ import glfw
 import ctypes
 import math
 
-import inspect
 
-
-import pynuklear.config
-nuklearFolder = os.path.dirname(inspect.getfile(pynuklear))
-pynuklear.config.set_nuklear_path(ctypes.CDLL(
-    os.path.join(nuklearFolder,
-                 'nuklearGLFWOpenGL3.so')))
-import pynuklear.nuklear as nk
-import pynuklear.nuklearGLFW3 as nkGLFW3
+import pynuklear as nk
+import pynuklear.glfw3 as nkglfw3
 import pyMatrixStack as ms
 from pynuklear.demo.glfw_opengl3.demoTriangle import *
 from pynuklear.demo.overview import *
@@ -68,12 +61,12 @@ def demo():
     # Make the window's context current
     glfw.make_context_current(window)
 
-    ctx = nkGLFW3.glfw3_init(window, nkGLFW3.GLFW3_INSTALL_CALLBACKS)
+    ctx = nkglfw3.glfw3_init(window, nkglfw3.GLFW3_INSTALL_CALLBACKS)
     nuklear = nk.NuklearContext(ctx)
 
-    fontAtlas = nkGLFW3.FontAtlas()
-    nkGLFW3.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
-    nkGLFW3.glfw3_font_stash_end()
+    fontAtlas = nkglfw3.FontAtlas()
+    nkglfw3.glfw3_font_stash_begin(ctypes.byref(fontAtlas))
+    nkglfw3.glfw3_font_stash_end()
 
     # Install a key handler
 
@@ -117,7 +110,7 @@ def demo():
 
         # Poll for and process events
         glfw.poll_events()
-        nkGLFW3.glfw3_new_frame()
+        nkglfw3.glfw3_new_frame()
 
         width, height = glfw.get_framebuffer_size(window)
         gl.glViewport(0, 0, width, height)
@@ -271,7 +264,7 @@ def demo():
 
         overview(nuklear)
 
-        nkGLFW3.glfw3_render(nk.AntiAliasing.ON.value,
+        nkglfw3.glfw3_render(nk.AntiAliasing.ON.value,
                              MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER)
 
         # done with frame, flush and swap buffers

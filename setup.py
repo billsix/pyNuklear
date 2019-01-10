@@ -1,4 +1,10 @@
-from setuptools import setup
+from setuptools import setup, Extension
+
+module1 = Extension('pynuklearc',
+                    sources = ['contrib/nuklear/nuklearGLFWOpenGL3.c'],
+                    include_dirs = ['/usr/include'],
+                    libraries = ['glfw'],
+                    library_dirs = ['/usr/lib'],)
 
 setup (name = 'pynuklear',
        version = '0.0.1',
@@ -10,11 +16,9 @@ setup (name = 'pynuklear',
        license = "MIT",
        packages=['pynuklear',
                  'pynuklear/demo',
-                 'pynuklear/demo/glfw_opengl2',
                  'pynuklear/demo/glfw_opengl3'],
        package_dir={'pynuklear': 'src/pynuklear',
                     'pynuklear/demo': 'src/pynuklear/demo/',
-                    'pynuklear/demo/glfw_opengl2': 'src/pynuklear/demo/glfw_opengl2',
                     'pynuklear/demo/glfw_opengl3': 'src/pynuklear/demo/glfw_opengl3'},
        package_data={'pynuklear/demo/glfw_opengl3': ['triangle*'],
                      '' : ["*.so"]},
@@ -25,4 +29,6 @@ setup (name = 'pynuklear',
        ],
        long_description = '''
 Bindings to the nuklear immediate mode GUI library.  The only way to GUI.
-''')
+''',
+       ext_modules = [module1]
+)

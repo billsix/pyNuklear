@@ -26,11 +26,9 @@ from ctypes import (Structure, POINTER, CFUNCTYPE, byref, c_char_p, c_int, c_sho
 import inspect
 from enum import Enum
 
-import pynuklear.config
-# get the nuklear shared library, configured from the caller
-# (because different backends (e.g OpenGL2 vs 3 have different
-# backing shared libraries)
-_nuklear = pynuklear.config.nuklear
+import pynuklearc
+_nuklear = ctypes.CDLL(inspect.getfile(pynuklearc))
+
 
 
 # nuklear needs to uniquely identify widgets, and one
