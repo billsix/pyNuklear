@@ -1,0 +1,2 @@
+recursive-include contrib/ *.c
+recursive-include contrib/ *.h

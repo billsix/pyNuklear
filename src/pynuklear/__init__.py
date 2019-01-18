@@ -20,3 +20,5 @@
 
 
 from .nuklear import *
+
+name = "pyNuklear"
