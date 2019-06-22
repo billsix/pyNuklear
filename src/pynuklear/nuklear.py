@@ -1085,7 +1085,7 @@ class EditFlags(Enum):
 
 class EditTypes(Enum):
     SIMPLE = EditFlags.ALWAYS_INSERT_MODE
-    FIELD = SIMPLE.value | EditFlags.SELECTABLE.value | EditFlags.CLIPBOARD.value
+    FIELD = SIMPLE | EditFlags.SELECTABLE.value | EditFlags.CLIPBOARD.value
     BOX = EditFlags.ALWAYS_INSERT_MODE.value | EditFlags.SELECTABLE.value | EditFlags.MULTILINE.value | EditFlags.ALLOW_TAB.value | EditFlags.CLIPBOARD.value
     EDITOR = EditFlags.SELECTABLE.value | EditFlags.MULTILINE.value | EditFlags.ALLOW_TAB.value | EditFlags.CLIPBOARD.value
 
@@ -1116,7 +1116,7 @@ __edit_string__.restype = c_int
 def _edit_string(self, flags, memory, length, maxV, filterF):
     l = ctypes.c_int(length)
     return (__edit_string__(self.ctx,
-                            c_int(flags.value.value),
+                            c_int(flags.value),
                             memory,
                             ctypes.byref(l),
                             c_int(maxV),
