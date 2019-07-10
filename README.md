@@ -10,11 +10,9 @@ Run Demos
 =========
 
 1. Use a virtualenv
-2. Install pyMatrixStack https://github.com/billsix/pyMatrixStack
-3. pip install -r requirements.txt
-4. python setup.py install
-5. Run Python.
-6)
+2. pip install -r requirements.txt
+3. python setup.py install
+4. Run Python.
 
 ```python
 import pynuklear.demo.glfw_opengl3 as gl3Demo
