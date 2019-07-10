@@ -1,4 +1,4 @@
-glfw==1.7.0
-numpy==1.15.3
+glfw==1.8.2
+numpy==1.16.4
 pyMatrixStack==0.0.2
 PyOpenGL==3.1.0
