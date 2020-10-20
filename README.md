@@ -1,7 +1,7 @@
 PyNuklear
 
 Python bindings to the nuklear immediate-mode GUI library
-https://github.com/vurtun/nuklear
+https://github.com/Immediate-Mode-UI/Nuklear
 
 Currently works on Linux, with Python 3
 
