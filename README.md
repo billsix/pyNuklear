@@ -1,20 +1,9 @@
 PyNuklear
 
+
 Python bindings to the nuklear immediate-mode GUI library
 https://github.com/Immediate-Mode-UI/Nuklear
 
-Currently works on Linux, with Python 3
-
-
-Run Demos
-=========
-
-1. Use a virtualenv
-2. pip install -r requirements.txt
-3. python setup.py install
-4. Run Python.
-
-```python
-import pynuklear.demo.glfw_opengl3 as gl3Demo
-gl3Demo.demo()
-```
+This project is no longer maintained.  I recommend instead
+using the excellent https://github.com/swistakm/pyimgui,
+as it is better supported, and works on Mac, Windows, and Linux.
